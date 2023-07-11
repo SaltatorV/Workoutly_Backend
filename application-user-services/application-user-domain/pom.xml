@@ -5,11 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.workoutly</groupId>
-        <artifactId>Workoutly_Backend</artifactId>
+        <artifactId>application-user-services</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>application-user-domain</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.workoutly</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
