@@ -7,13 +7,9 @@
         <groupId>com.workoutly</groupId>
         <artifactId>Workoutly_Backend</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>application-user-services</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>application-user-domain</artifactId>
 
-
-    <modules>
-        <module>application-user-domain</module>
-    </modules>
 </project>
