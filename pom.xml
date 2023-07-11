@@ -22,6 +22,7 @@
     <modules>
         <module>core</module>
         <module>monolith</module>
+        <module>application-user-services</module>
     </modules>
 
     <dependencyManagement>
