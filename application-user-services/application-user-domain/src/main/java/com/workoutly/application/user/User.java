@@ -1,18 +1,18 @@
 package com.workoutly.application.user;
 
-import com.workoutly.application.user.VO.UserRole;
+import com.workoutly.application.user.VO.*;
 import com.workoutly.common.entity.AggregateRoot;
 
 import java.util.UUID;
 
-public class User extends AggregateRoot<String> {
-    private String username;
-    private String password;
-    private String email;
+public class User extends AggregateRoot<UserId> {
+    private Username username;
+    private Password password;
+    private EmailAddress email;
     private UserRole userRole;
     private boolean isEnabled;
 
-    public User(String username, String password, String email, UserRole userRole) {
+    public User(Username username, Password password, EmailAddress email, UserRole userRole) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -20,7 +20,7 @@ public class User extends AggregateRoot<String> {
     }
 
     public void initialize() {
-        setId(UUID.randomUUID().toString());
+        setId(new UserId(UUID.randomUUID()));
         isEnabled = false;
     }
 
