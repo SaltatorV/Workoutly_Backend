@@ -6,8 +6,7 @@ import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.Username;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
 
@@ -27,6 +26,23 @@ public class UserTest {
         //then
         assertNotNull(user.getId());
         assertFalse(user.isEnabled());
+    }
+
+    @Test
+    public void testEnableUser() {
+        //given
+        User user = createUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .buildInitialized();
+
+        //when
+        user.enableUser();
+
+        //then
+        assertTrue(user.isEnabled());
     }
 
 
@@ -60,8 +76,15 @@ public class UserTest {
             return this;
         }
 
-        User build(){
+        User build() {
             return new User(username, password, email, role);
         }
+
+        User buildInitialized() {
+            User user = new User(username, password, email, role);
+            user.enableUser();
+            return user;
+        }
+
     }
 }

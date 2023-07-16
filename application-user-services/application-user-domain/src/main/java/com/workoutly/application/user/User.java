@@ -27,4 +27,8 @@ public class User extends AggregateRoot<UserId> {
     public boolean isEnabled() {
         return isEnabled;
     }
+
+    public void enableUser() {
+        this.isEnabled = true;
+    }
 }
