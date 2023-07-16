@@ -24,8 +24,7 @@ public class UserTest {
         user.initialize();
 
         //then
-        assertNotNull(user.getId());
-        assertFalse(user.isEnabled());
+        assertUserIsInitialized(user);
     }
 
     @Test
@@ -42,7 +41,7 @@ public class UserTest {
         user.enableUser();
 
         //then
-        assertTrue(user.isEnabled());
+        assertUserIsEnabled(user);
     }
 
     @Test
@@ -78,6 +77,16 @@ public class UserTest {
         //then
         assertEquals(user.getEmail().getValue(), "test@test.com");
     }
+
+    private void assertUserIsInitialized(User user) {
+        assertNotNull(user.getId());
+        assertFalse(user.isEnabled());
+    }
+
+    private void assertUserIsEnabled(User user) {
+        assertTrue(user.isEnabled());
+    }
+
 
 
     private UserBuilder createUser() {
