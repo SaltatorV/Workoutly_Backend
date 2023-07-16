@@ -45,6 +45,40 @@ public class UserTest {
         assertTrue(user.isEnabled());
     }
 
+    @Test
+    public void testChangePassword() {
+        //given
+        User user = createUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .buildInitialized();
+
+        //when
+        user.changePassword("test");
+
+        //then
+        assertEquals(user.getPassword().getValue(), "test");
+    }
+
+    @Test
+    public void testChangeEmail() {
+        //given
+        User user = createUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .buildInitialized();
+
+        //when
+        user.changeEmail("test@test.com");
+
+        //then
+        assertEquals(user.getEmail().getValue(), "test@test.com");
+    }
+
 
     private UserBuilder createUser() {
         return new UserBuilder();

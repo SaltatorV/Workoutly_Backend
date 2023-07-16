@@ -31,4 +31,20 @@ public class User extends AggregateRoot<UserId> {
     public void enableUser() {
         this.isEnabled = true;
     }
+
+    public void changePassword(String password) {
+        this.password = new Password(password);
+    }
+
+    public void changeEmail(String email) {
+        this.email = new EmailAddress(email);
+    }
+
+    public Password getPassword() {
+        return password;
+    }
+
+    public EmailAddress getEmail() {
+        return email;
+    }
 }
