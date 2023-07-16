@@ -12,15 +12,19 @@ public class User extends AggregateRoot<String> {
     private UserRole userRole;
     private boolean isEnabled;
 
-    public User(String username, String password, String email, UserRole userRole, boolean isEnabled) {
+    public User(String username, String password, String email, UserRole userRole) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.userRole = userRole;
-        this.isEnabled = isEnabled;
     }
 
     public void initialize() {
         setId(UUID.randomUUID().toString());
+        isEnabled = false;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
     }
 }
