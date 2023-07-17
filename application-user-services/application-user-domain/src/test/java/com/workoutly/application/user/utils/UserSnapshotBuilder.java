@@ -10,7 +10,7 @@ public class UserSnapshotBuilder {
     private UserRole role;
     private boolean isEnabled;
 
-    public static UserSnapshotBuilder aUserSnapshot() {
+    public static UserSnapshotBuilder anUserSnapshot() {
         return new UserSnapshotBuilder();
     }
 

@@ -30,7 +30,7 @@ public class User extends AggregateRoot<UserId> {
         return isEnabled;
     }
 
-    public void enableUser() {
+    public void enable() {
         this.isEnabled = true;
     }
 
@@ -40,14 +40,6 @@ public class User extends AggregateRoot<UserId> {
 
     public void changeEmail(String email) {
         this.email = new EmailAddress(email);
-    }
-
-    public Password getPassword() {
-        return password;
-    }
-
-    public EmailAddress getEmail() {
-        return email;
     }
 
     public UserSnapshot createSnapshot() {

@@ -4,7 +4,7 @@ import com.workoutly.application.user.VO.*;
 import org.junit.jupiter.api.Test;
 
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
-import static com.workoutly.application.user.utils.UserSnapshotBuilder.aUserSnapshot;
+import static com.workoutly.application.user.utils.UserSnapshotBuilder.anUserSnapshot;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
@@ -12,7 +12,7 @@ public class UserTest {
     @Test
     public void testInitializeUser() {
         //given
-        User user = aUser()
+        User user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -29,7 +29,7 @@ public class UserTest {
     @Test
     public void testEnableUser() {
         //given
-        User user = aUser()
+        User user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -37,7 +37,7 @@ public class UserTest {
                 .buildInitialized();
 
         //when
-        user.enableUser();
+        user.enable();
 
         //then
         assertUserIsEnabled(user);
@@ -46,7 +46,7 @@ public class UserTest {
     @Test
     public void testChangePassword() {
         //given
-        User user = aUser()
+        User user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -63,7 +63,7 @@ public class UserTest {
     @Test
     public void testChangeEmail() {
         //given
-        User user = aUser()
+        User user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -80,14 +80,14 @@ public class UserTest {
     @Test
     public void testCreateUserSnapshot() {
         //given
-        User user = aUser()
+        User user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON)
                 .build();
 
-        UserSnapshot mockSnapshot = aUserSnapshot()
+        UserSnapshot mockSnapshot = anUserSnapshot()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -105,14 +105,41 @@ public class UserTest {
     @Test
     public void testCreateUserSnapshotWithInitializedUser() {
         //given
-        User user = aUser()
+        User user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON)
                 .buildInitialized();
 
-        UserSnapshot mockSnapshot = aUserSnapshot()
+        UserSnapshot mockSnapshot = anUserSnapshot()
+                .withId(user.getId())
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .build();
+
+        //when
+        UserSnapshot snapshot = user.createSnapshot();
+
+        //then
+        assertSnapshotsAreEqual(snapshot, mockSnapshot);
+    }
+
+    @Test
+    public void testCreateUserSnapshotWithEnabledUser() {
+        //given
+        User user = anUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .buildInitialized();
+
+        user.enable();
+
+        UserSnapshot mockSnapshot = anUserSnapshot()
                 .withId(user.getId())
                 .withUsername("Test")
                 .withPassword("Pa$$word")
@@ -141,7 +168,7 @@ public class UserTest {
         assertEquals(mapToString(snapshot), mapToString(mockSnapshot));
     }
 
-    UserBuilder aUser() {
+    UserBuilder anUser() {
         return new UserBuilder();
     }
 
@@ -177,7 +204,7 @@ public class UserTest {
 
         private User buildInitialized() {
             User user = new User(username, password, email, role);
-            user.enableUser();
+            user.initialize();
             return user;
         }
     }
