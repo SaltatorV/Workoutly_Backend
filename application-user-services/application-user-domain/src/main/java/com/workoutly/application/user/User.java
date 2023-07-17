@@ -5,6 +5,8 @@ import com.workoutly.common.entity.AggregateRoot;
 
 import java.util.UUID;
 
+import static com.workoutly.application.user.VO.UserSnapshot.Builder.anUserSnapshot;
+
 public class User extends AggregateRoot<UserId> {
     private Username username;
     private Password password;
@@ -46,5 +48,16 @@ public class User extends AggregateRoot<UserId> {
 
     public EmailAddress getEmail() {
         return email;
+    }
+
+    public UserSnapshot createSnapshot() {
+        return anUserSnapshot()
+                .withUsername(username.getValue())
+                .withPassword(password.getValue())
+                .withEmail(email.getValue())
+                .withRole(userRole)
+                .withIsEnabled(isEnabled)
+                .withUserId(getId())
+                .build();
     }
 }

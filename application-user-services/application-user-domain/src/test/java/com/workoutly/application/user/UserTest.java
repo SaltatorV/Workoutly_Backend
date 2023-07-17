@@ -1,11 +1,10 @@
 package com.workoutly.application.user;
 
-import com.workoutly.application.user.VO.EmailAddress;
-import com.workoutly.application.user.VO.Password;
-import com.workoutly.application.user.VO.UserRole;
-import com.workoutly.application.user.VO.Username;
+import com.workoutly.application.user.VO.*;
 import org.junit.jupiter.api.Test;
 
+import static com.workoutly.application.user.utils.TestUtils.mapToString;
+import static com.workoutly.application.user.utils.UserSnapshotBuilder.aUserSnapshot;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
@@ -13,7 +12,7 @@ public class UserTest {
     @Test
     public void testInitializeUser() {
         //given
-        User user = createUser()
+        User user = aUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -30,7 +29,7 @@ public class UserTest {
     @Test
     public void testEnableUser() {
         //given
-        User user = createUser()
+        User user = aUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -47,7 +46,7 @@ public class UserTest {
     @Test
     public void testChangePassword() {
         //given
-        User user = createUser()
+        User user = aUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -58,13 +57,13 @@ public class UserTest {
         user.changePassword("test");
 
         //then
-        assertEquals(user.getPassword().getValue(), "test");
+        assertEquals("test", user.createSnapshot().getPassword());
     }
 
     @Test
     public void testChangeEmail() {
         //given
-        User user = createUser()
+        User user = aUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -75,7 +74,58 @@ public class UserTest {
         user.changeEmail("test@test.com");
 
         //then
-        assertEquals(user.getEmail().getValue(), "test@test.com");
+        assertEquals("test@test.com", user.createSnapshot().getEmail());
+    }
+
+    @Test
+    public void testCreateUserSnapshot() {
+        //given
+        User user = aUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .build();
+
+        UserSnapshot mockSnapshot = aUserSnapshot()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .isEnabled(false)
+                .build();
+
+        //when
+        UserSnapshot snapshot = user.createSnapshot();
+
+        //then
+        assertSnapshotsAreEqual(snapshot, mockSnapshot);
+    }
+
+    @Test
+    public void testCreateUserSnapshotWithInitializedUser() {
+        //given
+        User user = aUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .buildInitialized();
+
+        UserSnapshot mockSnapshot = aUserSnapshot()
+                .withId(user.getId())
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .isEnabled(true)
+                .build();
+
+        //when
+        UserSnapshot snapshot = user.createSnapshot();
+
+        //then
+        assertSnapshotsAreEqual(snapshot, mockSnapshot);
     }
 
     private void assertUserIsInitialized(User user) {
@@ -87,47 +137,48 @@ public class UserTest {
         assertTrue(user.isEnabled());
     }
 
+    private void assertSnapshotsAreEqual(UserSnapshot snapshot, UserSnapshot mockSnapshot) {
+        assertEquals(mapToString(snapshot), mapToString(mockSnapshot));
+    }
 
-
-    private UserBuilder createUser() {
+    UserBuilder aUser() {
         return new UserBuilder();
     }
 
     private class UserBuilder {
-        Username username;
-        Password password;
-        EmailAddress email;
-        UserRole role;
+        private Username username;
+        private Password password;
+        private EmailAddress email;
+        private UserRole role;
 
-        UserBuilder withUsername(String username) {
+        private UserBuilder withUsername(String username) {
             this.username = new Username(username);
             return this;
         }
 
-        UserBuilder withPassword(String password) {
+        private UserBuilder withPassword(String password) {
             this.password = new Password(password);
             return this;
         }
 
-        UserBuilder withEmail(String email) {
+        private UserBuilder withEmail(String email) {
             this.email = new EmailAddress(email);
             return this;
         }
 
-        UserBuilder withRole(UserRole role) {
+        private UserBuilder withRole(UserRole role) {
             this.role = role;
             return this;
         }
 
-        User build() {
+        private User build() {
             return new User(username, password, email, role);
         }
 
-        User buildInitialized() {
+        private User buildInitialized() {
             User user = new User(username, password, email, role);
             user.enableUser();
             return user;
         }
-
     }
 }
