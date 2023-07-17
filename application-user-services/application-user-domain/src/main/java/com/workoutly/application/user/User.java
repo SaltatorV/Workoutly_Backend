@@ -21,6 +21,21 @@ public class User extends AggregateRoot<UserId> {
         this.userRole = userRole;
     }
 
+    public User(UserId userId, Username username, Password password, EmailAddress email, UserRole userRole, boolean isEnabled) {
+        this(username, password, email, userRole);
+        setId(userId);
+        this.isEnabled = isEnabled;
+    }
+
+    public static User restore(UserSnapshot snapshot) {
+        return new User(snapshot.getUserId(),
+                new Username(snapshot.getUsername()),
+                new Password(snapshot.getPassword()),
+                new EmailAddress(snapshot.getEmail()),
+                snapshot.getRole(),
+                snapshot.isEnabled());
+    }
+
     public void initialize() {
         setId(new UserId(UUID.randomUUID()));
         isEnabled = false;

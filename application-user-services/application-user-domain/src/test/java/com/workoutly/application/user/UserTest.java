@@ -3,6 +3,8 @@ package com.workoutly.application.user;
 import com.workoutly.application.user.VO.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static com.workoutly.application.user.utils.UserSnapshotBuilder.anUserSnapshot;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,7 +53,7 @@ public class UserTest {
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON)
-                .buildInitialized();
+                .build();
 
         //when
         user.changePassword("test");
@@ -68,7 +70,7 @@ public class UserTest {
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON)
-                .buildInitialized();
+                .build();
 
         //when
         user.changeEmail("test@test.com");
@@ -155,6 +157,92 @@ public class UserTest {
         assertSnapshotsAreEqual(snapshot, mockSnapshot);
     }
 
+    @Test
+    public void testRestoreUser() {
+        //given
+        UserSnapshot snapshot = anUserSnapshot()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .build();
+
+        User mockUser = anUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .build();
+
+
+        //when
+        User user = User.restore(snapshot);
+
+        //then
+        assertUsersAreEqual(user, mockUser);
+    }
+
+    @Test
+    public void testRestoreInitializedUser() {
+        //given
+        UserId userId = new UserId(UUID.randomUUID());
+
+        UserSnapshot snapshot = anUserSnapshot()
+                .withId(userId)
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .build();
+
+        User mockUser = anUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .build();
+
+        mockUser.setId(userId);
+
+        //when
+        User user = User.restore(snapshot);
+
+        //then
+        assertUsersAreEqual(user, mockUser);
+    }
+
+    @Test
+    public void testRestoreEnabledUser() {
+        //given
+        UserId userId = new UserId(UUID.randomUUID());
+
+        UserSnapshot snapshot = anUserSnapshot()
+                .withId(userId)
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .isEnabled(true)
+                .build();
+
+        User mockUser = anUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON)
+                .build();
+
+        mockUser.setId(userId);
+        mockUser.enable();
+
+        //when
+        User user = User.restore(snapshot);
+
+        //then
+        assertUsersAreEqual(user, mockUser);
+    }
+
+
     private void assertUserIsInitialized(User user) {
         assertNotNull(user.getId());
         assertFalse(user.isEnabled());
@@ -166,6 +254,10 @@ public class UserTest {
 
     private void assertSnapshotsAreEqual(UserSnapshot snapshot, UserSnapshot mockSnapshot) {
         assertEquals(mapToString(snapshot), mapToString(mockSnapshot));
+    }
+
+    private void assertUsersAreEqual(User user, User mockUser) {
+        assertEquals(mapToString(user), mapToString(mockUser));
     }
 
     UserBuilder anUser() {
