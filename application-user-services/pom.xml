@@ -27,6 +27,10 @@
                 <artifactId>core</artifactId>
                 <version>${core-module-version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
