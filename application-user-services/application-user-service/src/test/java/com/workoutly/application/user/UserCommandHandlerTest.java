@@ -1,6 +1,10 @@
 package com.workoutly.application.user;
 
+import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class UserCommandHandlerTest {
 
@@ -9,12 +13,15 @@ public class UserCommandHandlerTest {
     @Test
     public void createUserTest() {
         //given
-        RegisterUserCommand= new RegisterUserCommand("Username", "Example@example.pl", "Password", "Password");
+        RegisterUserCommand registerUserCommand = new RegisterUserCommand("Username",
+                "Example@example.pl",
+                "Password",
+                "Password");
 
         //when
         UserCreatedEvent event = userCommandHandler.createUser(request);
 
         //then
-
+        assertNotNull(event.getUser());
     }
 }
