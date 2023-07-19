@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.workoutly</groupId>
-        <artifactId>application-user-services</artifactId>
+        <artifactId>Workoutly_Backend</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 

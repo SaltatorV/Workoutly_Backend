@@ -11,27 +11,8 @@
 
     <artifactId>application-user-services</artifactId>
     <packaging>pom</packaging>
-
-    <properties>
-        <core-module-version>0.0.1-SNAPSHOT</core-module-version>
-    </properties>
-
     <modules>
         <module>application-user-domain</module>
         <module>application-user-service</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.workoutly</groupId>
-                <artifactId>core</artifactId>
-                <version>${core-module-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
