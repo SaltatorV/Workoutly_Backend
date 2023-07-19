@@ -18,6 +18,7 @@
 
     <modules>
         <module>application-user-domain</module>
+        <module>application-user-service</module>
     </modules>
 
     <dependencyManagement>
