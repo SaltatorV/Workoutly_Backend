@@ -9,7 +9,7 @@ public class UserCommandHandlerTest {
     @Test
     public void createUserTest() {
         //given
-        RegisterUserRequest request = new RegisterUserRequest("Username", "Example@example.pl", "Password", "Password");
+        RegisterUserCommand= new RegisterUserCommand("Username", "Example@example.pl", "Password", "Password");
 
         //when
         UserCreatedEvent event = userCommandHandler.createUser(request);
