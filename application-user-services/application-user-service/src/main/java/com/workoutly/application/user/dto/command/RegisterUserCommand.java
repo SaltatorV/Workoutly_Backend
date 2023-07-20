@@ -12,4 +12,20 @@ public class RegisterUserCommand {
         this.password = password;
         this.confirmPassword = confirmPassword;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
 }

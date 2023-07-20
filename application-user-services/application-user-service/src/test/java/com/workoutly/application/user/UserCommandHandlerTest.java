@@ -1,7 +1,8 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
-import org.junit.jupiter.api.Assertions;
+
+import com.workoutly.application.user.event.UserCreatedEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,9 +20,9 @@ public class UserCommandHandlerTest {
                 "Password");
 
         //when
-        UserCreatedEvent event = userCommandHandler.createUser(request);
+        UserCreatedEvent event = userCommandHandler.createCommonUser(registerUserCommand);
 
         //then
-        assertNotNull(event.getUser());
+        assertNotNull(event.getSnapshot());
     }
 }
