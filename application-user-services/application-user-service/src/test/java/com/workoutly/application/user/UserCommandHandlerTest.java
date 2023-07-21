@@ -1,6 +1,7 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.UserRole;
+import com.workoutly.application.user.builder.RegisterUserCommandBuilder;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
 import com.workoutly.application.user.event.UserCreatedEvent;
@@ -32,10 +33,12 @@ public class UserCommandHandlerTest {
     @Test
     public void createUserTest() {
         //given
-        var command = new RegisterUserCommand("Username",
-                "Example@example.pl",
-                "Password",
-                "Password");
+        var command = anRegisterUserCommand()
+                .withUsername("Test")
+                .withPassword("Password")
+                .withConfirmPassword("Password")
+                .withEmailAddress("Example@example.pl")
+                .create();
 
         doReturn(createCommonUserBasedOnCommand(command))
                 .when(userDataMapper)
@@ -50,6 +53,10 @@ public class UserCommandHandlerTest {
 
         //then
         assertIsEventCreated(event);
+    }
+
+    private RegisterUserCommandBuilder anRegisterUserCommand() {
+        return new RegisterUserCommandBuilder();
     }
 
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {
@@ -70,4 +77,5 @@ public class UserCommandHandlerTest {
         assertNotNull(event);
         assertNotNull(event.getSnapshot());
     }
+
 }
