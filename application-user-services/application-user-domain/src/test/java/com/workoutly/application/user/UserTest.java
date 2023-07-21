@@ -265,23 +265,23 @@ public class UserTest {
     }
 
     private class UserBuilder {
-        private Username username;
-        private Password password;
-        private EmailAddress email;
+        private String username;
+        private String password;
+        private String email;
         private UserRole role;
 
         private UserBuilder withUsername(String username) {
-            this.username = new Username(username);
+            this.username = username;
             return this;
         }
 
         private UserBuilder withPassword(String password) {
-            this.password = new Password(password);
+            this.password = password;
             return this;
         }
 
         private UserBuilder withEmail(String email) {
-            this.email = new EmailAddress(email);
+            this.email = email;
             return this;
         }
 

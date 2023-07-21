@@ -8,20 +8,20 @@ import java.util.UUID;
 import static com.workoutly.application.user.VO.UserSnapshot.Builder.anUserSnapshot;
 
 public class User extends AggregateRoot<UserId> {
-    private Username username;
-    private Password password;
-    private EmailAddress email;
+    private String username;
+    private String password;
+    private String email;
     private UserRole userRole;
     private boolean isEnabled;
 
-    public User(Username username, Password password, EmailAddress email, UserRole userRole) {
+    public User(String username, String password, String email, UserRole userRole) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.userRole = userRole;
     }
 
-    public User(UserId userId, Username username, Password password, EmailAddress email, UserRole userRole, boolean isEnabled) {
+    public User(UserId userId, String username, String password, String email, UserRole userRole, boolean isEnabled) {
         this(username, password, email, userRole);
         setId(userId);
         this.isEnabled = isEnabled;
@@ -29,9 +29,9 @@ public class User extends AggregateRoot<UserId> {
 
     public static User restore(UserSnapshot snapshot) {
         return new User(snapshot.getUserId(),
-                new Username(snapshot.getUsername()),
-                new Password(snapshot.getPassword()),
-                new EmailAddress(snapshot.getEmail()),
+                snapshot.getUsername(),
+                snapshot.getPassword(),
+                snapshot.getEmail(),
                 snapshot.getRole(),
                 snapshot.isEnabled());
     }
@@ -50,18 +50,18 @@ public class User extends AggregateRoot<UserId> {
     }
 
     public void changePassword(String password) {
-        this.password = new Password(password);
+        this.password = password;
     }
 
     public void changeEmail(String email) {
-        this.email = new EmailAddress(email);
+        this.email = email;
     }
 
     public UserSnapshot createSnapshot() {
         return anUserSnapshot()
-                .withUsername(username.getValue())
-                .withPassword(password.getValue())
-                .withEmail(email.getValue())
+                .withUsername(username)
+                .withPassword(password)
+                .withEmail(email)
                 .withRole(userRole)
                 .withIsEnabled(isEnabled)
                 .withUserId(getId())
