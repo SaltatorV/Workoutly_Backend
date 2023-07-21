@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
+import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -79,10 +80,14 @@ public class UserCommandHandlerTest {
 
     private void assertIsSnapshotValid(UserCreatedEvent event, RegisterUserCommand command) {
         UserSnapshot snapshot = event.getSnapshot();
-        assertNotNull(snapshot.getUserId());
-        assertFalse(snapshot.isEnabled());
-        assertEquals(command.getUsername(), snapshot.getUsername());
-        assertEquals(command.getPassword(), snapshot.getPassword());
-        assertEquals(command.getEmail(), snapshot.getEmail());
+        UserSnapshot commandSnapshot = createCommonUserSnapshot(event.getSnapshot(), command);
+
+        assertEquals(mapToString(commandSnapshot), mapToString(snapshot));
+    }
+
+    private UserSnapshot createCommonUserSnapshot(UserSnapshot snapshot, RegisterUserCommand command) {
+        User user = new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON);
+        user.setId(snapshot.getUserId());
+        return user.createSnapshot();
     }
 }
