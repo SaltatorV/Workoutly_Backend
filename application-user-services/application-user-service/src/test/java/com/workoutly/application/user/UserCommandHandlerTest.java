@@ -2,7 +2,6 @@ package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
-import com.workoutly.application.user.builder.RegisterUserCommandBuilder;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
 import com.workoutly.application.user.event.UserCreatedEvent;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.anRegisterUserCommand;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -55,10 +55,6 @@ public class UserCommandHandlerTest {
         //then
         assertIsEventCreated(event);
         assertIsSnapshotValid(event, command);
-    }
-
-    private RegisterUserCommandBuilder anRegisterUserCommand() {
-        return new RegisterUserCommandBuilder();
     }
 
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {

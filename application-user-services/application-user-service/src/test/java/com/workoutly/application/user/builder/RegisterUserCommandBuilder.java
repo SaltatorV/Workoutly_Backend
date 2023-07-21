@@ -9,6 +9,10 @@ public class RegisterUserCommandBuilder {
     private String confirmPassword;
 
 
+    public static RegisterUserCommandBuilder anRegisterUserCommand() {
+        return new RegisterUserCommandBuilder();
+    }
+
     public RegisterUserCommandBuilder withUsername(String username) {
         this.username = username;
         return this;
