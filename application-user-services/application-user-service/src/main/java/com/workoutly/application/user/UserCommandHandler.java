@@ -1,22 +1,21 @@
 package com.workoutly.application.user;
 
-import com.workoutly.application.user.VO.EmailAddress;
-import com.workoutly.application.user.VO.Password;
-import com.workoutly.application.user.VO.UserRole;
-import com.workoutly.application.user.VO.Username;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.event.UserCreatedEvent;
+import com.workoutly.application.user.mapper.UserDataMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 class UserCommandHandler {
+    private final UserDataMapper userDataMapper;
+    private final UserDomainService userDomainService;
+
     UserCreatedEvent createCommonUser(RegisterUserCommand registerUserCommand) {
-        User user = new User(new Username(registerUserCommand.getUsername()),
-                new Password(registerUserCommand.getPassword()),
-                new EmailAddress(registerUserCommand.getEmail()),
-                UserRole.COMMON);
+        User user = userDataMapper.registerUserCommandToCommonUser(registerUserCommand);
+        UserCreatedEvent event = userDomainService.initializeUser(user);
 
-        //create User
-        user.initialize();
-
-        return new UserCreatedEvent(user.createSnapshot());
+        return event;
     }
 }
