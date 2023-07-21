@@ -1,4 +1,4 @@
-package com.workoutly.application.user.utils;
+package com.workoutly.application.user.builder;
 
 import com.workoutly.application.user.VO.*;
 

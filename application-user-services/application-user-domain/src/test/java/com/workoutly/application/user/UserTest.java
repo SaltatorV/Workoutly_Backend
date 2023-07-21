@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
-import static com.workoutly.application.user.utils.UserSnapshotBuilder.anUserSnapshot;
+import static com.workoutly.application.user.builder.UserSnapshotBuilder.anUserSnapshot;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
