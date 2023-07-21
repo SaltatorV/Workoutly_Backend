@@ -1,6 +1,7 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.UserRole;
+import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.builder.RegisterUserCommandBuilder;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
@@ -13,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -53,6 +54,7 @@ public class UserCommandHandlerTest {
 
         //then
         assertIsEventCreated(event);
+        assertIsSnapshotValid(event, command);
     }
 
     private RegisterUserCommandBuilder anRegisterUserCommand() {
@@ -70,6 +72,7 @@ public class UserCommandHandlerTest {
 
     private UserCreatedEvent createUserCreatedEventBasedOnCommand(RegisterUserCommand command) {
         User user = createCommonUserBasedOnCommand(command);
+        user.initialize();
         return new UserCreatedEvent(user.createSnapshot());
     }
 
@@ -78,4 +81,12 @@ public class UserCommandHandlerTest {
         assertNotNull(event.getSnapshot());
     }
 
+    private void assertIsSnapshotValid(UserCreatedEvent event, RegisterUserCommand command) {
+        UserSnapshot snapshot = event.getSnapshot();
+        assertNotNull(snapshot.getUserId());
+        assertFalse(snapshot.isEnabled());
+        assertEquals(command.getUsername(), snapshot.getUsername());
+        assertEquals(command.getPassword(), snapshot.getPassword());
+        assertEquals(command.getEmail(), snapshot.getEmail());
+    }
 }
