@@ -49,7 +49,7 @@ public class UserCommandHandlerTest {
         UserCreatedEvent event = userCommandHandler.createCommonUser(command);
 
         //then
-        assertNotNull(event.getSnapshot());
+        assertIsEventCreated(event);
     }
 
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {
@@ -64,5 +64,10 @@ public class UserCommandHandlerTest {
     private UserCreatedEvent createUserCreatedEventBasedOnCommand(RegisterUserCommand command) {
         User user = createCommonUserBasedOnCommand(command);
         return new UserCreatedEvent(user.createSnapshot());
+    }
+
+    private void assertIsEventCreated(UserCreatedEvent event) {
+        assertNotNull(event);
+        assertNotNull(event.getSnapshot());
     }
 }
