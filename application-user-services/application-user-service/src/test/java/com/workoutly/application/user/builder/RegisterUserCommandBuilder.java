@@ -9,7 +9,7 @@ public class RegisterUserCommandBuilder {
     private String confirmPassword;
 
 
-    public static RegisterUserCommandBuilder anRegisterUserCommand() {
+    public static RegisterUserCommandBuilder aRegisterUserCommand() {
         return new RegisterUserCommandBuilder();
     }
 

@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.anRegisterUserCommand;
+import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
+import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {UserDataMapper.class})
@@ -20,7 +21,7 @@ public class UserDataMapperTest {
     @Test
     public void testRegisterUserCommandToCommonUser() {
         //given
-        var command = anRegisterUserCommand()
+        var command = aRegisterUserCommand()
                 .withUsername("Test")
                 .withPassword("Password")
                 .withConfirmPassword("Password")
@@ -31,16 +32,18 @@ public class UserDataMapperTest {
         var user = userDataMapper.registerUserCommandToCommonUser(command);
 
         //then
-        assertIsUserValid(user, command);
+        assertIsCommonUserValid(user, command);
 
     }
 
-    private void assertIsUserValid(User user, RegisterUserCommand command) {
+    private void assertIsCommonUserValid(User user, RegisterUserCommand command) {
         UserSnapshot snapshot = user.createSnapshot();
-        assertEquals(command.getUsername(), snapshot.getUsername());
-        assertEquals(command.getPassword(), snapshot.getPassword());
-        assertEquals(command.getEmail(), snapshot.getEmail());
-        assertEquals(UserRole.COMMON, snapshot.getRole());
+        UserSnapshot commandSnapshot = createCommonUserSnapshot(command);
+        assertEquals(mapToString(commandSnapshot), mapToString(snapshot));
+    }
 
+    private UserSnapshot createCommonUserSnapshot(RegisterUserCommand command) {
+        return new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON)
+                .createSnapshot();
     }
 }

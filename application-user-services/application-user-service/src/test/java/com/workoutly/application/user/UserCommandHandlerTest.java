@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.anRegisterUserCommand;
+import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -34,7 +34,7 @@ public class UserCommandHandlerTest {
     @Test
     public void createUserTest() {
         //given
-        var command = anRegisterUserCommand()
+        var command = aRegisterUserCommand()
                 .withUsername("Test")
                 .withPassword("Password")
                 .withConfirmPassword("Password")
