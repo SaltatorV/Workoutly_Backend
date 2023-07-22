@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
+import static com.workoutly.application.user.builder.UserBuilder.anUser;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static com.workoutly.application.user.builder.UserSnapshotBuilder.anUserSnapshot;
 import static org.junit.jupiter.api.Assertions.*;
@@ -260,44 +261,4 @@ public class UserTest {
         assertEquals(mapToString(user), mapToString(mockUser));
     }
 
-    UserBuilder anUser() {
-        return new UserBuilder();
-    }
-
-    private class UserBuilder {
-        private String username;
-        private String password;
-        private String email;
-        private UserRole role;
-
-        private UserBuilder withUsername(String username) {
-            this.username = username;
-            return this;
-        }
-
-        private UserBuilder withPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        private UserBuilder withEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        private UserBuilder withRole(UserRole role) {
-            this.role = role;
-            return this;
-        }
-
-        private User build() {
-            return new User(username, password, email, role);
-        }
-
-        private User buildInitialized() {
-            User user = new User(username, password, email, role);
-            user.initialize();
-            return user;
-        }
-    }
 }
