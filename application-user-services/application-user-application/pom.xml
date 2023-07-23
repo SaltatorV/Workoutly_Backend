@@ -9,11 +9,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>application-user-services</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>application-user-domain</module>
-        <module>application-user-service</module>
-        <module>application-user-application</module>
-    </modules>
+    <artifactId>application-user-application</artifactId>
+
 </project>
