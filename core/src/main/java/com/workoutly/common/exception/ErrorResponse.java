@@ -9,16 +9,15 @@ public class ErrorResponse {
         this.message = message;
     }
 
+    public static ErrorResponseBuilder anErrorResponse() {
+        return new ErrorResponseBuilder();
+    }
 
     public static final class ErrorResponseBuilder {
         private String code;
         private String message;
 
         private ErrorResponseBuilder() {
-        }
-
-        public static ErrorResponseBuilder anErrorResponse() {
-            return new ErrorResponseBuilder();
         }
 
         public ErrorResponseBuilder withCode(String code) {
