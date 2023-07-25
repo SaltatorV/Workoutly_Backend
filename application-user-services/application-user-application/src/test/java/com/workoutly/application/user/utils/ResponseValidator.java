@@ -29,15 +29,11 @@ public class ResponseValidator {
         assertTrue(mvcResult.getResponse().getStatus() == status);
     }
 
-    public static void responseContentIs(List<String> contentValues) {
-        try {
-            String responseContent = mvcResult.getResponse().getContentAsString();
-            for (String value: contentValues) {
-                assertTrue(responseContent.contains(value));
-                responseContent.replace(value, "");
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+    public static void responseContentIs(List<String> contentValues) throws UnsupportedEncodingException {
+        String responseContent = mvcResult.getResponse().getContentAsString();
+        for (String value: contentValues) {
+            assertTrue(responseContent.contains(value));
+            responseContent.replace(value, "");
         }
     }
 
