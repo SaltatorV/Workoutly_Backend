@@ -3,7 +3,6 @@ package com.workoutly.application.user.utils;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,12 +28,11 @@ public class ResponseValidator {
         assertTrue(mvcResult.getResponse().getStatus() == status);
     }
 
-    public static void responseContentIs(List<String> contentValues) throws UnsupportedEncodingException {
+    public static void responseContentIs(String value) throws UnsupportedEncodingException {
         String responseContent = mvcResult.getResponse().getContentAsString();
-        for (String value: contentValues) {
-            assertTrue(responseContent.contains(value));
-            responseContent.replace(value, "");
-        }
+        System.out.println(value);
+        System.out.println(responseContent);
+        assertTrue(responseContent.contains(value));
     }
 
 }

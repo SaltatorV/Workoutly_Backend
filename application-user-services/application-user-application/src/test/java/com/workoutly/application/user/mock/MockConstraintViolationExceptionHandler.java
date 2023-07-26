@@ -2,24 +2,24 @@ package com.workoutly.application.user.mock;
 
 import com.workoutly.common.exception.ErrorResponse;
 import com.workoutly.common.exception.DomainExceptionHandler;
+import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
 import static com.workoutly.common.exception.ErrorResponse.anErrorResponse;
 
-@ControllerAdvice
+@Component
+@RestControllerAdvice
 public class MockConstraintViolationExceptionHandler implements DomainExceptionHandler<ConstraintViolationException> {
 
     @Override
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler(value = {ConstraintViolationException.class})
     public ErrorResponse handleException(ConstraintViolationException exception) {
         String message = convertViolations(exception);
 

@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestUtils {
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static String asJsonString(final Object obj) {
+    public static String asString(final Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            return mapper.writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
