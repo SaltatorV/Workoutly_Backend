@@ -42,13 +42,15 @@ public class UserCommandHandlerTest {
                 .withEmailAddress("Example@example.pl")
                 .create();
 
-        doReturn(createCommonUserBasedOnCommand(command))
+        var commonUser = createCommonUserBasedOnCommand(command);
+
+        doReturn(commonUser)
                 .when(userDataMapper)
                 .registerUserCommandToCommonUser(command);
 
         doReturn(createUserCreatedEventBasedOnCommand(command))
                 .when(userDomainService)
-                .initializeUser(any());
+                .initializeUser(commonUser);
 
         //when
         UserCreatedEvent event = userCommandHandler.createCommonUser(command);
