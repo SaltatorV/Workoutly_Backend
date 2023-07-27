@@ -6,6 +6,7 @@ import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserCreatedEvent;
+import com.workoutly.application.user.mapper.UserDataMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class UserApplicationServiceImplTest {
 
     @MockBean
     private UserCommandHandler userCommandHandler;
+    @MockBean
+    private UserDataMapper userDataMapper;
 
     @Autowired
     private UserApplicationServiceImpl userApplicationService;
@@ -43,8 +46,13 @@ public class UserApplicationServiceImplTest {
                 .withConfirmPassword("Sup3rS3cureP@@s")
                 .create();
 
-        doReturn(userCreatedEventBasedOnRequest(command))
+        var userCreatedEvent = userCreatedEventBasedOnRequest(command);
+
+        doReturn(userCreatedEvent)
                 .when(userCommandHandler).createCommonUser(command);
+
+        doReturn(createRegisterUserResponse(command))
+                .when(userDataMapper).userCreatedEventToRegisterUserResponse(userCreatedEvent);
 
         //when
         var response = userApplicationService.createCommonUser(command);
@@ -60,7 +68,7 @@ public class UserApplicationServiceImplTest {
 
     private RegisterUserResponse validCreatedResponseMessage(RegisterUserCommand command) {
         return new RegisterUserResponse(
-                String.format("User: %s created successfully, check your e-mail address to activate account", command.getUsername()),
+                "User created successfully, check your e-mail address to activate account.",
                 command.getUsername()
         );
     }
@@ -77,4 +85,10 @@ public class UserApplicationServiceImplTest {
         return new UserCreatedEvent(userSnapshot);
     }
 
+    private RegisterUserResponse createRegisterUserResponse(RegisterUserCommand command) {
+        return new RegisterUserResponse(
+                "User created successfully, check your e-mail address to activate account.",
+                command.getUsername()
+        );
+    }
 }
