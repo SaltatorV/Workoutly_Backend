@@ -15,10 +15,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
+import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
@@ -54,12 +54,15 @@ public class UserApplicationServiceImplTest {
     }
 
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
-        assertEquals(command.getUsername(), response.getUsername());
-        assertEquals(validCreatedResponseMessage(command), response.getMessage());
+        RegisterUserResponse responseFromCommand = validCreatedResponseMessage(command);
+        assertEquals(mapToString(responseFromCommand), mapToString(response));
     }
 
-    private String validCreatedResponseMessage(RegisterUserCommand command) {
-        return String.format("User: %s created successfully, check your e-mail address to activate account", command.getUsername());
+    private RegisterUserResponse validCreatedResponseMessage(RegisterUserCommand command) {
+        return new RegisterUserResponse(
+                String.format("User: %s created successfully, check your e-mail address to activate account", command.getUsername()),
+                command.getUsername()
+        );
     }
 
     private UserCreatedEvent userCreatedEventBasedOnRequest(RegisterUserCommand command) {

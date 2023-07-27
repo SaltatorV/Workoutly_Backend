@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.workoutly.application.user.utils.TestUtils.asString;
+import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.ResponseValidator.*;
 import static com.workoutly.common.exception.ErrorResponse.anErrorResponse;
@@ -92,7 +92,7 @@ public class RegisterControllerTest {
     private void performRequest(Object request, String url) throws Exception{
         MvcResult result = mvc.perform(MockMvcRequestBuilders
                 .post(url)
-                .content(asString(request))
+                .content(mapToString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
@@ -102,7 +102,7 @@ public class RegisterControllerTest {
 
     private String successfullyCreated(RegisterUserCommand command) {
         return
-                asString(new RegisterUserResponse(String.format("User: %s created successfully, check your e-mail address to activate account",
+                mapToString(new RegisterUserResponse(String.format("User: %s created successfully, check your e-mail address to activate account",
                         command.getUsername()), command.getUsername()));
     }
 
@@ -113,7 +113,7 @@ public class RegisterControllerTest {
                 .map(violation -> violation.getMessage())
                 .collect(Collectors.joining("-"));
 
-        return asString(anErrorResponse()
+        return mapToString(anErrorResponse()
                 .withCode(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .withMessage(message)
                 .build());
