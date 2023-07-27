@@ -7,6 +7,7 @@ import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SpringExtension.class)
@@ -61,6 +62,23 @@ public class UserApplicationServiceImplTest {
         assertResponseIsValid(command, response);
     }
 
+    @Test
+    public void testEmptyUsername() {
+        //given
+        var command = aRegisterUserCommand()
+                .withUsername("")
+                .withEmailAddress("exam.to")
+                .withPassword("")
+                .withConfirmPassword("Sup3rS3cureP@@s")
+                .create();
+
+        //when
+        var exception = commandThrowsConstraintViolationException(command);
+
+        //then
+        assertExceptionMessageIsEmptyViolation(exception);
+    }
+
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
         RegisterUserResponse responseFromCommand = validCreatedResponseMessage(command);
         assertEquals(mapToString(responseFromCommand), mapToString(response));
@@ -90,5 +108,13 @@ public class UserApplicationServiceImplTest {
                 "User created successfully, check your e-mail address to activate account.",
                 command.getUsername()
         );
+    }
+
+    private ConstraintViolationException commandThrowsConstraintViolationException(RegisterUserCommand command) {
+        return assertThrows(ConstraintViolationException.class, () -> userApplicationService.createCommonUser(command));
+    }
+
+    private void assertExceptionMessageIsEmptyViolation(ConstraintViolationException exception) {
+        assertTrue(exception.getMessage().contains("Field cannot be empty"));
     }
 }
