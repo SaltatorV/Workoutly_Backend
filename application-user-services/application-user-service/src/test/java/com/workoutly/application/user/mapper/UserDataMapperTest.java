@@ -5,18 +5,14 @@ import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = {UserDataMapper.class})
 public class UserDataMapperTest {
 
-    @Autowired
-    private UserDataMapper userDataMapper;
+    private UserDataMapper userDataMapper = new UserDataMapper();
 
     @Test
     public void testRegisterUserCommandToCommonUser() {

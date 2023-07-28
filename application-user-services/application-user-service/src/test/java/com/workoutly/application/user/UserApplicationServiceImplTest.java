@@ -8,35 +8,31 @@ import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.aop.framework.ProxyFactory;
 
 import java.util.UUID;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ValidationAutoConfiguration.class})
-@SpringBootTest(classes = {UserApplicationServiceImpl.class})
+@ExtendWith(MockitoExtension.class)
 public class UserApplicationServiceImplTest {
 
-    @MockBean
-    private UserCommandHandler userCommandHandler;
-    @MockBean
-    private UserDataMapper userDataMapper;
+    @Mock
+    private UserCommandHandler handler;
+    @Mock
+    private UserDataMapper mapper;
+    @InjectMocks
+    private UserApplicationServiceImpl service;
 
-    @Autowired
-    private UserApplicationServiceImpl userApplicationService;
 
     @Test
     public void testCreateCommonUser() {
@@ -51,17 +47,19 @@ public class UserApplicationServiceImplTest {
         var userCreatedEvent = userCreatedEventBasedOnRequest(command);
 
         doReturn(userCreatedEvent)
-                .when(userCommandHandler).createCommonUser(command);
+                .when(handler).createCommonUser(command);
 
         doReturn(createRegisterUserResponse(command))
-                .when(userDataMapper).userCreatedEventToRegisterUserResponse(userCreatedEvent);
+                .when(mapper).userCreatedEventToRegisterUserResponse(userCreatedEvent);
 
 
         //when
-        var response = userApplicationService.createCommonUser(command);
+        var response = service.createCommonUser(command);
 
         //then
         assertResponseIsValid(command, response);
+        verify(handler, times(1)).createCommonUser(command);
+        verify(mapper, times(1)).userCreatedEventToRegisterUserResponse(userCreatedEvent);
     }
 
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
@@ -96,7 +94,7 @@ public class UserApplicationServiceImplTest {
     }
 
     private ConstraintViolationException commandThrowsConstraintViolationException(RegisterUserCommand command) {
-        return assertThrows(ConstraintViolationException.class, () -> userApplicationService.createCommonUser(command));
+        return assertThrows(ConstraintViolationException.class, () -> service.createCommonUser(command));
     }
 
     private void assertExceptionMessageIsEmptyViolation(ConstraintViolationException exception) {

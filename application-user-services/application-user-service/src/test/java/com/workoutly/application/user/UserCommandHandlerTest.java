@@ -8,28 +8,25 @@ import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {UserCommandHandler.class})
+@ExtendWith(MockitoExtension.class)
 public class UserCommandHandlerTest {
 
-    @MockBean
+    @Mock
     private UserDataMapper userDataMapper;
 
-    @MockBean
+    @Mock
     private UserDomainService userDomainService;
 
-    @Autowired
+    @InjectMocks
     private UserCommandHandler userCommandHandler;
 
     @Test
