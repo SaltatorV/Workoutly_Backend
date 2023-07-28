@@ -30,6 +30,7 @@ public class RegisterControllerTest {
     private final static String REGISTER_URL = "/auth/register";
 
     private MockMvc mockMvc;
+
     @Mock
     private UserApplicationServiceImpl userApplicationService;
 
