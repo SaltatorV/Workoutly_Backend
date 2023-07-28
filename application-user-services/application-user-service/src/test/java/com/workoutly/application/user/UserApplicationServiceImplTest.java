@@ -7,7 +7,6 @@ import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,8 +55,10 @@ public class UserApplicationServiceImplTest {
 
         //then
         assertResponseIsValid(command, response);
-        verify(handler, times(1)).createCommonUser(command);
-        verify(mapper, times(1)).userCreatedEventToRegisterUserResponse(userCreatedEvent);
+        verify(handler, times(1))
+                .createCommonUser(command);
+        verify(mapper, times(1))
+                .userCreatedEventToRegisterUserResponse(userCreatedEvent);
     }
 
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
