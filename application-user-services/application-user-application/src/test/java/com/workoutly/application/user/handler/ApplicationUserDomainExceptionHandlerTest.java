@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 public class ApplicationUserDomainExceptionHandlerTest {
 
-    ApplicationUserDomainExceptionHandler handler = new ApplicationUserDomainExceptionHandler();
-    ErrorResponse response;
+    private ApplicationUserDomainExceptionHandler handler = new ApplicationUserDomainExceptionHandler();
+    private ErrorResponse response;
 
     @Test
     public void testHandleError() {
