@@ -8,9 +8,10 @@ import com.workoutly.common.exception.ErrorResponse;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
+@ExtendWith(MockitoExtension.class)
 public class RegisterControllerTest {
     private final static String REGISTER_URL = "/auth/register";
 
@@ -39,7 +41,6 @@ public class RegisterControllerTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(controller)
                 .setControllerAdvice(new MockExceptionHandler())
@@ -113,7 +114,6 @@ public class RegisterControllerTest {
         );
     }
 
-
     private void assertResponseStatusIs(int status) {
         assertEquals(status, responseStatusIs());
     }
@@ -122,4 +122,3 @@ public class RegisterControllerTest {
         assertEquals(mapToString(response), responseContentIs());
     }
 }
-

@@ -8,13 +8,11 @@ import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import jakarta.validation.ConstraintViolationException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.aop.framework.ProxyFactory;
 
 import java.util.UUID;
 
@@ -91,13 +89,5 @@ public class UserApplicationServiceImplTest {
                 "User created successfully, check your e-mail address to activate account.",
                 command.getUsername()
         );
-    }
-
-    private ConstraintViolationException commandThrowsConstraintViolationException(RegisterUserCommand command) {
-        return assertThrows(ConstraintViolationException.class, () -> service.createCommonUser(command));
-    }
-
-    private void assertExceptionMessageIsEmptyViolation(ConstraintViolationException exception) {
-        assertTrue(exception.getMessage().contains("Field cannot be empty"));
     }
 }
