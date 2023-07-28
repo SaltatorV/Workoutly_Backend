@@ -4,12 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
-@AllArgsConstructor
+
+
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class RegisterUserCommand {
     @Size(min = 3, max = 20)
     private String username;

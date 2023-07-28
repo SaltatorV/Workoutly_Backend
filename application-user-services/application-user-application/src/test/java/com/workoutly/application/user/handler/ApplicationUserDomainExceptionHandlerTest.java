@@ -20,6 +20,7 @@ public class ApplicationUserDomainExceptionHandlerTest {
 
         //then
         responseMessageIs("Example error message");
+        responseCodeIs("Bad Request");
     }
 
     private ApplicationUserDomainException createDomainException(String message) {
@@ -32,5 +33,8 @@ public class ApplicationUserDomainExceptionHandlerTest {
 
     private void responseMessageIs(String message) {
         Assertions.assertEquals( message, response.getMessage());
+    }
+    private void responseCodeIs(String code) {
+        Assertions.assertEquals( code, response.getCode());
     }
 }

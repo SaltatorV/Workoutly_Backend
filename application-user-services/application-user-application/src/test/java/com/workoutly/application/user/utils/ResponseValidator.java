@@ -4,8 +4,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.UnsupportedEncodingException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class ResponseValidator {
 
     private static MvcResult mvcResult;
@@ -22,17 +20,16 @@ public class ResponseValidator {
         return 400;
     }
 
-    public static int isForbidden() { return 403; }
-
-    public static void responseStatusIs(int status) {
-        assertTrue(mvcResult.getResponse().getStatus() == status);
+    public static int responseStatusIs() {
+        return mvcResult.getResponse().getStatus();
     }
 
-    public static void responseContentIs(String value) throws UnsupportedEncodingException {
-        String responseContent = mvcResult.getResponse().getContentAsString();
-        System.out.println(value);
-        System.out.println(responseContent);
-        assertTrue(responseContent.contains(value));
+    public static String responseContentIs(){
+        try {
+            return mvcResult.getResponse().getContentAsString();
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
     }
 
 }

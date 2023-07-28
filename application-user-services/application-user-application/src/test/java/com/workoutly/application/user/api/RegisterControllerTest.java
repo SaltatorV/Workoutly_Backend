@@ -1,88 +1,92 @@
 package com.workoutly.application.user.api;
 
-import com.workoutly.application.user.configuration.BeanConfiguration;
+import com.workoutly.application.user.UserApplicationServiceImpl;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
-import com.workoutly.application.user.mock.MockConstraintViolationExceptionHandler;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
+import com.workoutly.application.user.mock.MockExceptionHandler;
+import com.workoutly.common.exception.ErrorResponse;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Set;
-import java.util.stream.Collectors;
 
+import static com.workoutly.application.user.mock.MockExceptionHandler.createErrorResponse;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.ResponseValidator.*;
-import static com.workoutly.common.exception.ErrorResponse.anErrorResponse;
-
-@WebMvcTest(RegisterController.class)
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {RegisterController.class,
-        BeanConfiguration.class, MockConstraintViolationExceptionHandler.class})
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 public class RegisterControllerTest {
     private final static String REGISTER_URL = "/auth/register";
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-    @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private Validator validator;
+    private MockMvc mockMvc;
+    @Mock
+    private UserApplicationServiceImpl userApplicationService;
 
-    @BeforeEach()
+    @InjectMocks
+    private RegisterController controller;
+
+    @BeforeEach
     public void setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setControllerAdvice(new MockExceptionHandler())
+                .build();
     }
 
     @Test
     public void testSuccessfulRegisterCommonUser() throws Exception {
         // given
-        var request = aRegisterUserCommand()
+        var command = aRegisterUserCommand()
                 .withUsername("example")
                 .withEmailAddress("example@mail.to")
                 .withPassword("Sup3rS3cureP@@s")
                 .withConfirmPassword("Sup3rS3cureP@@s")
                 .create();
 
+        doReturn(successfullyRegistered(command)).when(userApplicationService).createCommonUser(command);
+
         // when
-        performRegisterRequest(request);
+        performRegisterRequest(command);
 
         // then
-        responseStatusIs(isOk());
-        responseContentIs(successfullyCreated(request));
+        assertResponseStatusIs(isOk());
+        assertResponseContentIs(successfullyRegistered(command));
     }
 
     @Test
     public void testRegisterFailure() throws Exception {
         //given
-        var request = aRegisterUserCommand()
+        var command = aRegisterUserCommand()
                 .withUsername("ex")
                 .withEmailAddress("example@mail.to")
                 .withPassword("Sup3rS3cureP@@s")
                 .withConfirmPassword("Sup3rS3cureP@@s")
                 .create();
 
+        doThrow(new ValidationException()).when(userApplicationService).createCommonUser(command);
+
         //when
-        performRegisterRequest(request);
+        performRegisterRequest(command);
 
         //then
-        responseStatusIs(isBadRequest());
-        responseContentIs(validationErrorOccurred(request));
+        assertResponseStatusIs(isBadRequest());
+        assertResponseContentIs(registerFailure());
+    }
+
+    private ErrorResponse registerFailure() {
+        return createErrorResponse();
     }
 
     private void performRegisterRequest(RegisterUserCommand request) throws Exception {
@@ -90,33 +94,31 @@ public class RegisterControllerTest {
     }
 
     private void performRequest(Object request, String url) throws Exception{
-        MvcResult result = mvc.perform(MockMvcRequestBuilders
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                 .post(url)
                 .content(mapToString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
+
                 .andReturn();
 
         setResult(result);
     }
 
-    private String successfullyCreated(RegisterUserCommand command) {
-        return
-                mapToString(new RegisterUserResponse(String.format("User: %s created successfully, check your e-mail address to activate account",
-                        command.getUsername()), command.getUsername()));
+    private RegisterUserResponse successfullyRegistered(RegisterUserCommand command) {
+        return new RegisterUserResponse(
+                "User created successfully.",
+                command.getUsername()
+        );
     }
 
-    private String validationErrorOccurred(RegisterUserCommand command) {
-        Set<ConstraintViolation<RegisterUserCommand>> result = validator.validate(command);
-        String message = result
-                .stream()
-                .map(violation -> violation.getMessage())
-                .collect(Collectors.joining("-"));
 
-        return mapToString(anErrorResponse()
-                .withCode(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .withMessage(message)
-                .build());
+    private void assertResponseStatusIs(int status) {
+        assertEquals(status, responseStatusIs());
     }
 
+    private void assertResponseContentIs(Object response) {
+        assertEquals(mapToString(response), responseContentIs());
+    }
 }
+
