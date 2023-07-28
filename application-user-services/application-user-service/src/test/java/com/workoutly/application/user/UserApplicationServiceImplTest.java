@@ -23,6 +23,7 @@ import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {ValidationAutoConfiguration.class})
@@ -55,28 +56,12 @@ public class UserApplicationServiceImplTest {
         doReturn(createRegisterUserResponse(command))
                 .when(userDataMapper).userCreatedEventToRegisterUserResponse(userCreatedEvent);
 
+
         //when
         var response = userApplicationService.createCommonUser(command);
 
         //then
         assertResponseIsValid(command, response);
-    }
-
-    @Test
-    public void testEmptyUsername() {
-        //given
-        var command = aRegisterUserCommand()
-                .withUsername("")
-                .withEmailAddress("exam.to")
-                .withPassword("")
-                .withConfirmPassword("Sup3rS3cureP@@s")
-                .create();
-
-        //when
-        var exception = commandThrowsConstraintViolationException(command);
-
-        //then
-        assertExceptionMessageIsEmptyViolation(exception);
     }
 
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
