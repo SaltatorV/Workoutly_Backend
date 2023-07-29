@@ -1,5 +1,7 @@
 package com.workoutly.application.user.VO;
 
+import java.util.Objects;
+
 public class UserSnapshot {
 
   private final UserId userId;
@@ -42,6 +44,18 @@ public class UserSnapshot {
     return isEnabled;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UserSnapshot snapshot = (UserSnapshot) o;
+    return isEnabled == snapshot.isEnabled && Objects.equals(userId, snapshot.userId) && Objects.equals(username, snapshot.username) && Objects.equals(email, snapshot.email) && Objects.equals(password, snapshot.password) && role == snapshot.role;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(userId, username, email, password, role, isEnabled);
+  }
 
   public static final class Builder {
     private UserId userId;

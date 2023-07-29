@@ -25,6 +25,7 @@
         <application-user-services-version>0.0.1-SNAPSHOT</application-user-services-version>
         <application-user-dataaccess-version>0.0.1-SNAPSHOT</application-user-dataaccess-version>
         <core-version>0.0.1-SNAPSHOT</core-version>
+        <hibernate-core-version>6.2.7.Final</hibernate-core-version>
     </properties>
 
     <modules>
@@ -61,6 +62,11 @@
                 <groupId>jakarta.validation</groupId>
                 <artifactId>jakarta.validation-api</artifactId>
                 <version>${jakarta-validation-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate-core-version}</version>
             </dependency>
 
 
