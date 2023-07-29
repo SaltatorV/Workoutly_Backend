@@ -23,6 +23,7 @@
         <passay-version>1.6.3</passay-version>
         <jakarta-validation-version>3.0.2</jakarta-validation-version>
         <application-user-services-version>0.0.1-SNAPSHOT</application-user-services-version>
+        <application-user-dataaccess-version>0.0.1-SNAPSHOT</application-user-dataaccess-version>
         <core-version>0.0.1-SNAPSHOT</core-version>
     </properties>
 
@@ -84,6 +85,11 @@
                 <groupId>com.workoutly</groupId>
                 <artifactId>application-user-application</artifactId>
                 <version>${application-user-services-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>application-user-dataaccess</artifactId>
+                <version>${application-user-dataaccess-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
