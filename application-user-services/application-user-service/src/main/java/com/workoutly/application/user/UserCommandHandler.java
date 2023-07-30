@@ -14,7 +14,7 @@ class UserCommandHandler {
     private final UserDomainService userDomainService;
 
     @Transactional
-    UserCreatedEvent createCommonUser(RegisterUserCommand registerUserCommand) {
+    public UserCreatedEvent createCommonUser(RegisterUserCommand registerUserCommand) {
         User user = userDataMapper.registerUserCommandToCommonUser(registerUserCommand);
         UserCreatedEvent event = userDomainService.initializeUser(user);
 
