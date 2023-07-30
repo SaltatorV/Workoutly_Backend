@@ -4,9 +4,11 @@ import com.workoutly.application.user.VO.UserId;
 import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.entity.UserEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 public class UserDatabaseMapper {
 
     public UserSnapshot mapUserEntityToUserSnapshot(UserEntity userEntity) {

@@ -4,6 +4,7 @@ import com.workoutly.application.user.VO.UserId;
 import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.entity.UserEntity;
+import com.workoutly.application.user.mapper.UserDatabaseMapper;
 import com.workoutly.application.user.repository.UserJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,8 @@ public class UserRepositoryImplTest {
 
     @Mock
     private UserJpaRepository userJpaRepository;
+    @Mock
+    private UserDatabaseMapper mapper;
 
     @InjectMocks
     private UserRepositoryImpl userRepository;
@@ -40,6 +43,7 @@ public class UserRepositoryImplTest {
                 .build();
 
         doReturn(Optional.of(entity)).when(userJpaRepository).findByUsername("test");
+        doReturn(createSnapshot(entity)).when(mapper).mapUserEntityToUserSnapshot(entity);
 
         //when
         Optional<UserSnapshot> foundSnapshot = userRepository.findByUsername("test");
