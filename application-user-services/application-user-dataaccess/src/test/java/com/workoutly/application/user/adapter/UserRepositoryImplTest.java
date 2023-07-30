@@ -4,6 +4,8 @@ import com.workoutly.application.user.VO.UserId;
 import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.entity.UserEntity;
+import com.workoutly.application.user.exception.ApplicationUserDomainException;
+import com.workoutly.application.user.exception.UserNotFoundException;
 import com.workoutly.application.user.mapper.UserDatabaseMapper;
 import com.workoutly.application.user.repository.UserJpaRepository;
 import org.junit.jupiter.api.Test;
@@ -15,8 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,16 +54,16 @@ public class UserRepositoryImplTest {
     }
 
     @Test
-    public void testFindByUsernameIsEmpty() {
+    public void testThrowExceptionWhenFindByUsername() {
 
         //given
         doReturn(Optional.empty()).when(userJpaRepository).findByUsername("test");
 
         //when
-        Optional<UserSnapshot> foundSnapshot = userRepository.findByUsername("test");
+        ApplicationUserDomainException exception = assertThrows(UserNotFoundException.class, () -> userRepository.findByUsername("test"));
 
         //then
-        assertIsUserSnapshotEmpty(foundSnapshot);
+        assertIsExceptionAUserNotFound(exception);
     }
 
     private void assertIsUserSnapshotValid(UserEntity userEntity, Optional<UserSnapshot> snapshot) {
@@ -80,7 +81,7 @@ public class UserRepositoryImplTest {
         );
     }
 
-    private void assertIsUserSnapshotEmpty(Optional<UserSnapshot> snapshot) {
-        assertTrue(snapshot.isEmpty());
+    private void assertIsExceptionAUserNotFound(ApplicationUserDomainException exception) {
+        assertEquals(new UserNotFoundException().getMessage(), exception.getMessage());
     }
 }
