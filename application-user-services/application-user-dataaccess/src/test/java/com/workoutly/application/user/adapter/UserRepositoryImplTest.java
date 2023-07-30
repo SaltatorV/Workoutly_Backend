@@ -60,7 +60,7 @@ public class UserRepositoryImplTest {
         doReturn(Optional.empty()).when(userJpaRepository).findByUsername("test");
 
         //when
-        ApplicationUserDomainException exception = assertThrows(UserNotFoundException.class, () -> userRepository.findByUsername("test"));
+        ApplicationUserDomainException exception = throwExceptionWhenFindByUsername("test");
 
         //then
         assertIsExceptionAUserNotFound(exception);
@@ -79,6 +79,10 @@ public class UserRepositoryImplTest {
                 UserRole.COMMON,
                 user.isEnabled()
         );
+    }
+
+    private ApplicationUserDomainException throwExceptionWhenFindByUsername(String username){
+        return assertThrows(UserNotFoundException.class, () -> userRepository.findByUsername(username));
     }
 
     private void assertIsExceptionAUserNotFound(ApplicationUserDomainException exception) {
