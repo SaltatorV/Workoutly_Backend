@@ -5,7 +5,10 @@ import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
 import com.workoutly.application.user.event.UserCreatedEvent;
+import com.workoutly.application.user.exception.ApplicationUserDomainException;
+import com.workoutly.application.user.exception.UserNotRegisteredException;
 import com.workoutly.application.user.mapper.UserDataMapper;
+import com.workoutly.application.user.port.output.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,15 +25,16 @@ public class UserCommandHandlerTest {
 
     @Mock
     private UserDataMapper userDataMapper;
-
     @Mock
     private UserDomainService userDomainService;
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private UserCommandHandler userCommandHandler;
 
     @Test
-    public void createUserTest() {
+    public void testCreateCommonUser() {
         //given
         var command = aRegisterUserCommand()
                 .withUsername("Test")
@@ -40,21 +44,56 @@ public class UserCommandHandlerTest {
                 .create();
 
         var commonUser = createCommonUserBasedOnCommand(command);
-
+        var event = createUserCreatedEventBasedOnCommand(command);
         doReturn(commonUser)
                 .when(userDataMapper)
                 .registerUserCommandToCommonUser(command);
 
-        doReturn(createUserCreatedEventBasedOnCommand(command))
+        doReturn(event)
                 .when(userDomainService)
                 .initializeUser(commonUser);
 
+        doReturn(event.getSnapshot())
+                .when(userRepository)
+                .save(event.getSnapshot());
+
         //when
-        UserCreatedEvent event = userCommandHandler.createCommonUser(command);
+        UserCreatedEvent createdEvent = userCommandHandler.createCommonUser(command);
 
         //then
-        assertIsEventCreated(event);
-        assertIsSnapshotValid(event, command);
+        assertIsEventCreated(createdEvent);
+        assertIsSnapshotValid(createdEvent, command);
+    }
+
+    @Test
+    public void testCreateNewUserThrowException() {
+        //given
+        var command = aRegisterUserCommand()
+                .withUsername("Test")
+                .withPassword("Password")
+                .withConfirmPassword("Password")
+                .withEmailAddress("Example@example.pl")
+                .create();
+
+        var commonUser = createCommonUserBasedOnCommand(command);
+        var event = createUserCreatedEventBasedOnCommand(command);
+        doReturn(commonUser)
+                .when(userDataMapper)
+                .registerUserCommandToCommonUser(command);
+
+        doReturn(event)
+                .when(userDomainService)
+                .initializeUser(commonUser);
+
+        doReturn(null)
+                .when(userRepository)
+                .save(event.getSnapshot());
+
+        //when
+        var exception = throwExceptionWhenCreateUser(command);
+
+        //then
+        assertExceptionIsUserNotRegistred(exception);
     }
 
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {
@@ -89,4 +128,14 @@ public class UserCommandHandlerTest {
         user.setId(snapshot.getUserId());
         return user.createSnapshot();
     }
+
+    private ApplicationUserDomainException throwExceptionWhenCreateUser(RegisterUserCommand command) {
+        return assertThrows(UserNotRegisteredException.class, () -> userCommandHandler.createCommonUser(command));
+    }
+
+
+    private void assertExceptionIsUserNotRegistred(ApplicationUserDomainException exception) {
+        assertEquals(new UserNotRegisteredException().getMessage(), exception.getMessage());
+    }
+
 }
