@@ -32,4 +32,9 @@ public class UserRepositoryImpl implements UserRepository {
 
         return Optional.of(snapshot);
     }
+
+    @Override
+    public UserSnapshot save(UserSnapshot snapshot) {
+        return null;
+    }
 }
