@@ -66,6 +66,18 @@ public class UserRepositoryImplTest {
         assertIsExceptionAUserNotFound(exception);
     }
 
+    @Test
+    public void testSaveUser() {
+
+        //given
+
+
+        //when
+
+
+        //then
+    }
+
     private void assertIsUserSnapshotValid(UserEntity userEntity, Optional<UserSnapshot> snapshot) {
         assertEquals(createSnapshot(userEntity), snapshot.get());
     }
