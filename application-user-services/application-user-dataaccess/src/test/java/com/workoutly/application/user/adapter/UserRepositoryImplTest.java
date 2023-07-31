@@ -82,6 +82,10 @@ public class UserRepositoryImplTest {
         var snapshot = createSnapshotFromEntity(entity);
 
         doReturn(entity)
+                .when(mapper)
+                .mapUserSnapshotToUserEntity(snapshot);
+
+        doReturn(entity)
                 .when(userJpaRepository)
                 .save(any());
 

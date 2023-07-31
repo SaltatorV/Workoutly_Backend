@@ -33,14 +33,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserSnapshot save(UserSnapshot snapshot) {
-        UserEntity entityToSave = UserEntity.builder()
-                .userId(snapshot.getUserId().getId())
-                .username(snapshot.getUsername())
-                .password(snapshot.getPassword())
-                .isEnabled(snapshot.isEnabled())
-                .build();
-
-        UserEntity savedEntity = userJpaRepository.save(entityToSave);
+        UserEntity savedEntity = userJpaRepository.save(mapper.mapUserSnapshotToUserEntity(snapshot));
 
         return mapper.mapUserEntityToUserSnapshot(savedEntity);
     }
