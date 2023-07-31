@@ -2,6 +2,7 @@ package com.workoutly.application.user.handler;
 
 import com.workoutly.common.exception.DomainExceptionHandler;
 import com.workoutly.common.exception.ErrorResponse;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -32,7 +33,11 @@ public class UserConstraintViolationExceptionHandler implements DomainExceptionH
     private String convertViolations(ConstraintViolationException exception) {
         return exception.getConstraintViolations()
                 .stream()
-                .map(violation -> violation.getMessage())
+                .map(violation -> createViolationMessage(violation))
                 .collect(Collectors.joining("-"));
+    }
+
+    private String createViolationMessage(ConstraintViolation<?> violation) {
+        return violation.getPropertyPath() + ":" + violation.getMessage();
     }
 }
