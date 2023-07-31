@@ -1,5 +1,6 @@
 package com.workoutly.application.user.dto.command;
 
+import com.workoutly.application.user.validator.ConfirmPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 
 @Data
+@ConfirmPassword
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterUserCommand {
