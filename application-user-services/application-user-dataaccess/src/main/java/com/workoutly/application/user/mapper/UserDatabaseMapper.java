@@ -21,4 +21,14 @@ public class UserDatabaseMapper {
                 userEntity.isEnabled()
         );
     }
+
+    public UserEntity mapUserSnapshotToUserEntity(UserSnapshot snapshot) {
+        return UserEntity.builder()
+                .userId(snapshot.getUserId().getId())
+                .username(snapshot.getUsername())
+                .password(snapshot.getPassword())
+                .email(snapshot.getEmail())
+                .isEnabled(snapshot.isEnabled())
+                .build();
+    }
 }

@@ -18,7 +18,7 @@ public class UserDatabaseMapperTest {
     @Test
     public void mapUserEntityToUserSnapshot() {
         //given
-        UserEntity entity = UserEntity.builder()
+        var entity = UserEntity.builder()
                 .userId(UUID.randomUUID().toString())
                 .username("test")
                 .password("password")
@@ -27,16 +27,43 @@ public class UserDatabaseMapperTest {
                 .build();
 
         //when
-        UserSnapshot snapshot = mapper.mapUserEntityToUserSnapshot(entity);
+        var snapshot = mapper.mapUserEntityToUserSnapshot(entity);
 
         //then
         assertSnapshotIsConsistentWithEntity(snapshot, entity);
     }
 
+    @Test
+    public void mapUserSnapshotToUserEntity() {
+        //given
+        var entity = UserEntity.builder()
+                .userId(UUID.randomUUID().toString())
+                .username("test")
+                .password("password")
+                .email("example@example.to")
+                .isEnabled(true)
+                .build();
+
+        var snapshot = createSnapshotFromEntity(entity);
+
+        //when
+        var mappedEntity = mapper.mapUserSnapshotToUserEntity(snapshot);
+
+        //then
+        assertEntitiesAreConsistent(mappedEntity, entity);
+    }
+
     private void assertSnapshotIsConsistentWithEntity(UserSnapshot mappedSnapshot, UserEntity userEntity) {
         UserSnapshot snapshot = createSnapshotFromEntity(userEntity);
-        assertEquals(mapToString(snapshot), mapToString(mappedSnapshot));
+        compareObjectsStrings(snapshot, mappedSnapshot);
+    }
 
+    private void assertEntitiesAreConsistent(UserEntity mappedEntity, UserEntity entity) {
+        compareObjectsStrings(entity, mappedEntity);
+    }
+
+    private void compareObjectsStrings(Object expected, Object actual) {
+        assertEquals(mapToString(expected), mapToString(actual));
     }
 
     private UserSnapshot createSnapshotFromEntity(UserEntity userEntity) {
