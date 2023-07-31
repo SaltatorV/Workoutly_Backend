@@ -34,7 +34,7 @@
         <module>core</module>
         <module>monolith</module>
         <module>application-user-services</module>
-        <module>application-user-services/application-user-container</module>
+        <module>infrastructure</module>
     </modules>
 
     <dependencyManagement>
