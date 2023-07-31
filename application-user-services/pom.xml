@@ -16,5 +16,6 @@
         <module>application-user-service</module>
         <module>application-user-application</module>
         <module>application-user-dataaccess</module>
+        <module>application-user-container</module>
     </modules>
 </project>

@@ -23,9 +23,8 @@
         <passay-version>1.6.3</passay-version>
         <jakarta-validation-version>3.0.2</jakarta-validation-version>
         <application-user-services-version>0.0.1-SNAPSHOT</application-user-services-version>
-        <application-user-dataaccess-version>0.0.1-SNAPSHOT</application-user-dataaccess-version>
-        <application-user-container-version>0.0.1-SNAPSHOT</application-user-container-version>
         <core-version>0.0.1-SNAPSHOT</core-version>
+        <infrastructure-version>0.0.1-SNAPSHOT</infrastructure-version>
         <hibernate-core-version>6.2.7.Final</hibernate-core-version>
         <mysql-connector-version>8.1.0</mysql-connector-version>
     </properties>
@@ -85,6 +84,12 @@
                 <version>${core-version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>infrastructure</artifactId>
+                <version>${infrastructure-version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.workoutly</groupId>
@@ -104,12 +109,12 @@
             <dependency>
                 <groupId>com.workoutly</groupId>
                 <artifactId>application-user-dataaccess</artifactId>
-                <version>${application-user-dataaccess-version}</version>
+                <version>${application-user-services-version}</version>
             </dependency>
             <dependency>
                 <groupId>com.workoutly</groupId>
                 <artifactId>application-user-container</artifactId>
-                <version>${application-user-container-version}</version>
+                <version>${application-user-services-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
