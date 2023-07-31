@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +36,7 @@ public class UserRepositoryImplTest {
     public void testFindByUsername() {
 
         //given
-        UserEntity entity = UserEntity.builder()
+        var entity = UserEntity.builder()
                 .userId(UUID.randomUUID().toString())
                 .username("test")
                 .password("password")
@@ -44,7 +45,7 @@ public class UserRepositoryImplTest {
                 .build();
 
         doReturn(Optional.of(entity)).when(userJpaRepository).findByUsername("test");
-        doReturn(createSnapshot(entity)).when(mapper).mapUserEntityToUserSnapshot(entity);
+        doReturn(createSnapshotFromEntity(entity)).when(mapper).mapUserEntityToUserSnapshot(entity);
 
         //when
         UserSnapshot foundSnapshot = userRepository.findByUsername("test");
@@ -70,19 +71,40 @@ public class UserRepositoryImplTest {
     public void testSaveUser() {
 
         //given
+        var entity = UserEntity.builder()
+                .userId(UUID.randomUUID().toString())
+                .username("test")
+                .password("password")
+                .email("example@example.to")
+                .isEnabled(false)
+                .build();
 
+        var snapshot = createSnapshotFromEntity(entity);
+
+        doReturn(entity)
+                .when(userJpaRepository)
+                .save(any());
+
+        doReturn(createSnapshotFromEntity(entity))
+                .when(mapper)
+                .mapUserEntityToUserSnapshot(any());
 
         //when
-
+        var savedSnapshot = userRepository.save(snapshot);
 
         //then
+        assertIsUserSnapshotValid(snapshot, savedSnapshot);
     }
 
     private void assertIsUserSnapshotValid(UserEntity userEntity, UserSnapshot snapshot) {
-        assertEquals(createSnapshot(userEntity), snapshot);
+        assertEquals(createSnapshotFromEntity(userEntity), snapshot);
     }
 
-    private UserSnapshot createSnapshot(UserEntity user) {
+    private void assertIsUserSnapshotValid(UserSnapshot snapshot, UserSnapshot savedSnapshot) {
+        assertEquals(snapshot, savedSnapshot);
+    }
+
+    private UserSnapshot createSnapshotFromEntity(UserEntity user) {
         return new UserSnapshot(
                 new UserId(UUID.fromString(user.getUserId())),
                 user.getUsername(),
@@ -92,6 +114,8 @@ public class UserRepositoryImplTest {
                 user.isEnabled()
         );
     }
+
+
 
     private ApplicationUserDomainException throwExceptionWhenFindByUsername(String username){
         return assertThrows(UserNotFoundException.class, () -> userRepository.findByUsername(username));

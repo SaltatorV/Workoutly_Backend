@@ -15,12 +15,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
-    private final UserJpaRepository repository;
+    private final UserJpaRepository userJpaRepository;
     private final UserDatabaseMapper mapper;
 
     @Override
     public UserSnapshot findByUsername(String username) {
-        Optional<UserEntity> entity = repository.findByUsername(username);
+        Optional<UserEntity> entity = userJpaRepository.findByUsername(username);
 
         if(entity.isEmpty()) {
             throw new UserNotFoundException();
@@ -33,6 +33,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserSnapshot save(UserSnapshot snapshot) {
-        return null;
+        UserEntity entityToSave = UserEntity.builder()
+                .userId(snapshot.getUserId().getId())
+                .username(snapshot.getUsername())
+                .password(snapshot.getPassword())
+                .isEnabled(snapshot.isEnabled())
+                .build();
+
+        UserEntity savedEntity = userJpaRepository.save(entityToSave);
+
+        return mapper.mapUserEntityToUserSnapshot(savedEntity);
     }
 }
