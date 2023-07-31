@@ -47,7 +47,7 @@ public class UserRepositoryImplTest {
         doReturn(createSnapshot(entity)).when(mapper).mapUserEntityToUserSnapshot(entity);
 
         //when
-        Optional<UserSnapshot> foundSnapshot = userRepository.findByUsername("test");
+        UserSnapshot foundSnapshot = userRepository.findByUsername("test");
 
         //then
         assertIsUserSnapshotValid(entity, foundSnapshot);
@@ -78,8 +78,8 @@ public class UserRepositoryImplTest {
         //then
     }
 
-    private void assertIsUserSnapshotValid(UserEntity userEntity, Optional<UserSnapshot> snapshot) {
-        assertEquals(createSnapshot(userEntity), snapshot.get());
+    private void assertIsUserSnapshotValid(UserEntity userEntity, UserSnapshot snapshot) {
+        assertEquals(createSnapshot(userEntity), snapshot);
     }
 
     private UserSnapshot createSnapshot(UserEntity user) {
