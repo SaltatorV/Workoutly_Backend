@@ -111,7 +111,7 @@ public class UserRepositoryImplTest {
 
         doReturn(true)
                 .when(userJpaRepository)
-                .existsByEmail(snapshot.getUsername());
+                .existsByEmail(snapshot.getEmail());
 
         //when
         var isUnique = userRepository.checkUserUniqueness(snapshot);
@@ -129,9 +129,6 @@ public class UserRepositoryImplTest {
                 .when(userJpaRepository)
                 .existsByUsername(snapshot.getUsername());
 
-        doReturn(true)
-                .when(userJpaRepository)
-                .existsByEmail(snapshot.getUsername());
 
         //when
         var isNotUnique = userRepository.checkUserUniqueness(snapshot);
@@ -151,7 +148,7 @@ public class UserRepositoryImplTest {
 
         doReturn(false)
                 .when(userJpaRepository)
-                .existsByEmail(snapshot.getUsername());
+                .existsByEmail(snapshot.getEmail());
 
         //when
         var isNotUnique = userRepository.checkUserUniqueness(snapshot);
@@ -169,9 +166,6 @@ public class UserRepositoryImplTest {
                 .when(userJpaRepository)
                 .existsByUsername(snapshot.getUsername());
 
-        doReturn(false)
-                .when(userJpaRepository)
-                .existsByEmail(snapshot.getUsername());
 
         //when
         var isNotUnique = userRepository.checkUserUniqueness(snapshot);

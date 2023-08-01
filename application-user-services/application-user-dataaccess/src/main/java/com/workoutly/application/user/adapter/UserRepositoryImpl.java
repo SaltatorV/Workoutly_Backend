@@ -37,4 +37,17 @@ public class UserRepositoryImpl implements UserRepository {
 
         return mapper.mapUserEntityToUserSnapshot(savedEntity);
     }
+
+    @Override
+    public boolean checkUserUniqueness(UserSnapshot snapshot) {
+        return isUsernameUnique(snapshot.getUsername()) && isEmailUnique(snapshot.getEmail());
+    }
+
+    private boolean isUsernameUnique(String username) {
+        return userJpaRepository.existsByUsername(username);
+    }
+
+    private boolean isEmailUnique(String email) {
+        return userJpaRepository.existsByEmail(email);
+    }
 }
