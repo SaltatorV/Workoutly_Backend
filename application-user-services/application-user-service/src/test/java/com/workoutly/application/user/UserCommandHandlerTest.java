@@ -104,7 +104,7 @@ public class UserCommandHandlerTest {
         var exception = throwExceptionWhenCreateUser(command);
 
         //then
-        assertExceptionIsUserNotRegistred(exception);
+        assertExceptionIsUserNotRegistered(exception);
     }
 
     @Test
@@ -173,7 +173,7 @@ public class UserCommandHandlerTest {
     }
 
 
-    private void assertExceptionIsUserNotRegistred(ApplicationUserDomainException exception) {
+    private void assertExceptionIsUserNotRegistered(ApplicationUserDomainException exception) {
         assertEquals(new UserNotRegisteredException().getMessage(), exception.getMessage());
     }
 
