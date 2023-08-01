@@ -49,6 +49,10 @@ public class UserCommandHandlerTest {
                 .when(userDataMapper)
                 .registerUserCommandToCommonUser(command);
 
+        doReturn(true)
+                .when(userRepository)
+                .checkUserUniqueness(commonUser.createSnapshot());
+
         doReturn(event)
                 .when(userDomainService)
                 .initializeUser(commonUser);
@@ -56,6 +60,7 @@ public class UserCommandHandlerTest {
         doReturn(event.getSnapshot())
                 .when(userRepository)
                 .save(event.getSnapshot());
+
 
         //when
         UserCreatedEvent createdEvent = userCommandHandler.createCommonUser(command);
@@ -77,9 +82,14 @@ public class UserCommandHandlerTest {
 
         var commonUser = createCommonUserBasedOnCommand(command);
         var event = createUserCreatedEventBasedOnCommand(command);
+
         doReturn(commonUser)
                 .when(userDataMapper)
                 .registerUserCommandToCommonUser(command);
+
+        doReturn(true)
+                .when(userRepository)
+                .checkUserUniqueness(commonUser.createSnapshot());
 
         doReturn(event)
                 .when(userDomainService)
@@ -94,6 +104,34 @@ public class UserCommandHandlerTest {
 
         //then
         assertExceptionIsUserNotRegistred(exception);
+    }
+
+    @Test
+    public void testUserIsNotUnique() {
+        //given
+        var command = aRegisterUserCommand()
+                .withUsername("Test")
+                .withPassword("Password")
+                .withConfirmPassword("Password")
+                .withEmailAddress("Example@example.pl")
+                .create();
+
+        var commonUser = createCommonUserBasedOnCommand(command);
+
+        doReturn(commonUser)
+                .when(userDataMapper)
+                .registerUserCommandToCommonUser(command);
+
+        doReturn(false)
+                .when(userRepository)
+                .checkUserUniqueness(commonUser.createSnapshot());
+
+        //when
+        var exception = throwExceptionWhenUserIsNotUnique(command);
+
+        //then
+        assertExceptionIsUserNotUnique(exception);
+
     }
 
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {
@@ -138,4 +176,12 @@ public class UserCommandHandlerTest {
         assertEquals(new UserNotRegisteredException().getMessage(), exception.getMessage());
     }
 
+
+    private void throwExceptionWhenUserIsNotUnique(RegisterUserCommand command) {
+        return assertThrows(UserNotUniqueException.class, () -> userCommandHandler.createCommonUser(command));
+    }
+
+    private void assertExceptionIsUserNotUnique(UserNotUniqueException exception) {
+        assertEquals(new UserNotRegisteredException().getMessage(), exception.getMessage());
+    }
 }
