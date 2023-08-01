@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = ConfirmPasswordConstraintsValidator.class)
 public @interface ConfirmPassword {
 
-    String message() default "{com.workoutly.application.user.validator.ConfirmPassword.message}";
+    String message() default "Passwords don't match.";
 
     Class<?>[] groups() default {};
 

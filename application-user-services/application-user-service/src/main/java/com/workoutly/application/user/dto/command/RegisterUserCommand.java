@@ -25,6 +25,5 @@ public class RegisterUserCommand {
     @NotEmpty
     private String password;
 
-    @NotEmpty
     private String confirmPassword;
 }

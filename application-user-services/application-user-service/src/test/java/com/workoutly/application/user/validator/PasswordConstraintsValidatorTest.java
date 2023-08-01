@@ -33,7 +33,7 @@ public class PasswordConstraintsValidatorTest {
         var validationResponse = validator.validate(password);
 
         //then
-        assertTrue(validationResponse.isEmpty());
+        assertIsResponseEmpty(validationResponse);
     }
 
     @Test
@@ -96,6 +96,9 @@ public class PasswordConstraintsValidatorTest {
         assertWithoutSpecialCharacterConstraint(validationResponse);
     }
 
+    private void assertIsResponseEmpty(Set<ConstraintViolation<PasswordCommandMock>> validationResponse) {
+        assertTrue(validationResponse.isEmpty());
+    }
 
     private void assertIsTooShortConstraint(Set<ConstraintViolation<PasswordCommandMock>> validationResponse) {
         assertIsOneViolation(validationResponse.size());

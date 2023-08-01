@@ -1,14 +1,31 @@
 package com.workoutly.application.user.validator;
 
+import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfirmPasswordConstraintsValidatorTest {
 
-    private ConfirmPasswordConstraintsValidator validator = new ConfirmPasswordConstraintsValidator();
+    private static Validator validator;
+
+    @BeforeEach
+    public void createValidator() {
+        validator = Validation.byDefaultProvider()
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator())
+                .buildValidatorFactory()
+                .getValidator();
+    }
 
     @Test
     public void testPasswordsAreEqual() {
@@ -22,10 +39,10 @@ public class ConfirmPasswordConstraintsValidatorTest {
                 .create();
 
         //when
-        var passwordsAreEqual = validator.isValid(command, null);
+        var validationResponse = validator.validate(command);
 
         //then
-        assertTrue(passwordsAreEqual);
+        assertIsResponseEmpty(validationResponse);
     }
 
     @Test
@@ -40,10 +57,10 @@ public class ConfirmPasswordConstraintsValidatorTest {
                 .create();
 
         //when
-        var passwordsAreNotEqual = validator.isValid(command, null);
+        var validationResponse = validator.validate(command);
 
         //then
-        assertFalse(passwordsAreNotEqual);
+        assertPasswordsNotEqual(validationResponse);
     }
 
     @Test
@@ -58,10 +75,10 @@ public class ConfirmPasswordConstraintsValidatorTest {
                 .create();
 
         //when
-        var passwordsAreNotEqual = validator.isValid(command, null);
+        var validationResponse = validator.validate(command);
 
         //then
-        assertFalse(passwordsAreNotEqual);
+        assertPasswordsNotEqual(validationResponse);
     }
 
     @Test
@@ -76,10 +93,10 @@ public class ConfirmPasswordConstraintsValidatorTest {
                 .create();
 
         //when
-        var passwordsAreNotEqual = validator.isValid(command, null);
+        var validationResponse = validator.validate(command);
 
         //then
-        assertFalse(passwordsAreNotEqual);
+        assertPasswordsNotEqual(validationResponse);
     }
 
     @Test
@@ -94,9 +111,19 @@ public class ConfirmPasswordConstraintsValidatorTest {
                 .create();
 
         //when
-        var passwordsAreNotEqual = validator.isValid(command, null);
+        var validationResponse = validator.validate(command);
 
         //then
-        assertFalse(passwordsAreNotEqual);
+        assertPasswordsNotEqual(validationResponse);
+    }
+
+
+    private void assertIsResponseEmpty(Set<ConstraintViolation<RegisterUserCommand>> validationResponse) {
+        assertTrue(validationResponse.isEmpty());
+    }
+
+
+    private void assertPasswordsNotEqual(Set<ConstraintViolation<RegisterUserCommand>> validationResponse) {
+        assertEquals("Passwords don't match.",validationResponse.iterator().next().getMessage());
     }
 }
