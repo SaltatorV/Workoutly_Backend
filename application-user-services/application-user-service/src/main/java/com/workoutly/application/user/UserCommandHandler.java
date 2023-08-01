@@ -22,16 +22,25 @@ class UserCommandHandler {
     public UserCreatedEvent createCommonUser(RegisterUserCommand registerUserCommand) {
         User user = userDataMapper.registerUserCommandToCommonUser(registerUserCommand);
 
-        if(!userRepository.checkUserUniqueness(user.createSnapshot())) {
-            throw new UserNotUniqueException();
-        }
+        checkUserIsUnique(user.createSnapshot());
 
         UserCreatedEvent event = userDomainService.initializeUser(user);
         UserSnapshot savedSnapshot = userRepository.save(event.getSnapshot());
 
-        if (savedSnapshot == null) {
+        checkUserIsSaved(savedSnapshot);
+
+        return event;
+    }
+
+    private void checkUserIsUnique(UserSnapshot snapshot) {
+        if(!userRepository.checkUserUniqueness(snapshot)) {
+            throw new UserNotUniqueException();
+        }
+    }
+
+    private void checkUserIsSaved(UserSnapshot snapshot) {
+        if (snapshot == null) {
             throw new UserNotRegisteredException();
         }
-        return event;
     }
 }
