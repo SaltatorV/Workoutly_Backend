@@ -17,7 +17,7 @@ public class UserDatabaseMapper {
                 userEntity.getUsername(),
                 userEntity.getEmail(),
                 userEntity.getPassword(),
-                UserRole.COMMON,
+                UserRole.COMMON_USER,
                 userEntity.isEnabled()
         );
     }

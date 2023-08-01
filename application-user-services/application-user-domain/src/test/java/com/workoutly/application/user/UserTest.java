@@ -19,7 +19,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         //when
@@ -36,7 +36,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .buildInitialized();
 
         //when
@@ -53,7 +53,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         //when
@@ -70,7 +70,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         //when
@@ -87,14 +87,14 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         UserSnapshot mockSnapshot = anUserSnapshot()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .isEnabled(false)
                 .build();
 
@@ -112,7 +112,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .buildInitialized();
 
         UserSnapshot mockSnapshot = anUserSnapshot()
@@ -120,7 +120,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         //when
@@ -137,7 +137,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .buildInitialized();
 
         user.enable();
@@ -147,7 +147,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .isEnabled(true)
                 .build();
 
@@ -165,14 +165,14 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         User mockUser = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
 
@@ -193,14 +193,14 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         User mockUser = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         mockUser.setId(userId);
@@ -222,7 +222,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .isEnabled(true)
                 .build();
 
@@ -230,7 +230,7 @@ public class UserTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         mockUser.setId(userId);

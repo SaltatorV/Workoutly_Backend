@@ -72,7 +72,7 @@ public class UserDatabaseMapperTest {
                 userEntity.getUsername(),
                 userEntity.getEmail(),
                 userEntity.getPassword(),
-                UserRole.COMMON,
+                UserRole.COMMON_USER,
                 userEntity.isEnabled()
         );
     }

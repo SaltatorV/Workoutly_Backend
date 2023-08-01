@@ -20,7 +20,7 @@ public class UserDomainServiceImplTest {
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
-                .withRole(UserRole.COMMON)
+                .withRole(UserRole.COMMON_USER)
                 .build();
 
         //when

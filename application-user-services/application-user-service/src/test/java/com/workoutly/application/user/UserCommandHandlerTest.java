@@ -101,7 +101,7 @@ public class UserCommandHandlerTest {
                 command.getUsername(),
                 command.getPassword(),
                 command.getEmail(),
-                UserRole.COMMON
+                UserRole.COMMON_USER
         );
     }
 
@@ -124,7 +124,7 @@ public class UserCommandHandlerTest {
     }
 
     private UserSnapshot createCommonUserSnapshot(UserSnapshot snapshot, RegisterUserCommand command) {
-        User user = new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON);
+        User user = new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON_USER);
         user.setId(snapshot.getUserId());
         return user.createSnapshot();
     }

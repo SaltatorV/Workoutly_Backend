@@ -13,7 +13,7 @@ public class UserDataMapper {
         return new User(registerUserCommand.getUsername(),
                 registerUserCommand.getPassword(),
                 registerUserCommand.getEmail(),
-                UserRole.COMMON);
+                UserRole.COMMON_USER);
     }
 
     public RegisterUserResponse userCreatedEventToRegisterUserResponse(UserCreatedEvent event) {

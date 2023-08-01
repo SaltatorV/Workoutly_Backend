@@ -78,7 +78,7 @@ public class UserApplicationServiceImplTest {
                 command.getUsername(),
                 command.getEmail(),
                 command.getPassword(),
-                UserRole.COMMON,
+                UserRole.COMMON_USER,
                 false
         );
 

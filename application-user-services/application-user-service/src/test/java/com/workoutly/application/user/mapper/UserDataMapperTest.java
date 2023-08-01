@@ -60,7 +60,7 @@ public class UserDataMapperTest {
     }
 
     private UserSnapshot createCommonUserSnapshot(RegisterUserCommand command) {
-        return new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON)
+        return new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON_USER)
                 .createSnapshot();
     }
 

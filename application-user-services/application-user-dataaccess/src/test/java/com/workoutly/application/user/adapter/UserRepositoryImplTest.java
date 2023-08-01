@@ -114,7 +114,7 @@ public class UserRepositoryImplTest {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
-                UserRole.COMMON,
+                UserRole.COMMON_USER,
                 user.isEnabled()
         );
     }
