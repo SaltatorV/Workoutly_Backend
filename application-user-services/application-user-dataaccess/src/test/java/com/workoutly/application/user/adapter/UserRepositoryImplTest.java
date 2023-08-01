@@ -100,6 +100,93 @@ public class UserRepositoryImplTest {
         assertIsUserSnapshotValid(snapshot, savedSnapshot);
     }
 
+    @Test
+    public void testCheckUserIsUnique() {
+        //given
+        var snapshot = createTestCommonUserSnapshot();
+
+        doReturn(true)
+                .when(userJpaRepository)
+                .existsByUsername(snapshot.getUsername());
+
+        doReturn(true)
+                .when(userJpaRepository)
+                .existsByEmail(snapshot.getUsername());
+
+        //when
+        var isUnique = userRepository.checkUserUniqueness(snapshot);
+
+        //then
+        assertTrue(isUnique);
+    }
+
+    @Test
+    public void testCheckUsernameIsNotUnique() {
+        //given
+        var snapshot = createTestCommonUserSnapshot();
+
+        doReturn(false)
+                .when(userJpaRepository)
+                .existsByUsername(snapshot.getUsername());
+
+        doReturn(true)
+                .when(userJpaRepository)
+                .existsByEmail(snapshot.getUsername());
+
+        //when
+        var isNotUnique = userRepository.checkUserUniqueness(snapshot);
+
+        //then
+        assertFalse(isNotUnique);
+    }
+
+    @Test
+    public void testCheckEmailIsNotUnique() {
+        //given
+        var snapshot = createTestCommonUserSnapshot();
+
+        doReturn(true)
+                .when(userJpaRepository)
+                .existsByUsername(snapshot.getUsername());
+
+        doReturn(false)
+                .when(userJpaRepository)
+                .existsByEmail(snapshot.getUsername());
+
+        //when
+        var isNotUnique = userRepository.checkUserUniqueness(snapshot);
+
+        //then
+        assertFalse(isNotUnique);
+    }
+
+    @Test
+    public void testCheckEmailAndUsernameAreNotUnique() {
+        //given
+        var snapshot = createTestCommonUserSnapshot();
+
+        doReturn(false)
+                .when(userJpaRepository)
+                .existsByUsername(snapshot.getUsername());
+
+        doReturn(false)
+                .when(userJpaRepository)
+                .existsByEmail(snapshot.getUsername());
+
+        //when
+        var isNotUnique = userRepository.checkUserUniqueness(snapshot);
+
+        //then
+        assertFalse(isNotUnique);
+    }
+
+
+
+    @Test
+    public void testCheckUserIsUniqueThrowUsernameException() {
+
+    }
+
     private void assertIsUserSnapshotValid(UserEntity userEntity, UserSnapshot snapshot) {
         assertEquals(createSnapshotFromEntity(userEntity), snapshot);
     }
@@ -127,5 +214,15 @@ public class UserRepositoryImplTest {
 
     private void assertIsExceptionAUserNotFound(ApplicationUserDomainException exception) {
         assertEquals(new UserNotFoundException().getMessage(), exception.getMessage());
+    }
+
+    private UserSnapshot createTestCommonUserSnapshot() {
+        return new UserSnapshot(new UserId(UUID.randomUUID()),
+                "test",
+                "email@email.to",
+                "password",
+                UserRole.COMMON_USER,
+                false
+                );
     }
 }
