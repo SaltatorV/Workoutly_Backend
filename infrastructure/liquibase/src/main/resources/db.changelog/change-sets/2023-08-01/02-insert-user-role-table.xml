@@ -1,0 +1,47 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.6.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet author="saltatorv" id="update-users-table">
+        <addColumn tableName="users" >
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="saltatorv" id="insert-user-roles-table">
+        <createTable tableName="user_roles">
+            <column autoIncrement="true" name="user_role_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="permission_name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="saltatorv" id="user_role_id_index">
+        <createIndex indexName="user_role_id_index" tableName="user_roles">
+            <column name="user_role_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="saltatorv" id="role_id_default_value">
+        <addDefaultValue columnName="role_id"
+                         defaultValue="2"
+                         tableName="users" columnDataType="BIGINT"/>
+    </changeSet>
+
+    <changeSet author="saltatorv" id="role_id_index">
+        <createIndex indexName="role_id_index" tableName="users">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="saltator" id="role_id_FK">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="users" constraintName="role_id_index" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_role_id" referencedTableName="user_roles" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
