@@ -7,6 +7,7 @@ import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.exception.ApplicationUserDomainException;
 import com.workoutly.application.user.exception.UserNotRegisteredException;
+import com.workoutly.application.user.exception.UserNotUniqueException;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.output.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -177,11 +178,11 @@ public class UserCommandHandlerTest {
     }
 
 
-    private void throwExceptionWhenUserIsNotUnique(RegisterUserCommand command) {
+    private ApplicationUserDomainException throwExceptionWhenUserIsNotUnique(RegisterUserCommand command) {
         return assertThrows(UserNotUniqueException.class, () -> userCommandHandler.createCommonUser(command));
     }
 
-    private void assertExceptionIsUserNotUnique(UserNotUniqueException exception) {
-        assertEquals(new UserNotRegisteredException().getMessage(), exception.getMessage());
+    private void assertExceptionIsUserNotUnique(ApplicationUserDomainException exception) {
+        assertEquals(new UserNotUniqueException().getMessage(), exception.getMessage());
     }
 }
