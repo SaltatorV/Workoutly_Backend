@@ -1,6 +1,5 @@
 package com.workoutly.application.user.adapter;
 
-import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.entity.UserEntity;
 import com.workoutly.application.user.entity.UserRoleEntity;
@@ -39,6 +38,7 @@ public class UserRepositoryImpl implements UserRepository {
     public UserSnapshot save(UserSnapshot snapshot) {
         UserEntity entityToSave = mapper.mapUserSnapshotToUserEntity(snapshot);
         UserRoleEntity role = userRoleJpaRepository.getRoleEntityByPermissionName(snapshot.getRole().getRoleName());
+
         entityToSave.setRole(role);
 
         UserEntity savedEntity = userJpaRepository.save(entityToSave);
@@ -47,15 +47,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean checkUserUniqueness(UserSnapshot snapshot) {
-        return isUsernameUnique(snapshot.getUsername()) && isEmailUnique(snapshot.getEmail());
+    public boolean checkUserExists(UserSnapshot snapshot) {
+        return isUsernameExists(snapshot.getUsername()) || isEmailExists(snapshot.getEmail());
     }
 
-    private boolean isUsernameUnique(String username) {
+    private boolean isUsernameExists(String username) {
         return userJpaRepository.existsByUsername(username);
     }
 
-    private boolean isEmailUnique(String email) {
+    private boolean isEmailExists(String email) {
         return userJpaRepository.existsByEmail(email);
     }
 }

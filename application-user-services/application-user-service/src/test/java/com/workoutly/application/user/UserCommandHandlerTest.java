@@ -50,9 +50,9 @@ public class UserCommandHandlerTest {
                 .when(userDataMapper)
                 .registerUserCommandToCommonUser(command);
 
-        doReturn(true)
+        doReturn(false)
                 .when(userRepository)
-                .checkUserUniqueness(commonUser.createSnapshot());
+                .checkUserExists(commonUser.createSnapshot());
 
         doReturn(event)
                 .when(userDomainService)
@@ -88,17 +88,13 @@ public class UserCommandHandlerTest {
                 .when(userDataMapper)
                 .registerUserCommandToCommonUser(command);
 
-        doReturn(true)
+        doReturn(false)
                 .when(userRepository)
-                .checkUserUniqueness(commonUser.createSnapshot());
+                .checkUserExists(commonUser.createSnapshot());
 
         doReturn(event)
                 .when(userDomainService)
                 .initializeUser(commonUser);
-
-        doReturn(null)
-                .when(userRepository)
-                .save(event.getSnapshot());
 
         //when
         var exception = throwExceptionWhenCreateUser(command);
@@ -123,9 +119,9 @@ public class UserCommandHandlerTest {
                 .when(userDataMapper)
                 .registerUserCommandToCommonUser(command);
 
-        doReturn(false)
+        doReturn(true)
                 .when(userRepository)
-                .checkUserUniqueness(commonUser.createSnapshot());
+                .checkUserExists(commonUser.createSnapshot());
 
         //when
         var exception = throwExceptionWhenUserIsNotUnique(command);

@@ -33,7 +33,7 @@ class UserCommandHandler {
     }
 
     private void checkUserIsUnique(UserSnapshot snapshot) {
-        if(!userRepository.checkUserUniqueness(snapshot)) {
+        if(userRepository.checkUserExists(snapshot)) {
             throw new UserNotUniqueException();
         }
     }
