@@ -1,6 +1,5 @@
 package com.workoutly.application.user.handler;
 
-import com.workoutly.application.user.exception.ApplicationUserDomainException;
 import com.workoutly.common.exception.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -38,11 +37,9 @@ public class UserConstraintViolationExceptionHandlerTest {
     }
 
     private void responseMessageIs(String message) {
-        System.out.println(response.getMessage());
         Assertions.assertEquals( message, response.getMessage());
     }
     private void responseCodeIs(String code) {
-        System.out.println(response.getCode());
         Assertions.assertEquals( code, response.getCode());
     }
 }
