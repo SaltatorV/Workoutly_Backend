@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class RegisterController {
@@ -17,5 +17,11 @@ public class RegisterController {
     RegisterUserResponse createCommonAccount(@RequestBody RegisterUserCommand registerUserCommand) {
         RegisterUserResponse registerUserResponse = userApplicationService.createCommonUser(registerUserCommand);
         return registerUserResponse;
+    }
+
+    @PostMapping("/activate")
+    ActivationUserResponse activateAccount(@RequestBody ActivationUserCommand activationUserCommand) {
+        ActivationUserResponse activationUserResponse = userApplicationService.activateUserAccount(activationUserCommand);
+        return activationUserResponse;
     }
 }

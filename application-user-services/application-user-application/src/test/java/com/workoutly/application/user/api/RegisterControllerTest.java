@@ -60,7 +60,7 @@ public class RegisterControllerTest {
         doReturn(successfullyRegistered(command)).when(userApplicationService).createCommonUser(command);
 
         // when
-        performRegisterRequest(command);
+        performRegisterCommand(command);
 
         // then
         assertResponseStatusIs(isOk());
@@ -80,18 +80,31 @@ public class RegisterControllerTest {
         doThrow(new ValidationException()).when(userApplicationService).createCommonUser(command);
 
         //when
-        performRegisterRequest(command);
+        performRegisterCommand(command);
 
         //then
         assertResponseStatusIs(isBadRequest());
         assertResponseContentIs(registerFailure());
     }
 
+    @Test
+    public void testActivateUserAccount() {
+        //given
+        var activationUserCommand = new ActivationUserCommand();
+
+        //when
+        performActivationCommand(activationUserCommand);
+
+        //then
+        assertResponseStatusIs(isOk());
+        assertResponseContentIs(successfullyActivated());
+    }
+
     private ErrorResponse registerFailure() {
         return createErrorResponse();
     }
 
-    private void performRegisterRequest(RegisterUserCommand request) throws Exception {
+    private void performRegisterCommand(RegisterUserCommand request) throws Exception {
         performRequest(request, REGISTER_URL);
     }
 
