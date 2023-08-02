@@ -15,7 +15,7 @@
         <insert  catalogName="workoutly"
                  schemaName="public"
                  tableName="user_roles">
-            <column  name="permission_name"  value="user"/>
+            <column  name="permission_name"  value="commonUser"/>
         </insert>
     </changeSet>
 
