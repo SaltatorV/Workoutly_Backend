@@ -4,10 +4,12 @@ import com.workoutly.application.user.VO.UserId;
 import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.entity.UserEntity;
+import com.workoutly.application.user.entity.UserRoleEntity;
 import com.workoutly.application.user.exception.ApplicationUserDomainException;
 import com.workoutly.application.user.exception.UserNotFoundException;
 import com.workoutly.application.user.mapper.UserDatabaseMapper;
 import com.workoutly.application.user.repository.UserJpaRepository;
+import com.workoutly.application.user.repository.UserRoleJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +28,8 @@ public class UserRepositoryImplTest {
 
     @Mock
     private UserJpaRepository userJpaRepository;
+    @Mock
+    private UserRoleJpaRepository userRoleJpaRepository;
     @Mock
     private UserDatabaseMapper mapper;
 
@@ -85,6 +89,10 @@ public class UserRepositoryImplTest {
                 .when(mapper)
                 .mapUserSnapshotToUserEntity(snapshot);
 
+        doReturn(createCommonRole())
+                .when(userRoleJpaRepository)
+                .getRoleEntityByPermissionName(snapshot.getRole().getRoleName());
+
         doReturn(entity)
                 .when(userJpaRepository)
                 .save(any());
@@ -92,6 +100,7 @@ public class UserRepositoryImplTest {
         doReturn(createSnapshotFromEntity(entity))
                 .when(mapper)
                 .mapUserEntityToUserSnapshot(any());
+
 
         //when
         var savedSnapshot = userRepository.save(snapshot);
@@ -218,5 +227,9 @@ public class UserRepositoryImplTest {
                 UserRole.COMMON_USER,
                 false
                 );
+    }
+
+    private UserRoleEntity createCommonRole() {
+        return new UserRoleEntity(1L, "commonUser");
     }
 }

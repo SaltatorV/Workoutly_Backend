@@ -1,11 +1,14 @@
 package com.workoutly.application.user.adapter;
 
+import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.entity.UserEntity;
+import com.workoutly.application.user.entity.UserRoleEntity;
 import com.workoutly.application.user.exception.UserNotFoundException;
 import com.workoutly.application.user.mapper.UserDatabaseMapper;
 import com.workoutly.application.user.port.output. UserRepository;
 import com.workoutly.application.user.repository.UserJpaRepository;
+import com.workoutly.application.user.repository.UserRoleJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +19,7 @@ import java.util.Optional;
 public class UserRepositoryImpl implements UserRepository {
 
     private final UserJpaRepository userJpaRepository;
+    private final UserRoleJpaRepository userRoleJpaRepository;
     private final UserDatabaseMapper mapper;
 
     @Override
@@ -33,7 +37,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserSnapshot save(UserSnapshot snapshot) {
-        UserEntity savedEntity = userJpaRepository.save(mapper.mapUserSnapshotToUserEntity(snapshot));
+        UserEntity entityToSave = mapper.mapUserSnapshotToUserEntity(snapshot);
+        UserRoleEntity role = userRoleJpaRepository.getRoleEntityByPermissionName(snapshot.getRole().getRoleName());
+        entityToSave.setRole(role);
+
+        UserEntity savedEntity = userJpaRepository.save(entityToSave);
 
         return mapper.mapUserEntityToUserSnapshot(savedEntity);
     }

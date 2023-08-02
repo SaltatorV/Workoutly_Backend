@@ -1,15 +1,12 @@
 package com.workoutly.application.user.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 
+@Data
 @Table(name = "users")
 @Entity
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +20,9 @@ public class UserEntity {
     private String password;
     @Column(name = "is_enabled")
     private boolean isEnabled;
+
+    @OneToOne
+    @JoinColumn(name = "role_id")
+    private UserRoleEntity role;
 
 }

@@ -6,7 +6,7 @@ import java.util.Set;
 import static com.workoutly.application.user.VO.UserPermission.COMMON;
 
 public enum UserRole {
-    COMMON_USER("comonUser", Set.of(COMMON));
+    COMMON_USER("commonUser", Set.of(COMMON));
 
     private final String roleName;
     private final Set<UserPermission> permissions;
