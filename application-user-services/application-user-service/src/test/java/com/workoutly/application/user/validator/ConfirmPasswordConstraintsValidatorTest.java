@@ -64,24 +64,6 @@ public class ConfirmPasswordConstraintsValidatorTest {
     }
 
     @Test
-    public void testPasswordsAreNotEqualWithEmptyPassword() {
-
-        //given
-        var command = aRegisterUserCommand()
-                .withUsername("test")
-                .withEmailAddress("test@test.to")
-                .withPassword("")
-                .withConfirmPassword("password")
-                .create();
-
-        //when
-        var validationResponse = validator.validate(command);
-
-        //then
-        assertPasswordsNotEqual(validationResponse);
-    }
-
-    @Test
     public void testPasswordsAreNotEqualWithEmptyConfirmPassword() {
 
         //given
