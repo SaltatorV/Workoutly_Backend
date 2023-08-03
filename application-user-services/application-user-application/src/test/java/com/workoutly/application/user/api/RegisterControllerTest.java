@@ -1,7 +1,9 @@
 package com.workoutly.application.user.api;
 
 import com.workoutly.application.user.UserApplicationServiceImpl;
+import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.mock.MockExceptionHandler;
 import com.workoutly.common.exception.ErrorResponse;
@@ -18,7 +20,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-
 import static com.workoutly.application.user.mock.MockExceptionHandler.createErrorResponse;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
@@ -29,7 +30,8 @@ import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class RegisterControllerTest {
-    private final static String REGISTER_URL = "/auth/register";
+    private final static String REGISTER_URL = "/api/register";
+    private final static String ACTIVATION_URL = "/api/activate";
 
     private MockMvc mockMvc;
 
@@ -48,7 +50,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    public void testSuccessfulRegisterCommonUser() throws Exception {
+    public void testSuccessfulRegisterCommonUser() {
         // given
         var command = aRegisterUserCommand()
                 .withUsername("example")
@@ -68,7 +70,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    public void testRegisterFailure() throws Exception {
+    public void testRegisterFailure() {
         //given
         var command = aRegisterUserCommand()
                 .withUsername("ex")
@@ -77,7 +79,9 @@ public class RegisterControllerTest {
                 .withConfirmPassword("Sup3rS3cureP@@s")
                 .create();
 
-        doThrow(new ValidationException()).when(userApplicationService).createCommonUser(command);
+        doThrow(new ValidationException())
+                .when(userApplicationService)
+                .createCommonUser(command);
 
         //when
         performRegisterCommand(command);
@@ -90,10 +94,14 @@ public class RegisterControllerTest {
     @Test
     public void testActivateUserAccount() {
         //given
-        var activationUserCommand = new ActivationUserCommand();
+        var command = new ActivationUserCommand("ABCDEFGHIJKLMNOPQRSTWUYZ");
+
+        doReturn(successfullyActivated())
+                .when(userApplicationService)
+                .activateUserAccount(command);
 
         //when
-        performActivationCommand(activationUserCommand);
+        performActivationCommand(command);
 
         //then
         assertResponseStatusIs(isOk());
@@ -103,9 +111,24 @@ public class RegisterControllerTest {
     private ErrorResponse registerFailure() {
         return createErrorResponse();
     }
+    private ErrorResponse activationFailure() {
+        return createErrorResponse();
+    }
 
-    private void performRegisterCommand(RegisterUserCommand request) throws Exception {
-        performRequest(request, REGISTER_URL);
+    private void performRegisterCommand(RegisterUserCommand request) {
+        try {
+            performRequest(request, REGISTER_URL);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void performActivationCommand(ActivationUserCommand command) {
+        try {
+            performRequest(command, ACTIVATION_URL);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void performRequest(Object request, String url) throws Exception{
@@ -125,6 +148,9 @@ public class RegisterControllerTest {
                 "User created successfully.",
                 command.getUsername()
         );
+    }
+    private MessageResponse successfullyActivated() {
+        return new MessageResponse("User with bounded token activated");
     }
 
     private void assertResponseStatusIs(int status) {

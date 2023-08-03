@@ -1,6 +1,8 @@
 package com.workoutly.application.user.api;
 
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import com.workoutly.application.user.dto.command.ActivationUserCommand;
+import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.port.input.UserApplicationService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,8 @@ public class RegisterController {
     }
 
     @PostMapping("/activate")
-    ActivationUserResponse activateAccount(@RequestBody ActivationUserCommand activationUserCommand) {
-        ActivationUserResponse activationUserResponse = userApplicationService.activateUserAccount(activationUserCommand);
-        return activationUserResponse;
+    MessageResponse activateAccount(@RequestBody ActivationUserCommand activationUserCommand) {
+        MessageResponse messageResponse = userApplicationService.activateUserAccount(activationUserCommand);
+        return messageResponse;
     }
 }

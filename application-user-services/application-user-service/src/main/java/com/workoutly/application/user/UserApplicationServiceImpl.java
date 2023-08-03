@@ -1,6 +1,8 @@
 package com.workoutly.application.user;
 
+import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
@@ -21,5 +23,10 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     public RegisterUserResponse createCommonUser(RegisterUserCommand registerUserCommand) {
         UserCreatedEvent event = handler.createCommonUser(registerUserCommand);
         return mapper.userCreatedEventToRegisterUserResponse(event);
+    }
+
+    @Override
+    public MessageResponse activateUserAccount(ActivationUserCommand activationUserCommand) {
+        return null;
     }
 }
