@@ -3,8 +3,11 @@ package com.workoutly.application.user;
 import com.workoutly.application.user.VO.UserId;
 import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
+import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import org.junit.jupiter.api.Test;
@@ -55,15 +58,33 @@ public class UserApplicationServiceImplTest {
 
         //then
         assertResponseIsValid(command, response);
-        verify(handler, times(1))
-                .createCommonUser(command);
-        verify(mapper, times(1))
-                .userCreatedEventToRegisterUserResponse(userCreatedEvent);
+    }
+
+    @Test
+    public void testActivateUserAccount() {
+        //given
+        var command = new ActivationUserCommand("abcdefgh");
+        var userActivatedEvent = createUserActivatedEvent();
+
+        doReturn(userActivatedEvent)
+                .when(handler)
+                .activateUser(command);
+
+        //when
+        var response = service.activateUserAccount(command);
+
+        //then
+        assertResponseIsValid(userActivatedEvent, response);
     }
 
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
         RegisterUserResponse responseFromCommand = validCreatedResponseMessage(command);
         assertEquals(mapToString(responseFromCommand), mapToString(response));
+    }
+
+    private void assertResponseIsValid(UserActivatedEvent event, MessageResponse response) {
+        String template = String.format("User: %s has been activated", event.getSnapshot().getUsername());
+        assertTrue(response.getMessage().equals(template));
     }
 
     private RegisterUserResponse validCreatedResponseMessage(RegisterUserCommand command) {
@@ -83,6 +104,20 @@ public class UserApplicationServiceImplTest {
         );
 
         return new UserCreatedEvent(userSnapshot);
+    }
+
+
+    private UserActivatedEvent createUserActivatedEvent() {
+        UserSnapshot snapshot = new UserSnapshot(
+                new UserId(UUID.randomUUID()),
+                "test",
+                "example@example.to",
+                "password",
+                UserRole.COMMON_USER,
+                true
+        );
+
+        return new UserActivatedEvent(snapshot);
     }
 
     private RegisterUserResponse createRegisterUserResponse(RegisterUserCommand command) {

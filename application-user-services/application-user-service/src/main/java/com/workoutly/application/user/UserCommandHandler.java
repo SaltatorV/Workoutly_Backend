@@ -1,7 +1,9 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.exception.UserNotRegisteredException;
 import com.workoutly.application.user.exception.UserNotUniqueException;
@@ -30,6 +32,11 @@ class UserCommandHandler {
         checkUserIsSaved(savedSnapshot);
 
         return event;
+    }
+
+    @Transactional
+    public UserActivatedEvent activateUser(ActivationUserCommand command) {
+        return null;
     }
 
     private void checkUserIsUnique(UserSnapshot snapshot) {

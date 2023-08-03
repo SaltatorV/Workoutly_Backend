@@ -4,6 +4,7 @@ import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
+import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.input.UserApplicationService;
@@ -27,6 +28,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
     @Override
     public MessageResponse activateUserAccount(ActivationUserCommand activationUserCommand) {
-        return null;
+        UserActivatedEvent event = handler.activateUser(activationUserCommand);
+        return new MessageResponse(String.format("User: %s has been activated", event.getSnapshot().getUsername()));
     }
 }
