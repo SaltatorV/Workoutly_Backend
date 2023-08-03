@@ -1,11 +1,15 @@
 package com.workoutly.application.user;
 
+import com.workoutly.application.user.VO.UserId;
 import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
+import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.exception.ApplicationUserDomainException;
+import com.workoutly.application.user.exception.UserNotBoundException;
 import com.workoutly.application.user.exception.UserNotRegisteredException;
 import com.workoutly.application.user.exception.UserNotUniqueException;
 import com.workoutly.application.user.mapper.UserDataMapper;
@@ -15,6 +19,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+import java.util.UUID;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
@@ -131,6 +138,44 @@ public class UserCommandHandlerTest {
 
     }
 
+    @Test
+    public void testUserActivated() {
+        //given
+        var activationUserCommand = new ActivationUserCommand("abcdefgh");
+        var snapshot = createCommonUserSnapshot();
+
+        doReturn(Optional.of(snapshot))
+                .when(userRepository)
+                .findByVerificationToken(activationUserCommand.getToken());
+
+        doReturn(createActivatedUserEvent(snapshot))
+                .when(userDomainService)
+                .activateUser(User.restore(snapshot));
+
+        //when
+        var event = userCommandHandler.activateUser(activationUserCommand);
+
+        //then
+        assertIsEventCreated(event);
+        assertIsUserActivated(event);
+    }
+
+    @Test
+    public void testUserActivationThrowNotBoundException() {
+        //given
+        var command = new ActivationUserCommand("abcdefgh");
+
+        doReturn(Optional.empty())
+                .when(userRepository)
+                .findByVerificationToken(command.getToken());
+
+        //when
+        var exception = throwExceptionWhenUserIsNotBound(command);
+
+        //then
+        assertExceptionIsUserNotBound(exception);
+    }
+
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {
         return new User(
                 command.getUsername(),
@@ -138,6 +183,30 @@ public class UserCommandHandlerTest {
                 command.getEmail(),
                 UserRole.COMMON_USER
         );
+    }
+
+    private UserSnapshot createCommonUserSnapshot() {
+        return new UserSnapshot(
+                new UserId(UUID.randomUUID()),
+                "test",
+                "password",
+                "example@example.to",
+                UserRole.COMMON_USER,
+                false
+        );
+    }
+
+    private UserActivatedEvent createActivatedUserEvent(UserSnapshot snapshot) {
+        UserSnapshot activated = new UserSnapshot(
+                snapshot.getUserId(),
+                snapshot.getUsername(),
+                snapshot.getEmail(),
+                snapshot.getPassword(),
+                snapshot.getRole(),
+                true
+        );
+
+        return new UserActivatedEvent(activated);
     }
 
     private UserCreatedEvent createUserCreatedEventBasedOnCommand(RegisterUserCommand command) {
@@ -151,11 +220,20 @@ public class UserCommandHandlerTest {
         assertNotNull(event.getSnapshot());
     }
 
+    private void assertIsEventCreated(UserActivatedEvent event) {
+        assertNotNull(event);
+        assertNotNull(event.getSnapshot());
+    }
+
     private void assertIsSnapshotValid(UserCreatedEvent event, RegisterUserCommand command) {
         UserSnapshot snapshot = event.getSnapshot();
         UserSnapshot commandSnapshot = createCommonUserSnapshot(event.getSnapshot(), command);
 
         assertEquals(mapToString(commandSnapshot), mapToString(snapshot));
+    }
+
+    private void assertIsUserActivated(UserActivatedEvent event) {
+        assertTrue(event.getSnapshot().isEnabled());
     }
 
     private UserSnapshot createCommonUserSnapshot(UserSnapshot snapshot, RegisterUserCommand command) {
@@ -169,16 +247,27 @@ public class UserCommandHandlerTest {
     }
 
 
-    private void assertExceptionIsUserNotRegistered(ApplicationUserDomainException exception) {
-        assertEquals(new UserNotRegisteredException().getMessage(), exception.getMessage());
+    private void assertExceptionIsUserNotUnique(ApplicationUserDomainException exception) {
+        assertExceptionsMessagesEqual(new UserNotUniqueException(), exception);
     }
 
+    private void assertExceptionIsUserNotRegistered(ApplicationUserDomainException exception) {
+        assertExceptionsMessagesEqual(new UserNotRegisteredException(), exception);
+    }
+
+    private void assertExceptionIsUserNotBound(ApplicationUserDomainException exception) {
+        assertExceptionsMessagesEqual(new UserNotBoundException(), exception);
+    }
+
+    private void assertExceptionsMessagesEqual(ApplicationUserDomainException expected, ApplicationUserDomainException actual) {
+        assertEquals(expected.getMessage(), actual.getMessage());
+    }
 
     private ApplicationUserDomainException throwExceptionWhenUserIsNotUnique(RegisterUserCommand command) {
         return assertThrows(UserNotUniqueException.class, () -> userCommandHandler.createCommonUser(command));
     }
 
-    private void assertExceptionIsUserNotUnique(ApplicationUserDomainException exception) {
-        assertEquals(new UserNotUniqueException().getMessage(), exception.getMessage());
+    private UserNotBoundException throwExceptionWhenUserIsNotBound(ActivationUserCommand command) {
+        return assertThrows(UserNotBoundException.class, () -> userCommandHandler.activateUser(command));
     }
 }

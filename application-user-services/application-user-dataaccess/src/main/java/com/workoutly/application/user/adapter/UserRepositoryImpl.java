@@ -51,6 +51,11 @@ public class UserRepositoryImpl implements UserRepository {
         return isUsernameExists(snapshot.getUsername()) || isEmailExists(snapshot.getEmail());
     }
 
+    @Override
+    public Optional<UserSnapshot> findByVerificationToken(String token) {
+        return null;
+    }
+
     private boolean isUsernameExists(String username) {
         return userJpaRepository.existsByUsername(username);
     }

@@ -5,6 +5,7 @@ import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
+import com.workoutly.application.user.exception.UserNotBoundException;
 import com.workoutly.application.user.exception.UserNotRegisteredException;
 import com.workoutly.application.user.exception.UserNotUniqueException;
 import com.workoutly.application.user.mapper.UserDataMapper;
@@ -12,6 +13,8 @@ import com.workoutly.application.user.port.output.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +39,15 @@ class UserCommandHandler {
 
     @Transactional
     public UserActivatedEvent activateUser(ActivationUserCommand command) {
-        return null;
+        Optional<UserSnapshot> snapshot = userRepository.findByVerificationToken(command.getToken());
+
+        if(snapshot.isEmpty()) {
+            throw new UserNotBoundException();
+        }
+
+        UserActivatedEvent event = userDomainService.activateUser(User.restore(snapshot.get()));
+
+        return event;
     }
 
     private void checkUserIsUnique(UserSnapshot snapshot) {
