@@ -201,14 +201,13 @@ public class UserTest {
                 .build();
 
         var mockUser = anUser()
+                .withUserId(userId)
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
                 .withVerificationToken(VerificationToken.restore(createTokenSnapshot()))
                 .build();
-
-        mockUser.setId(userId);
 
         //when
         User user = User.restore(snapshot);
@@ -233,15 +232,13 @@ public class UserTest {
                 .build();
 
         var mockUser = anUser()
+                .withUserId(userId)
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
                 .withVerificationToken(VerificationToken.restore(tokenSnapshot))
-                .build();
-
-        mockUser.setId(userId);
-        mockUser.enable();
+                .buildEnabled();
 
         //when
         var user = User.restore(snapshot);
