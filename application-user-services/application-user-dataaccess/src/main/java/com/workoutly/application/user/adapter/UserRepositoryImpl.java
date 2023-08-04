@@ -37,6 +37,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public UserSnapshot save(UserSnapshot snapshot) {
         UserEntity entityToSave = mapper.mapUserSnapshotToUserEntity(snapshot);
+        entityToSave.getToken().setUser(entityToSave);
         UserRoleEntity role = userRoleJpaRepository.getRoleEntityByPermissionName(snapshot.getRole().getRoleName());
 
         entityToSave.setRole(role);

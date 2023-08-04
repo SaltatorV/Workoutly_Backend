@@ -1,10 +1,9 @@
 package com.workoutly.application.user.adapter;
 
-import com.workoutly.application.user.VO.UserId;
-import com.workoutly.application.user.VO.UserRole;
-import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.VO.*;
 import com.workoutly.application.user.entity.UserEntity;
 import com.workoutly.application.user.entity.UserRoleEntity;
+import com.workoutly.application.user.entity.VerificationTokenEntity;
 import com.workoutly.application.user.exception.ApplicationUserDomainException;
 import com.workoutly.application.user.exception.UserNotFoundException;
 import com.workoutly.application.user.mapper.UserDatabaseMapper;
@@ -16,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,6 +47,7 @@ public class UserRepositoryImplTest {
                 .password("password")
                 .email("example@example.to")
                 .isEnabled(true)
+                .token(createToken())
                 .build();
 
         doReturn(Optional.of(entity)).when(userJpaRepository).findByUsername("test");
@@ -81,6 +83,7 @@ public class UserRepositoryImplTest {
                 .password("password")
                 .email("example@example.to")
                 .isEnabled(false)
+                .token(createToken())
                 .build();
 
         var snapshot = createSnapshotFromEntity(entity);
@@ -107,6 +110,7 @@ public class UserRepositoryImplTest {
 
         //then
         assertIsUserSnapshotValid(snapshot, savedSnapshot);
+        assertVerificationTokenSetUserEntity(entity);
     }
 
     @Test
@@ -198,6 +202,11 @@ public class UserRepositoryImplTest {
         assertEquals(snapshot, savedSnapshot);
     }
 
+
+    private void assertVerificationTokenSetUserEntity(UserEntity entity) {
+        assertNotNull(entity.getToken().getUser());
+    }
+
     private UserSnapshot createSnapshotFromEntity(UserEntity user) {
         return new UserSnapshot(
                 new UserId(UUID.fromString(user.getUserId())),
@@ -205,7 +214,8 @@ public class UserRepositoryImplTest {
                 user.getEmail(),
                 user.getPassword(),
                 UserRole.COMMON_USER,
-                user.isEnabled()
+                user.isEnabled(),
+                createTokenSnapshot(user.getToken())
         );
     }
 
@@ -225,11 +235,28 @@ public class UserRepositoryImplTest {
                 "email@email.to",
                 "password",
                 UserRole.COMMON_USER,
-                false
+                false,
+                createTokenSnapshot(createToken())
                 );
     }
 
     private UserRoleEntity createCommonRole() {
         return new UserRoleEntity(1L, "commonUser");
+    }
+
+    private VerificationTokenSnapshot createTokenSnapshot(VerificationTokenEntity entity) {
+        return new VerificationTokenSnapshot(
+                new TokenId(UUID.fromString(entity.getId())),
+                entity.getToken(),
+                entity.getExpireDate()
+        );
+    }
+
+    private VerificationTokenEntity createToken() {
+        return VerificationTokenEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .token(UUID.randomUUID().toString())
+                .expireDate(Date.from(Instant.now()))
+                .build();
     }
 }
