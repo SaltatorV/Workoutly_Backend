@@ -1,8 +1,6 @@
 package com.workoutly.application.user;
 
-import com.workoutly.application.user.VO.UserId;
-import com.workoutly.application.user.VO.UserRole;
-import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.VO.*;
 import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.MessageResponse;
@@ -16,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
@@ -100,7 +100,8 @@ public class UserApplicationServiceImplTest {
                 command.getEmail(),
                 command.getPassword(),
                 UserRole.COMMON_USER,
-                false
+                false,
+                null
         );
 
         return new UserCreatedEvent(userSnapshot);
@@ -114,7 +115,8 @@ public class UserApplicationServiceImplTest {
                 "example@example.to",
                 "password",
                 UserRole.COMMON_USER,
-                true
+                true,
+                createTokenSnapshot()
         );
 
         return new UserActivatedEvent(snapshot);
@@ -126,4 +128,9 @@ public class UserApplicationServiceImplTest {
                 command.getUsername()
         );
     }
+
+    private VerificationTokenSnapshot createTokenSnapshot() {
+        return new VerificationTokenSnapshot(new TokenId(UUID.randomUUID()),UUID.randomUUID().toString(), Date.from(Instant.now() ));
+    }
+
 }

@@ -25,4 +25,6 @@ public class UserEntity {
     @JoinColumn(name = "role_id")
     private UserRoleEntity role;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private VerificationTokenEntity token;
 }

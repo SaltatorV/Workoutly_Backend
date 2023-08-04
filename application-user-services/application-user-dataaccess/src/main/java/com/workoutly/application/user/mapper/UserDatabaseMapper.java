@@ -1,9 +1,8 @@
 package com.workoutly.application.user.mapper;
 
-import com.workoutly.application.user.VO.UserId;
-import com.workoutly.application.user.VO.UserRole;
-import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.VO.*;
 import com.workoutly.application.user.entity.UserEntity;
+import com.workoutly.application.user.entity.VerificationTokenEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -18,7 +17,8 @@ public class UserDatabaseMapper {
                 userEntity.getEmail(),
                 userEntity.getPassword(),
                 UserRole.COMMON_USER,
-                userEntity.isEnabled()
+                userEntity.isEnabled(),
+                mapTokenEntityToSnapshot(userEntity.getToken())
         );
     }
 
@@ -30,5 +30,11 @@ public class UserDatabaseMapper {
                 .email(snapshot.getEmail())
                 .isEnabled(snapshot.isEnabled())
                 .build();
+    }
+
+    private VerificationTokenSnapshot mapTokenEntityToSnapshot(VerificationTokenEntity entity) {
+        return new VerificationTokenSnapshot(new TokenId(UUID.fromString(entity.getToken())),
+                entity.getToken(),
+                entity.getExpireDate());
     }
 }

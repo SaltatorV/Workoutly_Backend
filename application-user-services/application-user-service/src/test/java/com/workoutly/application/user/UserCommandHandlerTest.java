@@ -1,8 +1,6 @@
 package com.workoutly.application.user;
 
-import com.workoutly.application.user.VO.UserId;
-import com.workoutly.application.user.VO.UserRole;
-import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.VO.*;
 import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
@@ -20,6 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -192,7 +192,8 @@ public class UserCommandHandlerTest {
                 "password",
                 "example@example.to",
                 UserRole.COMMON_USER,
-                false
+                false,
+                createTokenSnapshot()
         );
     }
 
@@ -203,7 +204,8 @@ public class UserCommandHandlerTest {
                 snapshot.getEmail(),
                 snapshot.getPassword(),
                 snapshot.getRole(),
-                true
+                true,
+                snapshot.getToken()
         );
 
         return new UserActivatedEvent(activated);
@@ -269,5 +271,9 @@ public class UserCommandHandlerTest {
 
     private UserNotBoundException throwExceptionWhenUserIsNotBound(ActivationUserCommand command) {
         return assertThrows(UserNotBoundException.class, () -> userCommandHandler.activateUser(command));
+    }
+
+    private VerificationTokenSnapshot createTokenSnapshot() {
+        return new VerificationTokenSnapshot(new TokenId(UUID.randomUUID()),UUID.randomUUID().toString(), Date.from(Instant.now() ));
     }
 }
