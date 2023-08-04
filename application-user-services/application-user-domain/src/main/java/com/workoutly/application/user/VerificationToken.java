@@ -15,6 +15,9 @@ public class VerificationToken extends AggregateRoot<TokenId> {
     private String token;
     private Date expireTime;
 
+    public VerificationToken() {
+    }
+
     private VerificationToken(TokenId tokenId, Date expireTime, String token) {
         setId(tokenId);
         this.expireTime = expireTime;
