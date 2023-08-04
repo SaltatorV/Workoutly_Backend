@@ -29,12 +29,24 @@ public class UserDatabaseMapper {
                 .password(snapshot.getPassword())
                 .email(snapshot.getEmail())
                 .isEnabled(snapshot.isEnabled())
+                .token(mapTokenSnapshotToEntity(snapshot))
                 .build();
     }
 
     private VerificationTokenSnapshot mapTokenEntityToSnapshot(VerificationTokenEntity entity) {
-        return new VerificationTokenSnapshot(new TokenId(UUID.fromString(entity.getToken())),
+        return new VerificationTokenSnapshot(new TokenId(UUID.fromString(entity.getId())),
                 entity.getToken(),
                 entity.getExpireDate());
+    }
+
+    private VerificationTokenEntity mapTokenSnapshotToEntity(UserSnapshot userSnapshot) {
+        VerificationTokenSnapshot snapshot = userSnapshot.getToken();
+
+        return VerificationTokenEntity
+                .builder()
+                .id(snapshot.getTokenId().getId())
+                .token(snapshot.getToken())
+                .expireDate(snapshot.getExpireTime())
+                .build();
     }
 }

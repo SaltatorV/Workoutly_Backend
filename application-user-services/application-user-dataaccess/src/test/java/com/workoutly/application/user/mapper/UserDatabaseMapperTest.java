@@ -1,11 +1,12 @@
 package com.workoutly.application.user.mapper;
 
-import com.workoutly.application.user.VO.UserId;
-import com.workoutly.application.user.VO.UserRole;
-import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.VO.*;
 import com.workoutly.application.user.entity.UserEntity;
+import com.workoutly.application.user.entity.VerificationTokenEntity;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
@@ -24,6 +25,7 @@ public class UserDatabaseMapperTest {
                 .password("password")
                 .email("example@example.to")
                 .isEnabled(true)
+                .token(createToken())
                 .build();
 
         //when
@@ -42,6 +44,7 @@ public class UserDatabaseMapperTest {
                 .password("password")
                 .email("example@example.to")
                 .isEnabled(true)
+                .token(createToken())
                 .build();
 
         var snapshot = createSnapshotFromEntity(entity);
@@ -73,9 +76,25 @@ public class UserDatabaseMapperTest {
                 userEntity.getEmail(),
                 userEntity.getPassword(),
                 UserRole.COMMON_USER,
-                userEntity.isEnabled()
+                userEntity.isEnabled(),
+                createTokenSnapshot(userEntity.getToken())
         );
     }
 
+    private VerificationTokenSnapshot createTokenSnapshot(VerificationTokenEntity entity) {
+        return new VerificationTokenSnapshot(
+                new TokenId(UUID.fromString(entity.getId())),
+                entity.getToken(),
+                entity.getExpireDate()
+        );
+    }
+
+    private VerificationTokenEntity createToken() {
+        return VerificationTokenEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .token(UUID.randomUUID().toString())
+                .expireDate(Date.from(Instant.now()))
+                .build();
+    }
 
 }
