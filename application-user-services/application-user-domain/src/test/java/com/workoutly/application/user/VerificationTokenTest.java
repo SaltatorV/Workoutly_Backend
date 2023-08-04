@@ -58,6 +58,19 @@ public class VerificationTokenTest {
         assertIsSnapshotValid(token, snapshot);
     }
 
+    @Test
+    public void testRestoreVerificationToken() {
+        //given
+        var token = VerificationToken.generateToken();
+        var snapshot = token.createTokenSnapshot();
+
+        //when
+        var restored = VerificationToken.restore(snapshot);
+
+        //then
+        assertIsTokenValid(token, restored);
+    }
+
     private Date timeNow() {
         return Date.from(Instant.now());
     }
@@ -78,5 +91,9 @@ public class VerificationTokenTest {
     private void assertIsSnapshotValid(VerificationToken token, VerificationTokenSnapshot snapshot) {
         VerificationTokenSnapshot snapshotFromToken = new VerificationTokenSnapshot(token.getId(), token.getTokenValue(), token.getExpireTime());
         assertEquals(mapToString(snapshotFromToken), mapToString(snapshot));
+    }
+
+    private void assertIsTokenValid(VerificationToken expected, VerificationToken actual) {
+        assertEquals(mapToString(expected), mapToString(actual));
     }
 }

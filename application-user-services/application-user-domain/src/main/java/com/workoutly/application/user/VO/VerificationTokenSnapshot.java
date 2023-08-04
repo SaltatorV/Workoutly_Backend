@@ -15,6 +15,10 @@ public class VerificationTokenSnapshot {
         this.expireTime = expireTime;
     }
 
+    public TokenId getTokenId() {
+        return tokenId;
+    }
+
     public String getToken() {
         return token;
     }

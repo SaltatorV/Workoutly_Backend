@@ -21,6 +21,10 @@ public class VerificationToken extends AggregateRoot<TokenId> {
         this.token = token;
     }
 
+    public static VerificationToken restore(VerificationTokenSnapshot snapshot) {
+        return new VerificationToken(snapshot.getTokenId(), snapshot.getExpireTime(), snapshot.getToken());
+    }
+
     public static VerificationToken generateToken() {
         return new VerificationToken(new TokenId(UUID.randomUUID()), calculateExpireDate(), createTokenValue());
     }
