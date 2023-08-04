@@ -10,14 +10,16 @@ public class UserSnapshot {
   private final String password;
   private final UserRole role;
   private final boolean isEnabled;
+  private final VerificationTokenSnapshot token;
 
-  public UserSnapshot(UserId userId, String username, String email, String password, UserRole role, boolean isEnabled) {
+  public UserSnapshot(UserId userId, String username, String email, String password, UserRole role, boolean isEnabled, VerificationTokenSnapshot tokenSnapshot) {
     this.userId = userId;
     this.username = username;
     this.email = email;
     this.password = password;
     this.role = role;
     this.isEnabled = isEnabled;
+    this.token = tokenSnapshot;
   }
 
   public UserId getUserId() {
@@ -44,6 +46,10 @@ public class UserSnapshot {
     return isEnabled;
   }
 
+  public VerificationTokenSnapshot getToken() {
+    return token;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -64,6 +70,7 @@ public class UserSnapshot {
     private String password;
     private UserRole role;
     private boolean isEnabled;
+    private VerificationTokenSnapshot tokenSnapshot;
 
     private Builder() {
     }
@@ -102,8 +109,13 @@ public class UserSnapshot {
       return this;
     }
 
+    public Builder withToken(VerificationTokenSnapshot tokenSnapshot) {
+      this.tokenSnapshot = tokenSnapshot;
+      return this;
+    }
+
     public UserSnapshot build() {
-      return new UserSnapshot(userId, username, email, password, role, isEnabled);
+      return new UserSnapshot(userId, username, email, password, role, isEnabled, tokenSnapshot);
     }
   }
 }

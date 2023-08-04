@@ -2,12 +2,14 @@ package com.workoutly.application.user.builder;
 
 import com.workoutly.application.user.User;
 import com.workoutly.application.user.VO.UserRole;
+import com.workoutly.application.user.VerificationToken;
 
 public class UserBuilder {
     private String username;
     private String password;
     private String email;
     private UserRole role;
+    private VerificationToken token;
 
     public static UserBuilder anUser() {
         return new UserBuilder();
@@ -33,12 +35,17 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder withVerificationToken(VerificationToken token) {
+        this.token = token;
+        return this;
+    }
+
     public User build() {
-        return new User(username, password, email, role);
+        return new User(username, password, email, role, token);
     }
 
     public User buildInitialized() {
-        User user = new User(username, password, email, role);
+        User user = new User(username, password, email, role, token);
         user.initialize();
         return user;
     }

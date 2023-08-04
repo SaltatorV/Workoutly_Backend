@@ -13,6 +13,7 @@ public class User extends AggregateRoot<UserId> {
     private String email;
     private UserRole userRole;
     private boolean isEnabled;
+    private VerificationToken token;
 
     public User(String username, String password, String email, UserRole userRole) {
         this.username = username;
@@ -21,10 +22,16 @@ public class User extends AggregateRoot<UserId> {
         this.userRole = userRole;
     }
 
-    public User(UserId userId, String username, String password, String email, UserRole userRole, boolean isEnabled) {
+    public User(String username, String password, String email, UserRole userRole, VerificationToken token) {
+        this(username, password, email, userRole);
+        this.token = token;
+    }
+
+    public User(UserId userId, String username, String password, String email, UserRole userRole, boolean isEnabled, VerificationToken token) {
         this(username, password, email, userRole);
         setId(userId);
         this.isEnabled = isEnabled;
+        this.token = token;
     }
 
     public static User restore(UserSnapshot snapshot) {
@@ -33,11 +40,13 @@ public class User extends AggregateRoot<UserId> {
                 snapshot.getPassword(),
                 snapshot.getEmail(),
                 snapshot.getRole(),
-                snapshot.isEnabled());
+                snapshot.isEnabled(),
+                VerificationToken.restore(snapshot.getToken()));
     }
 
     public void initialize() {
         setId(new UserId(UUID.randomUUID()));
+        token = VerificationToken.generateToken();
         isEnabled = false;
     }
 
@@ -59,12 +68,13 @@ public class User extends AggregateRoot<UserId> {
 
     public UserSnapshot createSnapshot() {
         return anUserSnapshot()
+                .withUserId(getId())
                 .withUsername(username)
                 .withPassword(password)
                 .withEmail(email)
                 .withRole(userRole)
                 .withIsEnabled(isEnabled)
-                .withUserId(getId())
+                .withToken(token.createTokenSnapshot())
                 .build();
     }
 }

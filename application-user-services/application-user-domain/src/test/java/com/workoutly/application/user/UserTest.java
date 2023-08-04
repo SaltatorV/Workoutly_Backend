@@ -3,11 +3,13 @@ package com.workoutly.application.user;
 import com.workoutly.application.user.VO.*;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.UUID;
 
+import static com.workoutly.application.user.VO.UserSnapshot.Builder.anUserSnapshot;
 import static com.workoutly.application.user.builder.UserBuilder.anUser;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
-import static com.workoutly.application.user.builder.UserSnapshotBuilder.anUserSnapshot;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
@@ -15,7 +17,7 @@ public class UserTest {
     @Test
     public void testInitializeUser() {
         //given
-        User user = anUser()
+        var user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -32,7 +34,7 @@ public class UserTest {
     @Test
     public void testEnableUser() {
         //given
-        User user = anUser()
+        var user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
@@ -49,11 +51,12 @@ public class UserTest {
     @Test
     public void testChangePassword() {
         //given
-        User user = anUser()
+        var user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withVerificationToken(VerificationToken.restore(createTokenSnapshot()))
                 .build();
 
         //when
@@ -66,11 +69,12 @@ public class UserTest {
     @Test
     public void testChangeEmail() {
         //given
-        User user = anUser()
+        var user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withVerificationToken(VerificationToken.restore(createTokenSnapshot()))
                 .build();
 
         //when
@@ -83,23 +87,25 @@ public class UserTest {
     @Test
     public void testCreateUserSnapshot() {
         //given
-        User user = anUser()
+        var mockSnapshot = anUserSnapshot()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withIsEnabled(false)
+                .withToken(createTokenSnapshot())
                 .build();
 
-        UserSnapshot mockSnapshot = anUserSnapshot()
+        var user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
-                .isEnabled(false)
+                .withVerificationToken(VerificationToken.restore(mockSnapshot.getToken()))
                 .build();
 
         //when
-        UserSnapshot snapshot = user.createSnapshot();
+        var snapshot = user.createSnapshot();
 
         //then
         assertSnapshotsAreEqual(snapshot, mockSnapshot);
@@ -108,23 +114,24 @@ public class UserTest {
     @Test
     public void testCreateUserSnapshotWithInitializedUser() {
         //given
-        User user = anUser()
+        var user = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
                 .buildInitialized();
 
-        UserSnapshot mockSnapshot = anUserSnapshot()
-                .withId(user.getId())
+        var mockSnapshot = anUserSnapshot()
+                .withUserId(user.getId())
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withToken(user.createSnapshot().getToken())
                 .build();
 
         //when
-        UserSnapshot snapshot = user.createSnapshot();
+        var snapshot = user.createSnapshot();
 
         //then
         assertSnapshotsAreEqual(snapshot, mockSnapshot);
@@ -133,26 +140,20 @@ public class UserTest {
     @Test
     public void testCreateUserSnapshotWithEnabledUser() {
         //given
-        User user = anUser()
+        var mockSnapshot = anUserSnapshot()
+                .withUserId(new UserId(UUID.randomUUID()))
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
-                .buildInitialized();
-
-        user.enable();
-
-        UserSnapshot mockSnapshot = anUserSnapshot()
-                .withId(user.getId())
-                .withUsername("Test")
-                .withPassword("Pa$$word")
-                .withEmail("example@example.com")
-                .withRole(UserRole.COMMON_USER)
-                .isEnabled(true)
+                .withIsEnabled(true)
+                .withToken(createTokenSnapshot())
                 .build();
 
+        var user = User.restore(mockSnapshot);
+
         //when
-        UserSnapshot snapshot = user.createSnapshot();
+        var snapshot = user.createSnapshot();
 
         //then
         assertSnapshotsAreEqual(snapshot, mockSnapshot);
@@ -161,23 +162,25 @@ public class UserTest {
     @Test
     public void testRestoreUser() {
         //given
-        UserSnapshot snapshot = anUserSnapshot()
+        var snapshot = anUserSnapshot()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withToken(createTokenSnapshot())
                 .build();
 
-        User mockUser = anUser()
+        var mockUser = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withVerificationToken(VerificationToken.restore(snapshot.getToken()))
                 .build();
 
 
         //when
-        User user = User.restore(snapshot);
+        var user = User.restore(snapshot);
 
         //then
         assertUsersAreEqual(user, mockUser);
@@ -186,21 +189,23 @@ public class UserTest {
     @Test
     public void testRestoreInitializedUser() {
         //given
-        UserId userId = new UserId(UUID.randomUUID());
+        var userId = new UserId(UUID.randomUUID());
 
-        UserSnapshot snapshot = anUserSnapshot()
-                .withId(userId)
+        var snapshot = anUserSnapshot()
+                .withUserId(userId)
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withToken(createTokenSnapshot())
                 .build();
 
-        User mockUser = anUser()
+        var mockUser = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withVerificationToken(VerificationToken.restore(createTokenSnapshot()))
                 .build();
 
         mockUser.setId(userId);
@@ -215,37 +220,44 @@ public class UserTest {
     @Test
     public void testRestoreEnabledUser() {
         //given
-        UserId userId = new UserId(UUID.randomUUID());
-
-        UserSnapshot snapshot = anUserSnapshot()
-                .withId(userId)
+        var userId = new UserId(UUID.randomUUID());
+        var tokenSnapshot = createTokenSnapshot();
+        var snapshot = anUserSnapshot()
+                .withUserId(userId)
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
-                .isEnabled(true)
+                .withIsEnabled(true)
+                .withToken(tokenSnapshot)
                 .build();
 
-        User mockUser = anUser()
+        var mockUser = anUser()
                 .withUsername("Test")
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withVerificationToken(VerificationToken.restore(tokenSnapshot))
                 .build();
 
         mockUser.setId(userId);
         mockUser.enable();
 
         //when
-        User user = User.restore(snapshot);
+        var user = User.restore(snapshot);
 
         //then
         assertUsersAreEqual(user, mockUser);
     }
 
 
+    private VerificationTokenSnapshot createTokenSnapshot() {
+        return new VerificationTokenSnapshot(new TokenId(UUID.randomUUID()),UUID.randomUUID().toString(), Date.from(Instant.now() ));
+    }
+
     private void assertUserIsInitialized(User user) {
         assertNotNull(user.getId());
+        assertNotNull(user.createSnapshot().getToken());
         assertFalse(user.isEnabled());
     }
 
