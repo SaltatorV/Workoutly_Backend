@@ -20,6 +20,7 @@ public class User extends AggregateRoot<UserId> {
         this.password = password;
         this.email = email;
         this.userRole = userRole;
+        token = new VerificationToken();
     }
 
     public User(String username, String password, String email, UserRole userRole, VerificationToken token) {
