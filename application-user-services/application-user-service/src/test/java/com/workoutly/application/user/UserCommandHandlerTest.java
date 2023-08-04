@@ -239,7 +239,7 @@ public class UserCommandHandlerTest {
     }
 
     private UserSnapshot createCommonUserSnapshot(UserSnapshot snapshot, RegisterUserCommand command) {
-        User user = new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON_USER);
+        User user = new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON_USER, VerificationToken.restore(snapshot.getToken()));
         user.setId(snapshot.getUserId());
         return user.createSnapshot();
     }
