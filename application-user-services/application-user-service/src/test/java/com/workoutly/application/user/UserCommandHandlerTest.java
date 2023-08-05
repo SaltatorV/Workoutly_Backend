@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.Date;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.Optional;
@@ -141,14 +140,18 @@ public class UserCommandHandlerTest {
         //given
         var activationUserCommand = new ActivationUserCommand("abcdefgh");
         var snapshot = createValidUserSnapshot();
-
+        var createdEvent = createActivatedUserEvent(snapshot);
         doReturn(Optional.of(snapshot))
                 .when(userRepository)
                 .findByVerificationToken(activationUserCommand.getToken());
 
-        doReturn(createActivatedUserEvent(snapshot))
+        doReturn(createdEvent)
                 .when(userDomainService)
                 .activateUser(User.restore(snapshot));
+
+        doReturn(createdEvent.getSnapshot())
+                .when(userRepository)
+                .save(createdEvent.getSnapshot());
 
         //when
         var event = userCommandHandler.activateUser(activationUserCommand);

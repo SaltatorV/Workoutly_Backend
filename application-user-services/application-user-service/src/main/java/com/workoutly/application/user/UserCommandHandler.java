@@ -44,16 +44,14 @@ class UserCommandHandler {
     public UserActivatedEvent activateUser(ActivationUserCommand command) {
         Optional<UserSnapshot> snapshot = userRepository.findByVerificationToken(command.getToken());
 
-        if(snapshot.isEmpty()) {
-            throw new UserNotBoundException();
-        }
+        checkIsUserFound(snapshot);
+
         VerificationToken token = VerificationToken.restore(snapshot.get().getToken());
 
-        if(tokenExpired(token)) {
-            throw new VerificationTokenExpiredException();
-        }
+        verifyToken(token);
 
         UserActivatedEvent event = userDomainService.activateUser(User.restore(snapshot.get()));
+        userRepository.save(event.getSnapshot());
 
         return event;
     }
@@ -67,6 +65,18 @@ class UserCommandHandler {
     private void checkUserIsSaved(UserSnapshot snapshot) {
         if (snapshot == null) {
             throw new UserNotRegisteredException();
+        }
+    }
+
+    private void checkIsUserFound(Optional<UserSnapshot> snapshot) {
+        if(snapshot.isEmpty()) {
+            throw new UserNotBoundException();
+        }
+    }
+
+    private void verifyToken(VerificationToken token) {
+        if(tokenExpired(token)) {
+            throw new VerificationTokenExpiredException();
         }
     }
 
