@@ -54,6 +54,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<UserSnapshot> findByVerificationToken(String token) {
+
         return null;
     }
 

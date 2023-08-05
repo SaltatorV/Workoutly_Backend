@@ -12,6 +12,7 @@ public class UserDomainServiceImpl implements UserDomainService{
 
     @Override
     public UserActivatedEvent activateUser(User user) {
-        return null;
+        user.enable();
+        return new UserActivatedEvent(user.createSnapshot());
     }
 }
