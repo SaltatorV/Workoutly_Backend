@@ -8,12 +8,15 @@ import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.exception.UserNotBoundException;
 import com.workoutly.application.user.exception.UserNotRegisteredException;
 import com.workoutly.application.user.exception.UserNotUniqueException;
+import com.workoutly.application.user.exception.VerificationTokenExpiredException;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.output.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 @Component
@@ -44,6 +47,11 @@ class UserCommandHandler {
         if(snapshot.isEmpty()) {
             throw new UserNotBoundException();
         }
+        VerificationToken token = VerificationToken.restore(snapshot.get().getToken());
+
+        if(tokenExpired(token)) {
+            throw new VerificationTokenExpiredException();
+        }
 
         UserActivatedEvent event = userDomainService.activateUser(User.restore(snapshot.get()));
 
@@ -60,5 +68,13 @@ class UserCommandHandler {
         if (snapshot == null) {
             throw new UserNotRegisteredException();
         }
+    }
+
+    private boolean tokenExpired(VerificationToken token) {
+        return token.isTokenExpired(now());
+    }
+
+    private Date now() {
+        return Date.from(Instant.now());
     }
 }

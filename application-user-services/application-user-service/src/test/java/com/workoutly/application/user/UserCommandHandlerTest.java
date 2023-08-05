@@ -6,10 +6,7 @@ import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
-import com.workoutly.application.user.exception.ApplicationUserDomainException;
-import com.workoutly.application.user.exception.UserNotBoundException;
-import com.workoutly.application.user.exception.UserNotRegisteredException;
-import com.workoutly.application.user.exception.UserNotUniqueException;
+import com.workoutly.application.user.exception.*;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.output.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -20,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -142,7 +140,7 @@ public class UserCommandHandlerTest {
     public void testUserActivated() {
         //given
         var activationUserCommand = new ActivationUserCommand("abcdefgh");
-        var snapshot = createCommonUserSnapshot();
+        var snapshot = createValidUserSnapshot();
 
         doReturn(Optional.of(snapshot))
                 .when(userRepository)
@@ -176,6 +174,23 @@ public class UserCommandHandlerTest {
         assertExceptionIsUserNotBound(exception);
     }
 
+    @Test
+    public void testUserActivationThrowTokenExpiredException() {
+        //given
+        var command = new ActivationUserCommand("abcdefgh");
+        var snapshot = createExpiredUserSnapshot();
+
+        doReturn(Optional.of(snapshot))
+                .when(userRepository)
+                .findByVerificationToken(command.getToken());
+
+        //when
+        var exception = throwExceptionWhenUserIsExpired(command);
+
+        //then
+        assertExceptionIsVerificationTokenExpired(exception);
+    }
+
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {
         return new User(
                 command.getUsername(),
@@ -185,7 +200,15 @@ public class UserCommandHandlerTest {
         );
     }
 
-    private UserSnapshot createCommonUserSnapshot() {
+    private UserSnapshot createValidUserSnapshot() {
+        return createUserSnapshot(createTokenSnapshot());
+    }
+
+    private UserSnapshot createExpiredUserSnapshot() {
+        return createUserSnapshot(createExpiredTokenSnapshot());
+    }
+
+    private UserSnapshot createUserSnapshot(VerificationTokenSnapshot tokenSnapshot) {
         return new UserSnapshot(
                 new UserId(UUID.randomUUID()),
                 "test",
@@ -193,7 +216,7 @@ public class UserCommandHandlerTest {
                 "example@example.to",
                 UserRole.COMMON_USER,
                 false,
-                createTokenSnapshot()
+                tokenSnapshot
         );
     }
 
@@ -248,6 +271,9 @@ public class UserCommandHandlerTest {
         return assertThrows(UserNotRegisteredException.class, () -> userCommandHandler.createCommonUser(command));
     }
 
+    private ApplicationUserDomainException throwExceptionWhenUserIsExpired(ActivationUserCommand command) {
+        return assertThrows(VerificationTokenExpiredException.class, () -> userCommandHandler.activateUser(command));
+    }
 
     private void assertExceptionIsUserNotUnique(ApplicationUserDomainException exception) {
         assertExceptionsMessagesEqual(new UserNotUniqueException(), exception);
@@ -259,6 +285,10 @@ public class UserCommandHandlerTest {
 
     private void assertExceptionIsUserNotBound(ApplicationUserDomainException exception) {
         assertExceptionsMessagesEqual(new UserNotBoundException(), exception);
+    }
+
+    private void assertExceptionIsVerificationTokenExpired(ApplicationUserDomainException exception) {
+        assertExceptionsMessagesEqual(new VerificationTokenExpiredException(), exception);
     }
 
     private void assertExceptionsMessagesEqual(ApplicationUserDomainException expected, ApplicationUserDomainException actual) {
@@ -274,6 +304,16 @@ public class UserCommandHandlerTest {
     }
 
     private VerificationTokenSnapshot createTokenSnapshot() {
-        return new VerificationTokenSnapshot(new TokenId(UUID.randomUUID()),UUID.randomUUID().toString(), Date.from(Instant.now() ));
+        return VerificationToken.generateToken().createTokenSnapshot();
     }
+
+    private VerificationTokenSnapshot createExpiredTokenSnapshot() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(java.util.Date.from(Instant.now()));
+        calendar.add(Calendar.HOUR_OF_DAY, -2);
+
+        return new VerificationTokenSnapshot(new TokenId(UUID.randomUUID()),UUID.randomUUID().toString(), calendar.getTime());
+    }
+
+
 }
