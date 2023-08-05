@@ -54,8 +54,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<UserSnapshot> findByVerificationToken(String token) {
+        Optional<UserEntity> user = userJpaRepository.findByTokenToken(token);
 
-        return null;
+        return user.map(mapper::mapUserEntityToUserSnapshot);
     }
 
     private boolean isUsernameExists(String username) {

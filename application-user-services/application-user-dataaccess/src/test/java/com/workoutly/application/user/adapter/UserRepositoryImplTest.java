@@ -187,11 +187,51 @@ public class UserRepositoryImplTest {
         assertTrue(isUserExists);
     }
 
+    @Test
+    public void testFindByVerificationToken() {
+        //given
+        var token = createToken();
+        var entity = UserEntity.builder()
+                .userId(UUID.randomUUID().toString())
+                .username("test")
+                .password("password")
+                .email("example@example.to")
+                .isEnabled(false)
+                .token(token)
+                .build();
+        var snapshot = createSnapshotFromEntity(entity);
 
+        doReturn(Optional.of(entity))
+                .when(userJpaRepository)
+                .findByTokenToken(token.getToken());
+
+        doReturn(snapshot)
+                .when(mapper)
+                .mapUserEntityToUserSnapshot(entity);
+
+        //when
+        var foundSnapshot = userRepository.findByVerificationToken(token.getToken());
+
+        //then
+        assertIsUserSnapshotValid(entity, foundSnapshot.get());
+    }
 
     @Test
-    public void testCheckUserIsUniqueThrowUsernameException() {
+    public void testFindByVerificationTokenIsEmpty() {
+        //given
+        var token = createToken();
 
+
+        doReturn(Optional.empty())
+                .when(userJpaRepository)
+                .findByTokenToken(token.getToken());
+
+
+        //when
+        var foundSnapshot = userRepository.findByVerificationToken(token.getToken());
+
+        //then
+        assertTrue(foundSnapshot.isEmpty());
     }
 
     private void assertIsUserSnapshotValid(UserEntity userEntity, UserSnapshot snapshot) {
