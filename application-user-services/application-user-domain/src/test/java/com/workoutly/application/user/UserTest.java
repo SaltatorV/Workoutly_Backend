@@ -127,6 +127,7 @@ public class UserTest {
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
+                .withIsEnabled(false)
                 .withToken(user.createSnapshot().getToken())
                 .build();
 
