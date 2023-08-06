@@ -23,7 +23,7 @@ import java.util.UUID;
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserCommandHandlerTest {
@@ -159,6 +159,7 @@ public class UserCommandHandlerTest {
         //then
         assertIsEventCreated(event);
         assertIsUserActivated(event);
+        verify(userRepository, times(1)).save(any());
     }
 
     @Test
