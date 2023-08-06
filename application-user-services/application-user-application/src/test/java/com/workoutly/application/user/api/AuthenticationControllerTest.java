@@ -1,10 +1,13 @@
 package com.workoutly.application.user.api;
 
 
+import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.AuthenticationCommand;
 import com.workoutly.application.user.dto.response.TokenResponse;
 import com.workoutly.application.user.mock.MockExceptionHandler;
 import com.workoutly.application.user.port.input.UserApplicationService;
+import com.workoutly.common.exception.ErrorResponse;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +22,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.UUID;
 
+import static com.workoutly.application.user.mock.MockExceptionHandler.createErrorResponse;
 import static com.workoutly.application.user.utils.ResponseValidator.*;
 import static com.workoutly.application.user.utils.ResponseValidator.responseContentIs;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthenticationControllerTest {
@@ -63,6 +68,23 @@ public class AuthenticationControllerTest {
         assertResponseContentIs(response);
     }
 
+    @Test
+    public void testAuthenticationFailure() {
+        //given
+        var command = new AuthenticationCommand("test", "Super$ecure5");
+
+        doThrow(new ValidationException())
+                .when(userApplicationService)
+                .authenticate(command);
+
+        //when
+        performAuthenticationCommand(command);
+
+        //then
+        assertResponseStatusIs(isBadRequest());
+        assertResponseContentIs(errorResponse());
+    }
+
     private TokenResponse createTokenResponse() {
         return new TokenResponse(UUID.randomUUID().toString());
     }
@@ -94,5 +116,9 @@ public class AuthenticationControllerTest {
 
     private void assertResponseContentIs(Object response) {
         assertEquals(mapToString(response), responseContentIs());
+    }
+
+    private ErrorResponse errorResponse() {
+        return createErrorResponse();
     }
 }

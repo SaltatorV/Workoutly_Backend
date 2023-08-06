@@ -88,7 +88,7 @@ public class RegisterControllerTest {
 
         //then
         assertResponseStatusIs(isBadRequest());
-        assertResponseContentIs(registerFailure());
+        assertResponseContentIs(errorResponse());
     }
 
     @Test
@@ -108,7 +108,24 @@ public class RegisterControllerTest {
         assertResponseContentIs(successfullyActivated());
     }
 
-    private ErrorResponse registerFailure() {
+    @Test
+    public void testActivateUserFailure() {
+        //given
+        var command = new ActivationUserCommand("ABCDEFGHIJKLMNOPQRSTWUYZ");
+
+        doThrow(new ValidationException())
+                .when(userApplicationService)
+                .activateUserAccount(command);
+
+        //when
+        performActivationCommand(command);
+
+        //then
+        assertResponseStatusIs(isBadRequest());
+        assertResponseContentIs(errorResponse());
+    }
+
+    private ErrorResponse errorResponse() {
         return createErrorResponse();
     }
 
