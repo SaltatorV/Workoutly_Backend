@@ -1,7 +1,9 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.auth.TokenService;
 import com.workoutly.application.user.dto.command.ActivationUserCommand;
+import com.workoutly.application.user.dto.command.AuthenticationCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
@@ -12,6 +14,10 @@ import com.workoutly.application.user.exception.VerificationTokenExpiredExceptio
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.output.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +31,8 @@ class UserCommandHandler {
     private final UserDataMapper userDataMapper;
     private final UserDomainService userDomainService;
     private final UserRepository userRepository;
+    private final TokenService tokenService;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public UserCreatedEvent createCommonUser(RegisterUserCommand registerUserCommand) {
@@ -48,12 +56,24 @@ class UserCommandHandler {
 
         VerificationToken token = VerificationToken.restore(snapshot.get().getToken());
 
-        verifyToken(token);
+        verifyActivationToken(token);
 
         UserActivatedEvent event = userDomainService.activateUser(User.restore(snapshot.get()));
         userRepository.save(event.getSnapshot());
 
         return event;
+    }
+
+
+    public String authenticate(AuthenticationCommand authenticationCommand) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authenticationCommand.getUsername(),
+                        authenticationCommand.getPassword()
+                )
+        );
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        return tokenService.generateNewToken(userDetails);
     }
 
     private void checkUserIsUnique(UserSnapshot snapshot) {
@@ -74,13 +94,13 @@ class UserCommandHandler {
         }
     }
 
-    private void verifyToken(VerificationToken token) {
-        if(tokenExpired(token)) {
+    private void verifyActivationToken(VerificationToken token) {
+        if(verificationTokenExpired(token)) {
             throw new VerificationTokenExpiredException();
         }
     }
 
-    private boolean tokenExpired(VerificationToken token) {
+    private boolean verificationTokenExpired(VerificationToken token) {
         return token.isTokenExpired(now());
     }
 

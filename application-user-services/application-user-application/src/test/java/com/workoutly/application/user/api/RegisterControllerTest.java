@@ -1,11 +1,11 @@
 package com.workoutly.application.user.api;
 
-import com.workoutly.application.user.UserApplicationServiceImpl;
 import com.workoutly.application.user.dto.command.ActivationUserCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.mock.MockExceptionHandler;
+import com.workoutly.application.user.port.input.UserApplicationService;
 import com.workoutly.common.exception.ErrorResponse;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ public class RegisterControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private UserApplicationServiceImpl userApplicationService;
+    private UserApplicationService userApplicationService;
 
     @InjectMocks
     private RegisterController controller;
@@ -109,9 +109,6 @@ public class RegisterControllerTest {
     }
 
     private ErrorResponse registerFailure() {
-        return createErrorResponse();
-    }
-    private ErrorResponse activationFailure() {
         return createErrorResponse();
     }
 

@@ -2,6 +2,7 @@ package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.*;
 import com.workoutly.application.user.dto.command.ActivationUserCommand;
+import com.workoutly.application.user.dto.command.AuthenticationCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
@@ -77,6 +78,23 @@ public class UserApplicationServiceImplTest {
         assertResponseIsValid(userActivatedEvent, response);
     }
 
+    @Test
+    public void testAuthenticateUser() {
+        //given
+        var command = new AuthenticationCommand("test", "Super$ecure5");
+        var token = createRandomToken();
+
+        doReturn(token)
+                .when(handler)
+                .authenticate(command);
+
+        //when
+        var response = service.authenticate(command);
+
+        //then
+        assertEquals(token, response.getToken());
+    }
+
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
         RegisterUserResponse responseFromCommand = validCreatedResponseMessage(command);
         assertEquals(mapToString(responseFromCommand), mapToString(response));
@@ -133,4 +151,7 @@ public class UserApplicationServiceImplTest {
         return new VerificationTokenSnapshot(new TokenId(UUID.randomUUID()),UUID.randomUUID().toString(), Date.from(Instant.now() ));
     }
 
+    private String createRandomToken() {
+        return UUID.randomUUID().toString();
+    }
 }

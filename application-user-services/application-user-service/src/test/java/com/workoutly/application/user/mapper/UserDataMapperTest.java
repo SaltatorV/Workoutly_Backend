@@ -8,14 +8,23 @@ import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
 import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doReturn;
 
+@ExtendWith(MockitoExtension.class)
 public class UserDataMapperTest {
-
-    private UserDataMapper userDataMapper = new UserDataMapper();
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @InjectMocks
+    private UserDataMapper userDataMapper;
 
     @Test
     public void testRegisterUserCommandToCommonUser() {
@@ -26,6 +35,10 @@ public class UserDataMapperTest {
                 .withConfirmPassword("Password")
                 .withEmailAddress("Example@example.pl")
                 .create();
+
+        doReturn(command.getPassword())
+                .when(passwordEncoder)
+                .encode(command.getPassword());
 
         //when
         var user = userDataMapper.registerUserCommandToCommonUser(command);

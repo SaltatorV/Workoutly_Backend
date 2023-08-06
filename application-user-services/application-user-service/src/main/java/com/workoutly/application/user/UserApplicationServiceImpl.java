@@ -1,9 +1,12 @@
 package com.workoutly.application.user;
 
+import com.workoutly.application.user.auth.TokenService;
 import com.workoutly.application.user.dto.command.ActivationUserCommand;
+import com.workoutly.application.user.dto.command.AuthenticationCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
+import com.workoutly.application.user.dto.response.TokenResponse;
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
@@ -30,5 +33,11 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     public MessageResponse activateUserAccount(ActivationUserCommand activationUserCommand) {
         UserActivatedEvent event = handler.activateUser(activationUserCommand);
         return new MessageResponse(String.format("User: %s has been activated", event.getSnapshot().getUsername()));
+    }
+
+    @Override
+    public TokenResponse authenticate(AuthenticationCommand authenticationCommand) {
+        String token = handler.authenticate(authenticationCommand);
+        return new TokenResponse(token);
     }
 }
