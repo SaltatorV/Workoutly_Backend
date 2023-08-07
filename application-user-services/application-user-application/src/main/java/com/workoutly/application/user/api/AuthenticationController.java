@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final UserApplicationService userApplicationService;
+    private final UserApplicationService service;
 
     @PostMapping("/login")
     TokenResponse authenticate(@RequestBody AuthenticationCommand authenticationCommand) {
-       TokenResponse response = userApplicationService.authenticate(authenticationCommand);
-        return response;
+        return service.authenticate(authenticationCommand);
     }
 }

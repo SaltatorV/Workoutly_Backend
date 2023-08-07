@@ -13,17 +13,15 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class RegisterController {
-    private final UserApplicationService userApplicationService;
+    private final UserApplicationService service;
 
     @PostMapping("/register")
     RegisterUserResponse createCommonAccount(@RequestBody RegisterUserCommand registerUserCommand) {
-        RegisterUserResponse registerUserResponse = userApplicationService.createCommonUser(registerUserCommand);
-        return registerUserResponse;
+        return service.createCommonUser(registerUserCommand);
     }
 
     @PostMapping("/activate")
     MessageResponse activateAccount(@RequestBody ActivationUserCommand activationUserCommand) {
-        MessageResponse messageResponse = userApplicationService.activateUserAccount(activationUserCommand);
-        return messageResponse;
+        return service.activateUserAccount(activationUserCommand);
     }
 }

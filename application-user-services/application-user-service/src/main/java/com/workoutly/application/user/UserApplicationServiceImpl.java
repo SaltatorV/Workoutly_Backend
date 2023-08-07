@@ -1,9 +1,7 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.auth.TokenService;
-import com.workoutly.application.user.dto.command.ActivationUserCommand;
-import com.workoutly.application.user.dto.command.AuthenticationCommand;
-import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import com.workoutly.application.user.dto.command.*;
 import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.dto.response.TokenResponse;
@@ -39,5 +37,15 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     public TokenResponse authenticate(AuthenticationCommand authenticationCommand) {
         String token = handler.authenticate(authenticationCommand);
         return new TokenResponse(token);
+    }
+
+    @Override
+    public MessageResponse changeEmail(ChangeEmailCommand command) {
+        return null;
+    }
+
+    @Override
+    public MessageResponse changePassword(ChangePasswordCommand command) {
+        return null;
     }
 }
