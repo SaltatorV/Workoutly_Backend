@@ -1,12 +1,11 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.*;
-import com.workoutly.application.user.dto.command.ActivationUserCommand;
-import com.workoutly.application.user.dto.command.AuthenticationCommand;
-import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import com.workoutly.application.user.dto.command.*;
 import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserActivatedEvent;
+import com.workoutly.application.user.event.UserChangedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import org.junit.jupiter.api.Test;
@@ -95,6 +94,42 @@ public class UserApplicationServiceImplTest {
         assertEquals(token, response.getToken());
     }
 
+    @Test
+    public void testChangeEmail() {
+        //given
+        var command = new ChangeEmailCommand("example@example.to", "password");
+        var event = createUserChangedEmailEvent(command);
+
+        doReturn(event)
+                .when(handler)
+                .changeEmail(command);
+
+        //when
+        var response = service.changeEmail(command);
+
+        //then
+        assertResponseIsEmailChanged(response);
+    }
+
+
+    @Test
+    public void testChangePassword() {
+        //given
+        var command = new ChangePasswordCommand("password", "new-password");
+        var event = createUserChangedPasswordEvent(command);
+
+        doReturn(event)
+                .when(handler)
+                .changePassword(command);
+
+        //when
+        var response = service.changePassword(command);
+
+        //then
+        assertResponseIsPasswordChanged(response);
+    }
+
+
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
         RegisterUserResponse responseFromCommand = validCreatedResponseMessage(command);
         assertEquals(mapToString(responseFromCommand), mapToString(response));
@@ -102,7 +137,17 @@ public class UserApplicationServiceImplTest {
 
     private void assertResponseIsValid(UserActivatedEvent event, MessageResponse response) {
         String template = String.format("User: %s has been activated", event.getSnapshot().getUsername());
-        assertTrue(response.getMessage().equals(template));
+        assertEquals(response.getMessage(), template);
+    }
+
+    private void assertResponseIsEmailChanged(MessageResponse response) {
+        String template = "The email address has been changed.";
+        assertEquals(response.getMessage(), template);
+    }
+
+    private void assertResponseIsPasswordChanged(MessageResponse response) {
+        String template = "The password has been changed.";
+        assertEquals(response.getMessage(), template);
     }
 
     private RegisterUserResponse validCreatedResponseMessage(RegisterUserCommand command) {
@@ -153,5 +198,32 @@ public class UserApplicationServiceImplTest {
 
     private String createRandomToken() {
         return UUID.randomUUID().toString();
+    }
+
+
+    private UserChangedEvent createUserChangedEmailEvent(ChangeEmailCommand command) {
+        UserSnapshot userSnapshot = new UserSnapshot(new UserId(UUID.randomUUID()),
+                "test",
+                command.getEmailAddress(),
+                "password",
+                UserRole.COMMON_USER,
+                true,
+                null
+        );
+
+        return new UserChangedEvent(userSnapshot, "The email address has been changed.");
+    }
+
+    private UserChangedEvent createUserChangedPasswordEvent(ChangePasswordCommand command) {
+        UserSnapshot userSnapshot = new UserSnapshot(new UserId(UUID.randomUUID()),
+                "test",
+                "example@example.to",
+                command.getNewPassword(),
+                UserRole.COMMON_USER,
+                true,
+                null
+        );
+
+        return new UserChangedEvent(userSnapshot, "The password has been changed.");
     }
 }

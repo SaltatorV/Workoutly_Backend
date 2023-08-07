@@ -2,10 +2,9 @@ package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.auth.TokenService;
-import com.workoutly.application.user.dto.command.ActivationUserCommand;
-import com.workoutly.application.user.dto.command.AuthenticationCommand;
-import com.workoutly.application.user.dto.command.RegisterUserCommand;
+import com.workoutly.application.user.dto.command.*;
 import com.workoutly.application.user.event.UserActivatedEvent;
+import com.workoutly.application.user.event.UserChangedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.exception.UserNotBoundException;
 import com.workoutly.application.user.exception.UserNotRegisteredException;
@@ -106,5 +105,13 @@ class UserCommandHandler {
 
     private Date now() {
         return Date.from(Instant.now());
+    }
+
+    public UserChangedEvent changeEmail(ChangeEmailCommand command) {
+        return null;
+    }
+
+    public UserChangedEvent changePassword(ChangePasswordCommand command) {
+        return null;
     }
 }
