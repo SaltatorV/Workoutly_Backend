@@ -82,7 +82,7 @@ public class UserCommandHandlerTest {
     }
 
     @Test
-    public void testCreateNewUserThrowException() {
+    public void testCreateNewUserThrowNotSavedException() {
         //given
         var command = aRegisterUserCommand()
                 .withUsername("Test")
@@ -107,7 +107,7 @@ public class UserCommandHandlerTest {
                 .initializeUser(commonUser);
 
         //when
-        var exception = throwExceptionWhenCreateUser(command);
+        var exception = throwNotSavedExceptionWhenCreateUser(command);
 
         //then
         assertExceptionIsUserNotRegistered(exception);
@@ -201,6 +201,12 @@ public class UserCommandHandlerTest {
         assertExceptionIsVerificationTokenExpired(exception);
     }
 
+    @Test
+    public void testAuthenticateUser() {
+        //given
+
+    }
+
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {
         return new User(
                 command.getUsername(),
@@ -277,7 +283,7 @@ public class UserCommandHandlerTest {
         return user.createSnapshot();
     }
 
-    private ApplicationUserDomainException throwExceptionWhenCreateUser(RegisterUserCommand command) {
+    private ApplicationUserDomainException throwNotSavedExceptionWhenCreateUser(RegisterUserCommand command) {
         return assertThrows(UserNotRegisteredException.class, () -> userCommandHandler.createCommonUser(command));
     }
 
