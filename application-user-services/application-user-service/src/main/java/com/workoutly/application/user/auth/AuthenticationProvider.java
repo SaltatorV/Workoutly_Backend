@@ -21,7 +21,7 @@ public class AuthenticationProvider {
     }
 
     public UserDetails createUserDetails(UsernamePasswordAuthenticationToken authenticationToken) {
-        return (UserDetails) authenticationManager.authenticate(authenticationToken);
+        return (UserDetails) authenticationManager.authenticate(authenticationToken).getPrincipal();
     }
 
     public boolean checkPasswordsMatch(String commandPassword, String currentPassword) {
