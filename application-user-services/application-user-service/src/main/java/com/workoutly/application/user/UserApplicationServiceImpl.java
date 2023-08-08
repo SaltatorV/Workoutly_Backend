@@ -5,7 +5,7 @@ import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.dto.response.TokenResponse;
 import com.workoutly.application.user.event.UserActivatedEvent;
-import com.workoutly.application.user.event.UserChangedEvent;
+import com.workoutly.application.user.event.UserUpdateEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.input.UserApplicationService;
@@ -41,13 +41,13 @@ public class UserApplicationServiceImpl implements UserApplicationService {
 
     @Override
     public MessageResponse changeEmail(ChangeEmailCommand command) {
-        UserChangedEvent event = handler.changeEmail(command);
+        UserUpdateEvent event = handler.changeEmail(command);
         return new MessageResponse("The email address has been changed.");
     }
 
     @Override
     public MessageResponse changePassword(ChangePasswordCommand command) {
-        UserChangedEvent event = handler.changePassword(command);
+        UserUpdateEvent event = handler.changePassword(command);
         return new MessageResponse("The password has been changed.");
     }
 }
