@@ -5,7 +5,7 @@ import com.workoutly.application.user.dto.command.*;
 import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserActivatedEvent;
-import com.workoutly.application.user.event.UserChangedEvent;
+import com.workoutly.application.user.event.UserUpdateEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import org.junit.jupiter.api.Test;
@@ -201,7 +201,7 @@ public class UserApplicationServiceImplTest {
     }
 
 
-    private UserChangedEvent createUserChangedEmailEvent(ChangeEmailCommand command) {
+    private UserUpdateEvent createUserChangedEmailEvent(ChangeEmailCommand command) {
         UserSnapshot userSnapshot = new UserSnapshot(new UserId(UUID.randomUUID()),
                 "test",
                 command.getEmailAddress(),
@@ -211,10 +211,10 @@ public class UserApplicationServiceImplTest {
                 null
         );
 
-        return new UserChangedEvent(userSnapshot, "The email address has been changed.");
+        return new UserUpdateEvent(userSnapshot, "The email address has been changed.");
     }
 
-    private UserChangedEvent createUserChangedPasswordEvent(ChangePasswordCommand command) {
+    private UserUpdateEvent createUserChangedPasswordEvent(ChangePasswordCommand command) {
         UserSnapshot userSnapshot = new UserSnapshot(new UserId(UUID.randomUUID()),
                 "test",
                 "example@example.to",
@@ -224,6 +224,6 @@ public class UserApplicationServiceImplTest {
                 null
         );
 
-        return new UserChangedEvent(userSnapshot, "The password has been changed.");
+        return new UserUpdateEvent(userSnapshot, "The password has been changed.");
     }
 }
