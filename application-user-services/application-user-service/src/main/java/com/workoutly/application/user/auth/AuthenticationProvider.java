@@ -27,4 +27,8 @@ public class AuthenticationProvider {
     public boolean checkPasswordsMatch(String commandPassword, String currentPassword) {
         return passwordEncoder.matches(commandPassword, currentPassword);
     }
+
+    public String encodePassword(String newPassword) {
+        return passwordEncoder.encode(newPassword);
+    }
 }

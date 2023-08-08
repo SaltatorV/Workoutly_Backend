@@ -75,7 +75,7 @@ class UserCommandHandler {
         UserSnapshot userSnapshot = userRepository.findByUsername(authenticationProvider.getAuthenticatedUsername());
         checkPasswordsMatch(command.getPassword(), userSnapshot);
 
-        UserUpdateEvent event = userDomainService.changeEmail(userSnapshot);
+        UserUpdateEvent event = userDomainService.changeEmail(User.restore(userSnapshot), command.getEmailAddress());
 
         userRepository.save(event.getSnapshot());
 
@@ -87,7 +87,7 @@ class UserCommandHandler {
         UserSnapshot userSnapshot = userRepository.findByUsername(authenticationProvider.getAuthenticatedUsername());
         checkPasswordsMatch(command.getPassword(), userSnapshot);
 
-        UserUpdateEvent event = userDomainService.changePassword(userSnapshot);
+        UserUpdateEvent event = userDomainService.changePassword(User.restore(userSnapshot), authenticationProvider.encodePassword(command.getNewPassword()));
 
         userRepository.save(event.getSnapshot());
 

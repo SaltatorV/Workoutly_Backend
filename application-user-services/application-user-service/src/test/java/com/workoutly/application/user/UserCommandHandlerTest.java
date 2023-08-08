@@ -206,6 +206,7 @@ public class UserCommandHandlerTest {
         //given
         var command = new ChangeEmailCommand("email@email.to", "password");
         var snapshot = createValidUserSnapshot();
+        var user = User.restore(snapshot);
         var createdEvent = createUserUpdateEvent(command, snapshot);
 
         doReturn(snapshot)
@@ -218,7 +219,7 @@ public class UserCommandHandlerTest {
 
         doReturn(createdEvent)
                 .when(userDomainService)
-                .changeEmail(snapshot);
+                .changeEmail(user, command.getEmailAddress());
 
         //when
         var event = userCommandHandler.changeEmail(command);
@@ -254,8 +255,10 @@ public class UserCommandHandlerTest {
     public void testChangePassword() {
         //given
         var command = new ChangePasswordCommand("password", "password");
+        var encodedPassword = "AAAAAAAAAAAAAAAAAAA";
         var snapshot = createValidUserSnapshot();
-        var createdEvent = createUserUpdateEvent(command, snapshot);
+        var user = User.restore(snapshot);
+        var createdEvent = createUserUpdateEvent(encodedPassword, snapshot);
 
         doReturn(snapshot)
                 .when(userRepository)
@@ -265,16 +268,20 @@ public class UserCommandHandlerTest {
                 .when(authenticationProvider)
                 .checkPasswordsMatch(command.getPassword(), snapshot.getPassword());
 
+        doReturn(encodedPassword)
+                .when(authenticationProvider)
+                .encodePassword(command.getNewPassword());
+
         doReturn(createdEvent)
                 .when(userDomainService)
-                .changePassword(snapshot);
+                .changePassword(user, encodedPassword);
 
         //when
         var event = userCommandHandler.changePassword(command);
 
         //then
         assertIsEventCreated(event);
-        assertIsPasswordChanged(event, command);
+        assertIsPasswordChanged(event, encodedPassword);
         verify(userRepository, times(1)).save(any());
     }
 
@@ -357,12 +364,12 @@ public class UserCommandHandlerTest {
     }
 
 
-    private UserUpdateEvent createUserUpdateEvent(ChangePasswordCommand command, UserSnapshot snapshot) {
+    private UserUpdateEvent createUserUpdateEvent(String encodedPassword, UserSnapshot snapshot) {
         var newSnapshot = new UserSnapshot(
                 snapshot.getUserId(),
                 snapshot.getUsername(),
                 snapshot.getEmail(),
-                command.getNewPassword(),
+                encodedPassword,
                 snapshot.getRole(),
                 snapshot.isEnabled(),
                 snapshot.getToken()
@@ -408,8 +415,8 @@ public class UserCommandHandlerTest {
         assertEquals(command.getEmailAddress(), event.getSnapshot().getEmail());
     }
 
-    private void assertIsPasswordChanged(UserUpdateEvent event, ChangePasswordCommand command) {
-        assertEquals(command.getPassword(), event.getSnapshot().getPassword());
+    private void assertIsPasswordChanged(UserUpdateEvent event, String encodedPassword) {
+        assertEquals(encodedPassword, event.getSnapshot().getPassword());
     }
 
     private UserSnapshot createCommonUserSnapshot(UserSnapshot snapshot, RegisterUserCommand command) {

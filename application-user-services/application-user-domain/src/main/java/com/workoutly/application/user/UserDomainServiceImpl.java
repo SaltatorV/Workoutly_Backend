@@ -19,12 +19,14 @@ public class UserDomainServiceImpl implements UserDomainService{
     }
 
     @Override
-    public UserUpdateEvent changeEmail(UserSnapshot userSnapshot) {
-        return null;
+    public UserUpdateEvent changeEmail(User user, String email) {
+        user.changeEmail(email);
+        return new UserUpdateEvent(user.createSnapshot(), "Your email address has been changed.");
     }
 
     @Override
-    public UserUpdateEvent changePassword(UserSnapshot userSnapshot) {
-        return null;
+    public UserUpdateEvent changePassword(User user, String newPassword) {
+        user.changePassword(newPassword);
+        return new UserUpdateEvent(user.createSnapshot(), "Your password has been changed.");
     }
 }

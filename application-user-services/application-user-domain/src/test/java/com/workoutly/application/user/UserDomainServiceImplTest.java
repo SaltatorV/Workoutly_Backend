@@ -4,6 +4,7 @@ import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
+import com.workoutly.application.user.event.UserUpdateEvent;
 import org.junit.jupiter.api.Test;
 
 import static com.workoutly.application.user.builder.UserBuilder.anUser;
@@ -48,6 +49,46 @@ public class UserDomainServiceImplTest {
         assertUserIsActivated(event);
     }
 
+    @Test
+    public void testChangeEmail() {
+        //given
+        User user = anUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON_USER)
+                .withVerificationToken(VerificationToken.generateToken())
+                .build();
+
+        String email = "new@email.to";
+
+        //when
+        UserUpdateEvent event = service.changeEmail(user, email);
+
+        //then
+        assertEmailIsChanged(event, email);
+    }
+
+    @Test
+    public void testChangePassword() {
+        //given
+        User user = anUser()
+                .withUsername("Test")
+                .withPassword("Pa$$word")
+                .withEmail("example@example.com")
+                .withRole(UserRole.COMMON_USER)
+                .withVerificationToken(VerificationToken.generateToken())
+                .build();
+
+        String newPassword = "newPassword";
+
+        //when
+        UserUpdateEvent event = service.changePassword(user, newPassword);
+
+        //then
+        assertPasswordIsChanged(event, newPassword);
+    }
+
     private void assertUserIsInitialized(UserCreatedEvent event) {
         UserSnapshot snapshot = event.getSnapshot();
         assertNotNull(snapshot.getUserId());
@@ -58,5 +99,18 @@ public class UserDomainServiceImplTest {
         UserSnapshot snapshot = event.getSnapshot();
         assertTrue(snapshot.isEnabled());
     }
+
+    private void assertEmailIsChanged(UserUpdateEvent event, String email) {
+        String template = "Your email address has been changed.";
+        assertEquals(email,event.getSnapshot().getEmail());
+        assertEquals(template, event.getMessage());
+    }
+
+    private void assertPasswordIsChanged(UserUpdateEvent event, String newPassword) {
+        String template = "Your password has been changed.";
+        assertEquals(newPassword,event.getSnapshot().getPassword());
+        assertEquals(template, event.getMessage());
+    }
+
 
 }

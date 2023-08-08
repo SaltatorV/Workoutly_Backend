@@ -10,7 +10,7 @@ public interface UserDomainService {
 
     UserActivatedEvent activateUser(User user);
 
-    UserUpdateEvent changeEmail(UserSnapshot userSnapshot);
+    UserUpdateEvent changeEmail(User user, String email);
 
-    UserUpdateEvent changePassword(UserSnapshot userSnapshot);
+    UserUpdateEvent changePassword(User user, String newPassword);
 }
