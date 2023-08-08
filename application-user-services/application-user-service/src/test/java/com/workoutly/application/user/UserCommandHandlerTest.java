@@ -1,12 +1,15 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.*;
-import com.workoutly.application.user.auth.TokenService;
+import com.workoutly.application.user.auth.AuthenticationProvider;
 import com.workoutly.application.user.dto.command.ActivationUserCommand;
+import com.workoutly.application.user.dto.command.ChangeEmailCommand;
+import com.workoutly.application.user.dto.command.ChangePasswordCommand;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
+import com.workoutly.application.user.event.UserUpdateEvent;
 import com.workoutly.application.user.exception.*;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.output.UserRepository;
@@ -15,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
 
 import java.time.Instant;
 import java.util.Calendar;
@@ -37,9 +39,7 @@ public class UserCommandHandlerTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private TokenService tokenService;
-    @Mock
-    private AuthenticationManager authenticationManager;
+    private AuthenticationProvider authenticationProvider;
 
     @InjectMocks
     private UserCommandHandler userCommandHandler;
@@ -202,10 +202,103 @@ public class UserCommandHandlerTest {
     }
 
     @Test
-    public void testAuthenticateUser() {
+    public void testChangeEmailAddress() {
         //given
+        var command = new ChangeEmailCommand("email@email.to", "password");
+        var snapshot = createValidUserSnapshot();
+        var createdEvent = createUserUpdateEvent(command, snapshot);
 
+        doReturn(snapshot)
+                .when(userRepository)
+                .findByUsername(any());
+
+        doReturn(true)
+                .when(authenticationProvider)
+                .checkPasswordsMatch(command.getPassword(), snapshot.getPassword());
+
+        doReturn(createdEvent)
+                .when(userDomainService)
+                .changeEmail(snapshot);
+
+        //when
+        var event = userCommandHandler.changeEmail(command);
+
+        //then
+        assertIsEventCreated(event);
+        assertIsEmailChanged(event, command);
+        verify(userRepository, times(1)).save(any());
     }
+
+    @Test
+    public void testChangeEmailAddressThrowError() {
+        //given
+        var command = new ChangeEmailCommand("email@email.to", "password");
+        var snapshot = createValidUserSnapshot();
+
+        doReturn(snapshot)
+                .when(userRepository)
+                .findByUsername(any());
+
+        doReturn(false)
+                .when(authenticationProvider)
+                .checkPasswordsMatch(command.getPassword(), snapshot.getPassword());
+
+        //when
+        var exception = throwExceptionWhenChangeEmail(command);
+
+        //then
+        assertExceptionIsPasswordMismatch(exception);
+    }
+
+    @Test
+    public void testChangePassword() {
+        //given
+        var command = new ChangePasswordCommand("password", "password");
+        var snapshot = createValidUserSnapshot();
+        var createdEvent = createUserUpdateEvent(command, snapshot);
+
+        doReturn(snapshot)
+                .when(userRepository)
+                .findByUsername(any());
+
+        doReturn(true)
+                .when(authenticationProvider)
+                .checkPasswordsMatch(command.getPassword(), snapshot.getPassword());
+
+        doReturn(createdEvent)
+                .when(userDomainService)
+                .changePassword(snapshot);
+
+        //when
+        var event = userCommandHandler.changePassword(command);
+
+        //then
+        assertIsEventCreated(event);
+        assertIsPasswordChanged(event, command);
+        verify(userRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void testChangePasswordThrowError() {
+        //given
+        var command = new ChangePasswordCommand("password", "password");
+        var snapshot = createValidUserSnapshot();
+
+        doReturn(snapshot)
+                .when(userRepository)
+                .findByUsername(any());
+
+        doReturn(false)
+                .when(authenticationProvider)
+                .checkPasswordsMatch(command.getPassword(), snapshot.getPassword());
+
+        //when
+        var exception = throwExceptionWhenChangePassword(command);
+
+        //then
+        assertExceptionIsPasswordMismatch(exception);
+    }
+
 
     private User createCommonUserBasedOnCommand(RegisterUserCommand command) {
         return new User(
@@ -250,6 +343,33 @@ public class UserCommandHandlerTest {
         return new UserActivatedEvent(activated);
     }
 
+    private UserUpdateEvent createUserUpdateEvent(ChangeEmailCommand command, UserSnapshot snapshot) {
+        var newSnapshot = new UserSnapshot(
+                snapshot.getUserId(),
+                snapshot.getUsername(),
+                command.getEmailAddress(),
+                snapshot.getPassword(),
+                snapshot.getRole(),
+                snapshot.isEnabled(),
+                snapshot.getToken()
+        );
+        return new UserUpdateEvent(newSnapshot, "Your email address has been changed.");
+    }
+
+
+    private UserUpdateEvent createUserUpdateEvent(ChangePasswordCommand command, UserSnapshot snapshot) {
+        var newSnapshot = new UserSnapshot(
+                snapshot.getUserId(),
+                snapshot.getUsername(),
+                snapshot.getEmail(),
+                command.getNewPassword(),
+                snapshot.getRole(),
+                snapshot.isEnabled(),
+                snapshot.getToken()
+        );
+        return new UserUpdateEvent(newSnapshot, "Your password has been changed.");
+    }
+
     private UserCreatedEvent createUserCreatedEventBasedOnCommand(RegisterUserCommand command) {
         User user = createCommonUserBasedOnCommand(command);
         user.initialize();
@@ -266,6 +386,12 @@ public class UserCommandHandlerTest {
         assertNotNull(event.getSnapshot());
     }
 
+    private void assertIsEventCreated(UserUpdateEvent event) {
+        assertNotNull(event);
+        assertNotNull(event.getSnapshot());
+        assertNotNull(event.getMessage());
+    }
+
     private void assertIsSnapshotValid(UserCreatedEvent event, RegisterUserCommand command) {
         UserSnapshot snapshot = event.getSnapshot();
         UserSnapshot commandSnapshot = createCommonUserSnapshot(event.getSnapshot(), command);
@@ -277,6 +403,15 @@ public class UserCommandHandlerTest {
         assertTrue(event.getSnapshot().isEnabled());
     }
 
+
+    private void assertIsEmailChanged(UserUpdateEvent event, ChangeEmailCommand command) {
+        assertEquals(command.getEmailAddress(), event.getSnapshot().getEmail());
+    }
+
+    private void assertIsPasswordChanged(UserUpdateEvent event, ChangePasswordCommand command) {
+        assertEquals(command.getPassword(), event.getSnapshot().getPassword());
+    }
+
     private UserSnapshot createCommonUserSnapshot(UserSnapshot snapshot, RegisterUserCommand command) {
         User user = new User(command.getUsername(), command.getPassword(), command.getEmail(), UserRole.COMMON_USER, VerificationToken.restore(snapshot.getToken()));
         user.setId(snapshot.getUserId());
@@ -286,9 +421,16 @@ public class UserCommandHandlerTest {
     private ApplicationUserDomainException throwNotSavedExceptionWhenCreateUser(RegisterUserCommand command) {
         return assertThrows(UserNotRegisteredException.class, () -> userCommandHandler.createCommonUser(command));
     }
-
     private ApplicationUserDomainException throwExceptionWhenUserIsExpired(ActivationUserCommand command) {
         return assertThrows(VerificationTokenExpiredException.class, () -> userCommandHandler.activateUser(command));
+    }
+
+    private ApplicationUserDomainException throwExceptionWhenChangeEmail(ChangeEmailCommand command) {
+        return assertThrows(PasswordMismatchException.class, () -> userCommandHandler.changeEmail(command));
+    }
+
+    private ApplicationUserDomainException throwExceptionWhenChangePassword(ChangePasswordCommand command) {
+        return assertThrows(PasswordMismatchException.class, () -> userCommandHandler.changePassword(command));
     }
 
     private void assertExceptionIsUserNotUnique(ApplicationUserDomainException exception) {
@@ -305,6 +447,10 @@ public class UserCommandHandlerTest {
 
     private void assertExceptionIsVerificationTokenExpired(ApplicationUserDomainException exception) {
         assertExceptionsMessagesEqual(new VerificationTokenExpiredException(), exception);
+    }
+
+    private void assertExceptionIsPasswordMismatch(ApplicationUserDomainException exception) {
+        assertExceptionsMessagesEqual(new PasswordMismatchException(), exception);
     }
 
     private void assertExceptionsMessagesEqual(ApplicationUserDomainException expected, ApplicationUserDomainException actual) {

@@ -1,21 +1,17 @@
 package com.workoutly.application.user;
 
 import com.workoutly.application.user.VO.UserSnapshot;
+import com.workoutly.application.user.auth.AuthenticationProvider;
 import com.workoutly.application.user.auth.TokenService;
 import com.workoutly.application.user.dto.command.*;
 import com.workoutly.application.user.event.UserActivatedEvent;
-import com.workoutly.application.user.event.UserChangedEvent;
+import com.workoutly.application.user.event.UserUpdateEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
-import com.workoutly.application.user.exception.UserNotBoundException;
-import com.workoutly.application.user.exception.UserNotRegisteredException;
-import com.workoutly.application.user.exception.UserNotUniqueException;
-import com.workoutly.application.user.exception.VerificationTokenExpiredException;
+import com.workoutly.application.user.exception.*;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.output.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +26,8 @@ class UserCommandHandler {
     private final UserDataMapper userDataMapper;
     private final UserDomainService userDomainService;
     private final UserRepository userRepository;
+    private final AuthenticationProvider authenticationProvider;
     private final TokenService tokenService;
-    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public UserCreatedEvent createCommonUser(RegisterUserCommand registerUserCommand) {
@@ -63,16 +59,39 @@ class UserCommandHandler {
         return event;
     }
 
-
     public String authenticate(AuthenticationCommand authenticationCommand) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authenticationCommand.getUsername(),
-                        authenticationCommand.getPassword()
-                )
-        );
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                                    authenticationCommand.getUsername(),
+                                                    authenticationCommand.getPassword()
+                                                    );
+
+        UserDetails userDetails = authenticationProvider.createUserDetails(authToken);
         return tokenService.generateNewToken(userDetails);
+    }
+
+    @Transactional
+    public UserUpdateEvent changeEmail(ChangeEmailCommand command) {
+        UserSnapshot userSnapshot = userRepository.findByUsername(authenticationProvider.getAuthenticatedUsername());
+        checkPasswordsMatch(command.getPassword(), userSnapshot);
+
+        UserUpdateEvent event = userDomainService.changeEmail(userSnapshot);
+
+        userRepository.save(event.getSnapshot());
+
+        return event;
+    }
+
+    @Transactional
+    public UserUpdateEvent changePassword(ChangePasswordCommand command) {
+        UserSnapshot userSnapshot = userRepository.findByUsername(authenticationProvider.getAuthenticatedUsername());
+        checkPasswordsMatch(command.getPassword(), userSnapshot);
+
+        UserUpdateEvent event = userDomainService.changePassword(userSnapshot);
+
+        userRepository.save(event.getSnapshot());
+
+        return event;
     }
 
     private void checkUserIsUnique(UserSnapshot snapshot) {
@@ -93,6 +112,12 @@ class UserCommandHandler {
         }
     }
 
+    private void checkPasswordsMatch(String password, UserSnapshot userSnapshot) {
+        if( !authenticationProvider.checkPasswordsMatch(password, userSnapshot.getPassword())) {
+            throw new PasswordMismatchException();
+        }
+    }
+
     private void verifyActivationToken(VerificationToken token) {
         if(verificationTokenExpired(token)) {
             throw new VerificationTokenExpiredException();
@@ -107,11 +132,4 @@ class UserCommandHandler {
         return Date.from(Instant.now());
     }
 
-    public UserChangedEvent changeEmail(ChangeEmailCommand command) {
-        return null;
-    }
-
-    public UserChangedEvent changePassword(ChangePasswordCommand command) {
-        return null;
-    }
 }
