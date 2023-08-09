@@ -1,0 +1,11 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+rabbitmq:
+  exchange: workoutly_user_change_exchange
+  routing: workoutly_user_change_routing_key
+  queue: workoutly_user_change
