@@ -1,9 +1,8 @@
 package com.workoutly.application.user;
 
-import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
-import com.workoutly.application.user.event.UserUpdateEvent;
+import com.workoutly.application.user.event.UserUpdatedEvent;
 
 public class UserDomainServiceImpl implements UserDomainService{
     @Override
@@ -19,14 +18,14 @@ public class UserDomainServiceImpl implements UserDomainService{
     }
 
     @Override
-    public UserUpdateEvent changeEmail(User user, String email) {
+    public UserUpdatedEvent changeEmail(User user, String email) {
         user.changeEmail(email);
-        return new UserUpdateEvent(user.createSnapshot(), "Your email address has been changed.");
+        return new UserUpdatedEvent(user.createSnapshot(), "Your email address has been changed.");
     }
 
     @Override
-    public UserUpdateEvent changePassword(User user, String newPassword) {
+    public UserUpdatedEvent changePassword(User user, String newPassword) {
         user.changePassword(newPassword);
-        return new UserUpdateEvent(user.createSnapshot(), "Your password has been changed.");
+        return new UserUpdatedEvent(user.createSnapshot(), "Your password has been changed.");
     }
 }

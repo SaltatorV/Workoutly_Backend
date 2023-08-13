@@ -5,7 +5,7 @@ import com.workoutly.application.user.auth.AuthenticationProvider;
 import com.workoutly.application.user.auth.TokenService;
 import com.workoutly.application.user.dto.command.*;
 import com.workoutly.application.user.event.UserActivatedEvent;
-import com.workoutly.application.user.event.UserUpdateEvent;
+import com.workoutly.application.user.event.UserUpdatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.exception.*;
 import com.workoutly.application.user.mapper.UserDataMapper;
@@ -71,11 +71,11 @@ class UserCommandHandler {
     }
 
     @Transactional
-    public UserUpdateEvent changeEmail(ChangeEmailCommand command) {
+    public UserUpdatedEvent changeEmail(ChangeEmailCommand command) {
         UserSnapshot userSnapshot = userRepository.findByUsername(authenticationProvider.getAuthenticatedUsername());
         checkPasswordsMatch(command.getPassword(), userSnapshot);
 
-        UserUpdateEvent event = userDomainService.changeEmail(User.restore(userSnapshot), command.getEmailAddress());
+        UserUpdatedEvent event = userDomainService.changeEmail(User.restore(userSnapshot), command.getEmailAddress());
 
         userRepository.save(event.getSnapshot());
 
@@ -83,11 +83,11 @@ class UserCommandHandler {
     }
 
     @Transactional
-    public UserUpdateEvent changePassword(ChangePasswordCommand command) {
+    public UserUpdatedEvent changePassword(ChangePasswordCommand command) {
         UserSnapshot userSnapshot = userRepository.findByUsername(authenticationProvider.getAuthenticatedUsername());
         checkPasswordsMatch(command.getPassword(), userSnapshot);
 
-        UserUpdateEvent event = userDomainService.changePassword(User.restore(userSnapshot), authenticationProvider.encodePassword(command.getNewPassword()));
+        UserUpdatedEvent event = userDomainService.changePassword(User.restore(userSnapshot), authenticationProvider.encodePassword(command.getNewPassword()));
 
         userRepository.save(event.getSnapshot());
 

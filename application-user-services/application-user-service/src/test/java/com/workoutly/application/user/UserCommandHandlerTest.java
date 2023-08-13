@@ -9,7 +9,7 @@ import com.workoutly.application.user.dto.command.RegisterUserCommand;
 
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
-import com.workoutly.application.user.event.UserUpdateEvent;
+import com.workoutly.application.user.event.UserUpdatedEvent;
 import com.workoutly.application.user.exception.*;
 import com.workoutly.application.user.mapper.UserDataMapper;
 import com.workoutly.application.user.port.output.UserRepository;
@@ -350,7 +350,7 @@ public class UserCommandHandlerTest {
         return new UserActivatedEvent(activated);
     }
 
-    private UserUpdateEvent createUserUpdateEvent(ChangeEmailCommand command, UserSnapshot snapshot) {
+    private UserUpdatedEvent createUserUpdateEvent(ChangeEmailCommand command, UserSnapshot snapshot) {
         var newSnapshot = new UserSnapshot(
                 snapshot.getUserId(),
                 snapshot.getUsername(),
@@ -360,11 +360,11 @@ public class UserCommandHandlerTest {
                 snapshot.isEnabled(),
                 snapshot.getToken()
         );
-        return new UserUpdateEvent(newSnapshot, "Your email address has been changed.");
+        return new UserUpdatedEvent(newSnapshot, "Your email address has been changed.");
     }
 
 
-    private UserUpdateEvent createUserUpdateEvent(String encodedPassword, UserSnapshot snapshot) {
+    private UserUpdatedEvent createUserUpdateEvent(String encodedPassword, UserSnapshot snapshot) {
         var newSnapshot = new UserSnapshot(
                 snapshot.getUserId(),
                 snapshot.getUsername(),
@@ -374,7 +374,7 @@ public class UserCommandHandlerTest {
                 snapshot.isEnabled(),
                 snapshot.getToken()
         );
-        return new UserUpdateEvent(newSnapshot, "Your password has been changed.");
+        return new UserUpdatedEvent(newSnapshot, "Your password has been changed.");
     }
 
     private UserCreatedEvent createUserCreatedEventBasedOnCommand(RegisterUserCommand command) {
@@ -393,7 +393,7 @@ public class UserCommandHandlerTest {
         assertNotNull(event.getSnapshot());
     }
 
-    private void assertIsEventCreated(UserUpdateEvent event) {
+    private void assertIsEventCreated(UserUpdatedEvent event) {
         assertNotNull(event);
         assertNotNull(event.getSnapshot());
         assertNotNull(event.getMessage());
@@ -411,11 +411,11 @@ public class UserCommandHandlerTest {
     }
 
 
-    private void assertIsEmailChanged(UserUpdateEvent event, ChangeEmailCommand command) {
+    private void assertIsEmailChanged(UserUpdatedEvent event, ChangeEmailCommand command) {
         assertEquals(command.getEmailAddress(), event.getSnapshot().getEmail());
     }
 
-    private void assertIsPasswordChanged(UserUpdateEvent event, String encodedPassword) {
+    private void assertIsPasswordChanged(UserUpdatedEvent event, String encodedPassword) {
         assertEquals(encodedPassword, event.getSnapshot().getPassword());
     }
 

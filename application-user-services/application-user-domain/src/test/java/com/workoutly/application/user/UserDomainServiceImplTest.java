@@ -4,7 +4,7 @@ import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
-import com.workoutly.application.user.event.UserUpdateEvent;
+import com.workoutly.application.user.event.UserUpdatedEvent;
 import org.junit.jupiter.api.Test;
 
 import static com.workoutly.application.user.builder.UserBuilder.anUser;
@@ -63,7 +63,7 @@ public class UserDomainServiceImplTest {
         String email = "new@email.to";
 
         //when
-        UserUpdateEvent event = service.changeEmail(user, email);
+        UserUpdatedEvent event = service.changeEmail(user, email);
 
         //then
         assertEmailIsChanged(event, email);
@@ -83,7 +83,7 @@ public class UserDomainServiceImplTest {
         String newPassword = "newPassword";
 
         //when
-        UserUpdateEvent event = service.changePassword(user, newPassword);
+        UserUpdatedEvent event = service.changePassword(user, newPassword);
 
         //then
         assertPasswordIsChanged(event, newPassword);
@@ -100,13 +100,13 @@ public class UserDomainServiceImplTest {
         assertTrue(snapshot.isEnabled());
     }
 
-    private void assertEmailIsChanged(UserUpdateEvent event, String email) {
+    private void assertEmailIsChanged(UserUpdatedEvent event, String email) {
         String template = "Your email address has been changed.";
         assertEquals(email,event.getSnapshot().getEmail());
         assertEquals(template, event.getMessage());
     }
 
-    private void assertPasswordIsChanged(UserUpdateEvent event, String newPassword) {
+    private void assertPasswordIsChanged(UserUpdatedEvent event, String newPassword) {
         String template = "Your password has been changed.";
         assertEquals(newPassword,event.getSnapshot().getPassword());
         assertEquals(template, event.getMessage());

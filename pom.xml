@@ -25,6 +25,8 @@
         <application-user-services-version>0.0.1-SNAPSHOT</application-user-services-version>
         <core-version>0.0.1-SNAPSHOT</core-version>
         <infrastructure-version>0.0.1-SNAPSHOT</infrastructure-version>
+        <rabbitmq-version>0.0.1-SNAPSHOT</rabbitmq-version>
+        <liquibase-version>0.0.1-SNAPSHOT</liquibase-version>
         <hibernate-core-version>6.2.7.Final</hibernate-core-version>
         <mysql-connector-version>8.1.0</mysql-connector-version>
         <jsonwebtoken-version>0.11.1</jsonwebtoken-version>
@@ -38,6 +40,7 @@
         <module>application-user-services</module>
         <module>infrastructure</module>
         <module>infrastructure/rabbitmq</module>
+        <module>application-user-services/application-user-messaging</module>
     </modules>
 
     <dependencyManagement>
@@ -120,7 +123,16 @@
                 <artifactId>infrastructure</artifactId>
                 <version>${infrastructure-version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>liquibase</artifactId>
+                <version>${liquibase-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>rabbitmq</artifactId>
+                <version>${rabbitmq-version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.workoutly</groupId>
