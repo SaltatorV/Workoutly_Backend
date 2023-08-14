@@ -18,7 +18,7 @@ public class EmailMessageMapper {
                 .recipient(event.getSnapshot().getEmail())
                 .sender(configuration.getSender())
                 .subject(configuration.getCreateSubject())
-                .content(configuration.getCreateContent())
+                .content(configureCreatedUserContent(event))
                 .build();
     }
 
@@ -38,5 +38,9 @@ public class EmailMessageMapper {
                 .subject(configuration.getUpdateSubject())
                 .content(event.getMessage())
                 .build();
+    }
+
+    private String configureCreatedUserContent(UserCreatedEvent event) {
+        return String.format(configuration.getCreateContent(), event.getSnapshot().getToken().getToken());
     }
 }

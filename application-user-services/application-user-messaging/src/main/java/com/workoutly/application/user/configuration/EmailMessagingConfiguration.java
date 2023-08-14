@@ -13,6 +13,5 @@ public class EmailMessagingConfiguration {
     private String createContent;
     private String activateSubject;
     private String activateContent;
-    private String activateUrl;
     private String updateSubject;
 }

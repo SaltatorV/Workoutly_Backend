@@ -96,10 +96,14 @@ public class EmailMessageMapperTest {
                 .recipient(event.getSnapshot().getEmail())
                 .sender(configuration.getSender())
                 .subject(configuration.getCreateSubject())
-                .content(configuration.getCreateContent())
+                .content(configureContent(event))
                 .build();
 
         assertEquals(mapToString(expectedMessage), mapToString(message));
+    }
+
+    private String configureContent(UserCreatedEvent event) {
+        return String.format(configuration.getCreateContent(), event.getSnapshot().getToken().getToken());
     }
 
     private void assertIsMessageValid(EmailDataMessage message, UserActivatedEvent event) {

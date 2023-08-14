@@ -10,7 +10,7 @@ public class MockEmailMessagingConfiguration extends EmailMessagingConfiguration
 
     @Override
     public String getCreateSubject() {
-        return "create-subject";
+        return "create-subject/%s";
     }
 
     @Override
@@ -26,11 +26,6 @@ public class MockEmailMessagingConfiguration extends EmailMessagingConfiguration
     @Override
     public String getActivateContent() {
         return "activate-content";
-    }
-
-    @Override
-    public String getActivateUrl() {
-        return "activate-url";
     }
 
     @Override
