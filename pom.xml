@@ -26,6 +26,7 @@
         <core-version>0.0.1-SNAPSHOT</core-version>
         <infrastructure-version>0.0.1-SNAPSHOT</infrastructure-version>
         <rabbitmq-version>0.0.1-SNAPSHOT</rabbitmq-version>
+        <email-services-version>0.0.1-SNAPSHOT</email-services-version>
         <liquibase-version>0.0.1-SNAPSHOT</liquibase-version>
         <hibernate-core-version>6.2.7.Final</hibernate-core-version>
         <mysql-connector-version>8.1.0</mysql-connector-version>
@@ -132,6 +133,11 @@
                 <groupId>com.workoutly</groupId>
                 <artifactId>rabbitmq</artifactId>
                 <version>${rabbitmq-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>email-services</artifactId>
+                <version>${email-services-version}</version>
             </dependency>
 
             <dependency>

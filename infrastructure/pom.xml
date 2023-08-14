@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>liquibase</module>
+        <module>email-services</module>
     </modules>
 
 
