@@ -159,6 +159,11 @@
                 <artifactId>application-user-container</artifactId>
                 <version>${application-user-services-version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>application-user-messaging</artifactId>
+                <version>${application-user-services-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

@@ -8,6 +8,7 @@ import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserUpdatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
 import com.workoutly.application.user.mapper.UserDataMapper;
+import com.workoutly.application.user.port.output.UserEventPublisher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,8 @@ public class UserApplicationServiceImplTest {
     private UserCommandHandler handler;
     @Mock
     private UserDataMapper mapper;
+    @Mock
+    private UserEventPublisher publisher;
     @InjectMocks
     private UserApplicationServiceImpl service;
 
@@ -58,6 +61,7 @@ public class UserApplicationServiceImplTest {
 
         //then
         assertResponseIsValid(command, response);
+        verify(publisher, times(1)).publish(userCreatedEvent);
     }
 
     @Test
@@ -75,6 +79,7 @@ public class UserApplicationServiceImplTest {
 
         //then
         assertResponseIsValid(userActivatedEvent, response);
+        verify(publisher, times(1)).publish(userActivatedEvent);
     }
 
     @Test
@@ -109,6 +114,7 @@ public class UserApplicationServiceImplTest {
 
         //then
         assertResponseIsEmailChanged(response);
+        verify(publisher, times(1)).publish(event);
     }
 
 
@@ -127,6 +133,7 @@ public class UserApplicationServiceImplTest {
 
         //then
         assertResponseIsPasswordChanged(response);
+        verify(publisher, times(1)).publish(event);
     }
 
 
