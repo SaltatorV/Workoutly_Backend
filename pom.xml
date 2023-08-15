@@ -42,6 +42,7 @@
         <module>infrastructure</module>
         <module>infrastructure/rabbitmq</module>
         <module>application-user-services/application-user-messaging</module>
+        <module>measurement-services</module>
     </modules>
 
     <dependencyManagement>
