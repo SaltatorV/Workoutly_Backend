@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static com.workoutly.application.user.VO.UserSnapshot.Builder.anUserSnapshot;
-import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EmailMessageMapperTest {
@@ -99,7 +98,7 @@ public class EmailMessageMapperTest {
                 .content(configureContent(event))
                 .build();
 
-        assertEquals(mapToString(expectedMessage), mapToString(message));
+        assertEquals(expectedMessage, message);
     }
 
     private String configureContent(UserCreatedEvent event) {
@@ -114,7 +113,7 @@ public class EmailMessageMapperTest {
                 .content(configuration.getActivateContent())
                 .build();
 
-        assertEquals(mapToString(expectedMessage), mapToString(message));
+        assertEquals(expectedMessage, message);
     }
 
     private void assertIsMessageValid(EmailDataMessage message, UserUpdatedEvent event) {
@@ -125,6 +124,6 @@ public class EmailMessageMapperTest {
                 .content(event.getMessage())
                 .build();
 
-        assertEquals(mapToString(expectedMessage), mapToString(message));
+        assertEquals(expectedMessage, message);
     }
 }
