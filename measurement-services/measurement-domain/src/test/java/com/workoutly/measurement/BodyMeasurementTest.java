@@ -38,6 +38,19 @@ public class BodyMeasurementTest {
         assertEquals(snapshot, createdSnapshot);
     }
 
+    @Test
+    public void testRestoreBodyMeasurement() {
+        //given
+        var snapshot = createSnapshot();
+        var bodyMeasurement = createSampleBodyMeasurement(snapshot);
+
+        //when
+        var restored = BodyMeasurement.restore(snapshot);
+
+        //then
+        assertEquals(bodyMeasurement, restored);
+    }
+
     private BodyMeasurement createSampleBodyMeasurement() {
         return BodyMeasurement.create()
                 .neck(10)
