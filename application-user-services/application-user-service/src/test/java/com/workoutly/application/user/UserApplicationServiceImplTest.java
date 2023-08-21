@@ -20,7 +20,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
-import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -139,7 +138,7 @@ public class UserApplicationServiceImplTest {
 
     private void assertResponseIsValid(RegisterUserCommand command, RegisterUserResponse response) {
         RegisterUserResponse responseFromCommand = validCreatedResponseMessage(command);
-        assertEquals(mapToString(responseFromCommand), mapToString(response));
+        assertEquals(responseFromCommand, response);
     }
 
     private void assertResponseIsValid(UserActivatedEvent event, MessageResponse response) {

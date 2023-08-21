@@ -3,7 +3,6 @@ package com.workoutly.application.user.mapper;
 import com.workoutly.application.user.User;
 import com.workoutly.application.user.VO.UserRole;
 import com.workoutly.application.user.VO.UserSnapshot;
-import com.workoutly.application.user.VerificationToken;
 import com.workoutly.application.user.dto.command.RegisterUserCommand;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
 import com.workoutly.application.user.event.UserCreatedEvent;
@@ -15,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
-import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
@@ -70,7 +68,7 @@ public class UserDataMapperTest {
     private void assertIsCommonUserValid(User user, RegisterUserCommand command) {
         UserSnapshot snapshot = user.createSnapshot();
         UserSnapshot commandSnapshot = createCommonUserSnapshot(command);
-        assertEquals(mapToString(commandSnapshot), mapToString(snapshot));
+        assertEquals(commandSnapshot, snapshot);
     }
 
     private UserSnapshot createCommonUserSnapshot(RegisterUserCommand command) {

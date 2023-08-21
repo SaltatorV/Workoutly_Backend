@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.workoutly.application.user.builder.RegisterUserCommandBuilder.aRegisterUserCommand;
-import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -403,7 +402,7 @@ public class UserCommandHandlerTest {
         UserSnapshot snapshot = event.getSnapshot();
         UserSnapshot commandSnapshot = createCommonUserSnapshot(event.getSnapshot(), command);
 
-        assertEquals(mapToString(commandSnapshot), mapToString(snapshot));
+        assertEquals(commandSnapshot, snapshot);
     }
 
     private void assertIsUserActivated(UserActivatedEvent event) {
