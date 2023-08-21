@@ -15,7 +15,7 @@ public class BodyMeasurementTest {
     @Test
     public void testInitializeBodyMeasurement() {
         //given
-        var bodyMeasurement = createSampleBodyMeasurement();
+        var bodyMeasurement = createNotInitialziedBodyMeasurement();
         var username = "test";
 
         //when
@@ -29,7 +29,7 @@ public class BodyMeasurementTest {
     public void testCreateSnapshot() {
         //given
         var snapshot = createSnapshot();
-        var bodyMeasurement = createSampleBodyMeasurement(snapshot);
+        var bodyMeasurement = createBodyMeasurementFromSnapshot(snapshot);
 
         //when
         var createdSnapshot = bodyMeasurement.createSnapshot();
@@ -42,7 +42,7 @@ public class BodyMeasurementTest {
     public void testRestoreBodyMeasurement() {
         //given
         var snapshot = createSnapshot();
-        var bodyMeasurement = createSampleBodyMeasurement(snapshot);
+        var bodyMeasurement = createBodyMeasurementFromSnapshot(snapshot);
 
         //when
         var restored = BodyMeasurement.restore(snapshot);
@@ -51,7 +51,7 @@ public class BodyMeasurementTest {
         assertEquals(bodyMeasurement, restored);
     }
 
-    private BodyMeasurement createSampleBodyMeasurement() {
+    private BodyMeasurement createNotInitialziedBodyMeasurement() {
         return BodyMeasurement.create()
                 .neck(10)
                 .chest(10)
@@ -87,7 +87,7 @@ public class BodyMeasurementTest {
         );
     }
 
-    private BodyMeasurement createSampleBodyMeasurement(BodyMeasurementSnapshot snapshot) {
+    private BodyMeasurement createBodyMeasurementFromSnapshot(BodyMeasurementSnapshot snapshot) {
         return BodyMeasurement.create()
                 .id(snapshot.getBodyMeasurementsId())
                 .neck(snapshot.getNeck())
@@ -106,10 +106,8 @@ public class BodyMeasurementTest {
                 .build();
     }
 
-
     private void assertIsMeasurementInitialized(BodyMeasurement bodyMeasurement, String username) {
         assertEquals(username, bodyMeasurement.createSnapshot().getUsername());
         assertNotNull(bodyMeasurement.createSnapshot().getBodyMeasurementsId());
     }
-
 }
