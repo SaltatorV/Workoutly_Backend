@@ -3,6 +3,7 @@ package com.workoutly.application.user;
 import com.workoutly.application.user.VO.*;
 import com.workoutly.common.entity.AggregateRoot;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.workoutly.application.user.VO.UserSnapshot.Builder.anUserSnapshot;
@@ -77,5 +78,19 @@ public class User extends AggregateRoot<UserId> {
                 .withIsEnabled(isEnabled)
                 .withToken(token.createTokenSnapshot())
                 .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return isEnabled == user.isEnabled && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && userRole == user.userRole && Objects.equals(token, user.token);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), username, password, email, userRole, isEnabled, token);
     }
 }

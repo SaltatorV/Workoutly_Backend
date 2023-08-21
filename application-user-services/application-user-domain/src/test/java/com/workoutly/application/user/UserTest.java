@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import static com.workoutly.application.user.VO.UserSnapshot.Builder.anUserSnapshot;
 import static com.workoutly.application.user.builder.UserBuilder.anUser;
-import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest {
@@ -163,33 +162,6 @@ public class UserTest {
     @Test
     public void testRestoreUser() {
         //given
-        var snapshot = anUserSnapshot()
-                .withUsername("Test")
-                .withPassword("Pa$$word")
-                .withEmail("example@example.com")
-                .withRole(UserRole.COMMON_USER)
-                .withToken(createTokenSnapshot())
-                .build();
-
-        var mockUser = anUser()
-                .withUsername("Test")
-                .withPassword("Pa$$word")
-                .withEmail("example@example.com")
-                .withRole(UserRole.COMMON_USER)
-                .withVerificationToken(VerificationToken.restore(snapshot.getToken()))
-                .build();
-
-
-        //when
-        var user = User.restore(snapshot);
-
-        //then
-        assertUsersAreEqual(user, mockUser);
-    }
-
-    @Test
-    public void testRestoreInitializedUser() {
-        //given
         var userId = new UserId(UUID.randomUUID());
 
         var snapshot = anUserSnapshot()
@@ -207,11 +179,12 @@ public class UserTest {
                 .withPassword("Pa$$word")
                 .withEmail("example@example.com")
                 .withRole(UserRole.COMMON_USER)
-                .withVerificationToken(VerificationToken.restore(createTokenSnapshot()))
+                .withVerificationToken(VerificationToken.restore(snapshot.getToken()))
                 .build();
 
+
         //when
-        User user = User.restore(snapshot);
+        var user = User.restore(snapshot);
 
         //then
         assertUsersAreEqual(user, mockUser);
@@ -264,11 +237,11 @@ public class UserTest {
     }
 
     private void assertSnapshotsAreEqual(UserSnapshot snapshot, UserSnapshot mockSnapshot) {
-        assertEquals(mapToString(snapshot), mapToString(mockSnapshot));
+        assertEquals(snapshot, mockSnapshot);
     }
 
     private void assertUsersAreEqual(User user, User mockUser) {
-        assertEquals(mapToString(user), mapToString(mockUser));
+        assertEquals(user, mockUser);
     }
 
 }

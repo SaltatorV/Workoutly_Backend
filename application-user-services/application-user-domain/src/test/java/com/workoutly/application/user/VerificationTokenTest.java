@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VerificationTokenTest {
@@ -90,10 +89,10 @@ public class VerificationTokenTest {
 
     private void assertIsSnapshotValid(VerificationToken token, VerificationTokenSnapshot snapshot) {
         VerificationTokenSnapshot snapshotFromToken = new VerificationTokenSnapshot(token.getId(), token.getTokenValue(), token.getExpireTime());
-        assertEquals(mapToString(snapshotFromToken), mapToString(snapshot));
+        assertEquals(snapshotFromToken, snapshot);
     }
 
     private void assertIsTokenValid(VerificationToken expected, VerificationToken actual) {
-        assertEquals(mapToString(expected), mapToString(actual));
+        assertEquals(expected, actual);
     }
 }
