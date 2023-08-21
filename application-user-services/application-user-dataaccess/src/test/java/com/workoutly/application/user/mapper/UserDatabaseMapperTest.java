@@ -9,7 +9,6 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.UUID;
 
-import static com.workoutly.application.user.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserDatabaseMapperTest {
@@ -66,7 +65,7 @@ public class UserDatabaseMapperTest {
     }
 
     private void compareObjectsStrings(Object expected, Object actual) {
-        assertEquals(mapToString(expected), mapToString(actual));
+        assertEquals(expected, actual);
     }
 
     private UserSnapshot createSnapshotFromEntity(UserEntity userEntity) {
