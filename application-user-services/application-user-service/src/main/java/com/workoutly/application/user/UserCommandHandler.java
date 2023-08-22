@@ -59,6 +59,7 @@ class UserCommandHandler {
         return event;
     }
 
+    @Transactional(readOnly = true)
     public String authenticate(AuthenticationCommand authenticationCommand) {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
