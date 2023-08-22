@@ -23,6 +23,7 @@
         <passay-version>1.6.3</passay-version>
         <jakarta-validation-version>3.0.2</jakarta-validation-version>
         <application-user-services-version>0.0.1-SNAPSHOT</application-user-services-version>
+        <measurement-services-version>0.0.1-SNAPSHOT</measurement-services-version>
         <core-version>0.0.1-SNAPSHOT</core-version>
         <infrastructure-version>0.0.1-SNAPSHOT</infrastructure-version>
         <rabbitmq-version>0.0.1-SNAPSHOT</rabbitmq-version>
@@ -170,6 +171,17 @@
                 <groupId>com.workoutly</groupId>
                 <artifactId>application-user-messaging</artifactId>
                 <version>${application-user-services-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>measurement-domain</artifactId>
+                <version>${measurement-services-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>measurement-service</artifactId>
+                <version>${measurement-services-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
