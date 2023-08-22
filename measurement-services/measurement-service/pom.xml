@@ -5,16 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.workoutly</groupId>
-        <artifactId>Workoutly_Backend</artifactId>
+        <artifactId>measurement-services</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>measurement-services</artifactId>
-    <packaging>pom</packaging>
-    <modules>
+    <artifactId>measurement-service</artifactId>
 
-        <module>measurement-domain</module>
-        <module>measurement-service</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.workoutly</groupId>
+            <artifactId>measurement-domain</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
