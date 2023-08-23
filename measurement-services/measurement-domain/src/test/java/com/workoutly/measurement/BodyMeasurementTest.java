@@ -51,6 +51,19 @@ public class BodyMeasurementTest {
         assertEquals(bodyMeasurement, restored);
     }
 
+    @Test
+    public void testUpdateValues() {
+        //given
+        var snapshot = createSnapshot();
+        var bodyMeasurement = createInitialziedBodyMeasurement();
+
+        //when
+        bodyMeasurement.updateValues(snapshot);
+
+        //then
+        assertMeasurementIsUpdated(bodyMeasurement, snapshot);
+    }
+
     private BodyMeasurement createNotInitialziedBodyMeasurement() {
         return BodyMeasurement.create()
                 .neck(10)
@@ -65,6 +78,25 @@ public class BodyMeasurementTest {
                 .leftCalf(10)
                 .rightCalf(10)
                 .date(Date.from(Instant.now()))
+                .build();
+    }
+
+    private BodyMeasurement createInitialziedBodyMeasurement() {
+        return BodyMeasurement.create()
+                .id(new BodyMeasurementsId(UUID.randomUUID()))
+                .neck(10)
+                .chest(10)
+                .leftForearm(10)
+                .rightForearm(10)
+                .leftBiceps(10)
+                .rightBiceps(10)
+                .waist(10)
+                .leftThigh(10)
+                .rightThigh(10)
+                .leftCalf(10)
+                .rightCalf(10)
+                .date(Date.from(Instant.now()))
+                .username("test")
                 .build();
     }
 
@@ -109,5 +141,21 @@ public class BodyMeasurementTest {
     private void assertIsMeasurementInitialized(BodyMeasurement bodyMeasurement, String username) {
         assertEquals(username, bodyMeasurement.createSnapshot().getUsername());
         assertNotNull(bodyMeasurement.createSnapshot().getBodyMeasurementsId());
+    }
+
+    private void assertMeasurementIsUpdated(BodyMeasurement bodyMeasurement, BodyMeasurementSnapshot snapshot) {
+        BodyMeasurementSnapshot createdSnapshot = bodyMeasurement.createSnapshot();
+
+        assertEquals(snapshot.getNeck(), createdSnapshot.getNeck());
+        assertEquals(snapshot.getChest(), createdSnapshot.getChest());
+        assertEquals(snapshot.getLeftBiceps(), createdSnapshot.getLeftBiceps());
+        assertEquals(snapshot.getRightBiceps(), createdSnapshot.getRightBiceps());
+        assertEquals(snapshot.getLeftForearm(), createdSnapshot.getLeftForearm());
+        assertEquals(snapshot.getRightForearm(), createdSnapshot.getRightForearm());
+        assertEquals(snapshot.getWaist(), createdSnapshot.getWaist());
+        assertEquals(snapshot.getLeftThigh(), createdSnapshot.getLeftThigh());
+        assertEquals(snapshot.getRightThigh(), createdSnapshot.getRightThigh());
+        assertEquals(snapshot.getLeftCalf(), createdSnapshot.getLeftCalf());
+        assertEquals(snapshot.getRightCalf(), createdSnapshot.getRightCalf());
     }
 }

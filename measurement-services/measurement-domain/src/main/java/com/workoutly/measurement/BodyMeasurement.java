@@ -6,6 +6,7 @@ import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 public class BodyMeasurement extends AggregateRoot<BodyMeasurementsId> {
@@ -48,6 +49,20 @@ public class BodyMeasurement extends AggregateRoot<BodyMeasurementsId> {
 
     public BodyMeasurementSnapshot createSnapshot() {
         return new BodyMeasurementSnapshot(getId(), neck, chest, leftBiceps, rightBiceps, leftForearm, rightForearm, waist, leftThigh, rightThigh, leftCalf, rightCalf, date, username);
+    }
+
+    public void updateValues(BodyMeasurementSnapshot snapshot) {
+        this.neck = snapshot.getNeck();
+        this.chest = snapshot.getChest();
+        this.leftBiceps = snapshot.getLeftBiceps();
+        this.rightBiceps = snapshot.getRightBiceps();
+        this.leftForearm = snapshot.getLeftForearm();
+        this.rightForearm = snapshot.getRightForearm();
+        this.waist = snapshot.getWaist();
+        this.leftThigh = snapshot.getLeftThigh();
+        this.rightThigh = snapshot.getRightThigh();
+        this.leftCalf = snapshot.getLeftCalf();
+        this.rightCalf = snapshot.getRightCalf();
     }
 
     private BodyMeasurement(Builder builder) {
