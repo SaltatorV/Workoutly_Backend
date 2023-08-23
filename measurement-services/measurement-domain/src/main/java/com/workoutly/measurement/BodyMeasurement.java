@@ -1,15 +1,14 @@
 package com.workoutly.measurement;
 
 import com.workoutly.common.entity.AggregateRoot;
-import com.workoutly.measurement.VO.BodyMeasurementsId;
+import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 
 
 import java.util.Date;
-import java.util.Objects;
 import java.util.UUID;
 
-public class BodyMeasurement extends AggregateRoot<BodyMeasurementsId> {
+public class BodyMeasurement extends AggregateRoot<BodyMeasurementId> {
     private double neck;
     private double chest;
     private double leftBiceps;
@@ -44,7 +43,7 @@ public class BodyMeasurement extends AggregateRoot<BodyMeasurementsId> {
 
     public void initialize(String user) {
         this.username = user;
-        this.setId(new BodyMeasurementsId(UUID.randomUUID()));
+        this.setId(new BodyMeasurementId(UUID.randomUUID()));
     }
 
     public BodyMeasurementSnapshot createSnapshot() {
@@ -87,7 +86,7 @@ public class BodyMeasurement extends AggregateRoot<BodyMeasurementsId> {
     }
 
     public static final class Builder {
-        private BodyMeasurementsId id;
+        private BodyMeasurementId id;
         private double neck;
         private double chest;
         private double leftBiceps;
@@ -105,7 +104,7 @@ public class BodyMeasurement extends AggregateRoot<BodyMeasurementsId> {
         private Builder() {
         }
 
-        public Builder id(BodyMeasurementsId val) {
+        public Builder id(BodyMeasurementId val) {
             id = val;
             return this;
         }

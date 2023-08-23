@@ -1,7 +1,7 @@
 package com.workoutly.measurement;
 
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
-import com.workoutly.measurement.VO.BodyMeasurementsId;
+import com.workoutly.measurement.VO.BodyMeasurementId;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -83,7 +83,7 @@ public class BodyMeasurementTest {
 
     private BodyMeasurement createInitialziedBodyMeasurement() {
         return BodyMeasurement.create()
-                .id(new BodyMeasurementsId(UUID.randomUUID()))
+                .id(new BodyMeasurementId(UUID.randomUUID()))
                 .neck(10)
                 .chest(10)
                 .leftForearm(10)
@@ -102,7 +102,7 @@ public class BodyMeasurementTest {
 
     private BodyMeasurementSnapshot createSnapshot() {
         return new BodyMeasurementSnapshot(
-                new BodyMeasurementsId(UUID.randomUUID()),
+                new BodyMeasurementId(UUID.randomUUID()),
                 10,
                 11,
                 12,

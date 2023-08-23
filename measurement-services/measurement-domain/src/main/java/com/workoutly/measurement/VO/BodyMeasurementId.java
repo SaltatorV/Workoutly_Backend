@@ -4,8 +4,8 @@ import com.workoutly.common.VO.BaseId;
 
 import java.util.UUID;
 
-public class BodyMeasurementsId extends BaseId<UUID> {
-    public BodyMeasurementsId(UUID id) {
+public class BodyMeasurementId extends BaseId<UUID> {
+    public BodyMeasurementId(UUID id) {
         super(id);
     }
 

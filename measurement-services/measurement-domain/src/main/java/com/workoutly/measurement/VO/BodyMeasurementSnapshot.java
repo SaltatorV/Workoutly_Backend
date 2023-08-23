@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class BodyMeasurementSnapshot {
-    private BodyMeasurementsId bodyMeasurementsId;
+    private BodyMeasurementId bodyMeasurementId;
     private final double neck;
     private final double chest;
     private final double leftBiceps;
@@ -19,8 +19,8 @@ public class BodyMeasurementSnapshot {
     private final Date date;
     private String username;
 
-    public BodyMeasurementSnapshot(BodyMeasurementsId bodyMeasurementsId, double neck, double chest, double leftBiceps, double rightBiceps, double leftForearm, double rightForearm, double waist, double leftThigh, double rightThigh, double leftCalf, double rightCalf, Date date, String username) {
-        this.bodyMeasurementsId = bodyMeasurementsId;
+    public BodyMeasurementSnapshot(BodyMeasurementId bodyMeasurementId, double neck, double chest, double leftBiceps, double rightBiceps, double leftForearm, double rightForearm, double waist, double leftThigh, double rightThigh, double leftCalf, double rightCalf, Date date, String username) {
+        this.bodyMeasurementId = bodyMeasurementId;
         this.neck = neck;
         this.chest = chest;
         this.leftBiceps = leftBiceps;
@@ -36,8 +36,8 @@ public class BodyMeasurementSnapshot {
         this.username = username;
     }
 
-    public BodyMeasurementsId getBodyMeasurementsId() {
-        return bodyMeasurementsId;
+    public BodyMeasurementId getBodyMeasurementsId() {
+        return bodyMeasurementId;
     }
 
     public double getNeck() {
@@ -97,18 +97,18 @@ public class BodyMeasurementSnapshot {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BodyMeasurementSnapshot that = (BodyMeasurementSnapshot) o;
-        return Double.compare(that.neck, neck) == 0 && Double.compare(that.chest, chest) == 0 && Double.compare(that.leftBiceps, leftBiceps) == 0 && Double.compare(that.rightBiceps, rightBiceps) == 0 && Double.compare(that.leftForearm, leftForearm) == 0 && Double.compare(that.rightForearm, rightForearm) == 0 && Double.compare(that.waist, waist) == 0 && Double.compare(that.leftThigh, leftThigh) == 0 && Double.compare(that.rightThigh, rightThigh) == 0 && Double.compare(that.leftCalf, leftCalf) == 0 && Double.compare(that.rightCalf, rightCalf) == 0 && Objects.equals(bodyMeasurementsId, that.bodyMeasurementsId) && Objects.equals(date, that.date) && Objects.equals(username, that.username);
+        return Double.compare(that.neck, neck) == 0 && Double.compare(that.chest, chest) == 0 && Double.compare(that.leftBiceps, leftBiceps) == 0 && Double.compare(that.rightBiceps, rightBiceps) == 0 && Double.compare(that.leftForearm, leftForearm) == 0 && Double.compare(that.rightForearm, rightForearm) == 0 && Double.compare(that.waist, waist) == 0 && Double.compare(that.leftThigh, leftThigh) == 0 && Double.compare(that.rightThigh, rightThigh) == 0 && Double.compare(that.leftCalf, leftCalf) == 0 && Double.compare(that.rightCalf, rightCalf) == 0 && Objects.equals(bodyMeasurementId, that.bodyMeasurementId) && Objects.equals(date, that.date) && Objects.equals(username, that.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bodyMeasurementsId, neck, chest, leftBiceps, rightBiceps, leftForearm, rightForearm, waist, leftThigh, rightThigh, leftCalf, rightCalf, date, username);
+        return Objects.hash(bodyMeasurementId, neck, chest, leftBiceps, rightBiceps, leftForearm, rightForearm, waist, leftThigh, rightThigh, leftCalf, rightCalf, date, username);
     }
 
     @Override
     public String toString() {
         return "BodyMeasurementSnapshot{" +
-                "bodyMeasurementsId=" + bodyMeasurementsId +
+                "bodyMeasurementsId=" + bodyMeasurementId +
                 ", neck=" + neck +
                 ", chest=" + chest +
                 ", leftBiceps=" + leftBiceps +
