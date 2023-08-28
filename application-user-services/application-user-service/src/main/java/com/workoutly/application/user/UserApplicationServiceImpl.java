@@ -34,26 +34,26 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     public MessageResponse activateUserAccount(ActivationUserCommand activationUserCommand) {
         UserActivatedEvent event = handler.activateUser(activationUserCommand);
         publisher.publish(event);
-        return new MessageResponse(String.format("User: %s has been activated", event.getSnapshot().getUsername()));
+        return mapper.mapUserActivatedEventToMessageResponse(event);
     }
 
     @Override
     public TokenResponse authenticate(AuthenticationCommand authenticationCommand) {
         String token = handler.authenticate(authenticationCommand);
-        return new TokenResponse(token);
+        return mapper.mapTokenToTokenResponse(token);
     }
 
     @Override
     public MessageResponse changeEmail(ChangeEmailCommand command) {
         UserUpdatedEvent event = handler.changeEmail(command);
         publisher.publish(event);
-        return new MessageResponse("The email address has been changed.");
+        return mapper.mapUserUpdatedEmailEventToMessageResponse();
     }
 
     @Override
     public MessageResponse changePassword(ChangePasswordCommand command) {
         UserUpdatedEvent event = handler.changePassword(command);
         publisher.publish(event);
-        return new MessageResponse("The password has been changed.");
+        return mapper.mapUserUpdatedPasswordEventToMessageResponse();
     }
 }

@@ -4,6 +4,7 @@ import com.workoutly.application.user.VO.*;
 import com.workoutly.application.user.dto.command.*;
 import com.workoutly.application.user.dto.response.MessageResponse;
 import com.workoutly.application.user.dto.response.RegisterUserResponse;
+import com.workoutly.application.user.dto.response.TokenResponse;
 import com.workoutly.application.user.event.UserActivatedEvent;
 import com.workoutly.application.user.event.UserUpdatedEvent;
 import com.workoutly.application.user.event.UserCreatedEvent;
@@ -68,16 +69,22 @@ public class UserApplicationServiceImplTest {
         //given
         var command = new ActivationUserCommand("abcdefgh");
         var userActivatedEvent = createUserActivatedEvent();
+        var messageResponse = createResponseFrom(userActivatedEvent);
 
         doReturn(userActivatedEvent)
                 .when(handler)
                 .activateUser(command);
 
+        doReturn(messageResponse)
+                .when(mapper)
+                .mapUserActivatedEventToMessageResponse(userActivatedEvent);
+
+
         //when
         var response = service.activateUserAccount(command);
 
         //then
-        assertResponseIsValid(userActivatedEvent, response);
+        assertEquals(messageResponse, response);
         verify(publisher, times(1)).publish(userActivatedEvent);
     }
 
@@ -86,16 +93,21 @@ public class UserApplicationServiceImplTest {
         //given
         var command = new AuthenticationCommand("test", "Super$ecure5");
         var token = createRandomToken();
+        var tokenResponse = new TokenResponse(token);
 
         doReturn(token)
                 .when(handler)
                 .authenticate(command);
 
+        doReturn(tokenResponse)
+                .when(mapper)
+                .mapTokenToTokenResponse(token);
+
         //when
         var response = service.authenticate(command);
 
         //then
-        assertEquals(token, response.getToken());
+        assertEquals(tokenResponse, response);
     }
 
     @Test
@@ -103,16 +115,21 @@ public class UserApplicationServiceImplTest {
         //given
         var command = new ChangeEmailCommand("example@example.to", "password");
         var event = createUserChangedEmailEvent(command);
+        var messageResponse = new MessageResponse("Email has been changed");
 
         doReturn(event)
                 .when(handler)
                 .changeEmail(command);
 
+        doReturn(messageResponse)
+                .when(mapper)
+                .mapUserUpdatedEmailEventToMessageResponse();
+
         //when
         var response = service.changeEmail(command);
 
         //then
-        assertResponseIsEmailChanged(response);
+        assertEquals(messageResponse, response);
         verify(publisher, times(1)).publish(event);
     }
 
@@ -122,16 +139,21 @@ public class UserApplicationServiceImplTest {
         //given
         var command = new ChangePasswordCommand("password", "new-password");
         var event = createUserChangedPasswordEvent(command);
+        var messageResponse = new MessageResponse("Password has been changed");
 
         doReturn(event)
                 .when(handler)
                 .changePassword(command);
 
+        doReturn(messageResponse)
+                .when(mapper)
+                .mapUserUpdatedPasswordEventToMessageResponse();
+
         //when
         var response = service.changePassword(command);
 
         //then
-        assertResponseIsPasswordChanged(response);
+        assertEquals(messageResponse, response);
         verify(publisher, times(1)).publish(event);
     }
 
@@ -141,20 +163,6 @@ public class UserApplicationServiceImplTest {
         assertEquals(responseFromCommand, response);
     }
 
-    private void assertResponseIsValid(UserActivatedEvent event, MessageResponse response) {
-        String template = String.format("User: %s has been activated", event.getSnapshot().getUsername());
-        assertEquals(response.getMessage(), template);
-    }
-
-    private void assertResponseIsEmailChanged(MessageResponse response) {
-        String template = "The email address has been changed.";
-        assertEquals(response.getMessage(), template);
-    }
-
-    private void assertResponseIsPasswordChanged(MessageResponse response) {
-        String template = "The password has been changed.";
-        assertEquals(response.getMessage(), template);
-    }
 
     private RegisterUserResponse validCreatedResponseMessage(RegisterUserCommand command) {
         return new RegisterUserResponse(
@@ -231,5 +239,9 @@ public class UserApplicationServiceImplTest {
         );
 
         return new UserUpdatedEvent(userSnapshot, "The password has been changed.");
+    }
+
+    private MessageResponse createResponseFrom(UserActivatedEvent event) {
+        return new MessageResponse(String.format("User: %s has been activated", event.getSnapshot().getUsername()));
     }
 }
