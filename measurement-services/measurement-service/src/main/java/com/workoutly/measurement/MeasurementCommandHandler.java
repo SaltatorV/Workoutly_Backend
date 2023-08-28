@@ -3,6 +3,7 @@ package com.workoutly.measurement;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.auth.AuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
+import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
 import com.workoutly.measurement.exception.BodyMeasurementAlreadyExistsException;
@@ -52,6 +53,11 @@ class MeasurementCommandHandler {
         repository.saveBodyMeasurement(event.getSnapshot());
 
         return event;
+    }
+
+    @Transactional
+    public void deleteBodyMeasurement(BodyMeasurementDeleteCommand command) {
+        repository.deleteBodyMeasurementByDate(command.getDate(), provider.getAuthenticatedUser());
     }
 
     private void checkMeasurementAlreadyExists(Date date, String authenticatedUser) {

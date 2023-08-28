@@ -11,4 +11,6 @@ public interface MeasurementRepository {
     boolean checkBodyMeasurementExists(Date date, String authenticatedUser);
 
     Optional<BodyMeasurementSnapshot> findBodyMeasurementSnapshot(Date date, String authenticatedUser);
+
+    void deleteBodyMeasurementByDate(Date date, String authenticatedUser);
 }
