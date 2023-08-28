@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -58,6 +59,18 @@ class MeasurementCommandHandler {
     @Transactional
     public void deleteBodyMeasurement(BodyMeasurementDeleteCommand command) {
         repository.deleteBodyMeasurementByDate(command.getDate(), provider.getAuthenticatedUser());
+    }
+
+    @Transactional(readOnly = true)
+    public List<BodyMeasurementSnapshot> getSummaryBodyMeasurements() {
+        Optional<List<BodyMeasurementSnapshot>> bodyMeasurements =
+                repository.findSummaryBodyMeasurements(provider.getAuthenticatedUser());
+
+        if(bodyMeasurements.isEmpty()) {
+            return List.of();
+        }
+
+        return bodyMeasurements.get();
     }
 
     private void checkMeasurementAlreadyExists(Date date, String authenticatedUser) {

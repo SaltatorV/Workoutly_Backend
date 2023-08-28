@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -163,6 +164,28 @@ public class MeasurementCommandHandlerTest {
 
         //then
         verify(repository, times(1)).deleteBodyMeasurementByDate(command.getDate(), username);
+    }
+
+    @Test
+    public void testGetSummaryBodyMeasurements() {
+        //given
+        var username = "test";
+        var date = Date.from(Instant.now());
+        var bodyMeasurementsList = List.of(createSampleBodyMeasurementSnapshotFrom(username, date));
+
+        doReturn(username)
+                .when(provider)
+                .getAuthenticatedUser();
+
+        doReturn(Optional.of(bodyMeasurementsList))
+                .when(repository)
+                .findSummaryBodyMeasurements(username);
+
+        //when
+        var list = handler.getSummaryBodyMeasurements();
+
+        //then
+        assertEquals(bodyMeasurementsList, list);
     }
 
     private BodyMeasurementUpdatedEvent createBodyMeasurementUpdatedFrom(BodyMeasurementSnapshot snapshotToUpdate, BodyMeasurement measurementFromCommand) {
