@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-class MeasurementCommandHandler {
+class BodyMeasurementCommandHandler {
     private final MeasurementDataMapper mapper;
     private final MeasurementDomainService domainService;
     private final MeasurementRepository repository;
