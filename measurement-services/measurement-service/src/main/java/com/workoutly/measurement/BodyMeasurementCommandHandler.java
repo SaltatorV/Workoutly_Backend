@@ -73,6 +73,12 @@ class BodyMeasurementCommandHandler {
         return bodyMeasurements.get();
     }
 
+    @Transactional(readOnly = true)
+    public List<BodyMeasurementSnapshot> getBodyMeasurementsPage() {
+        return null;
+    }
+
+
     private void checkMeasurementAlreadyExists(Date date, String authenticatedUser) {
         if(repository.checkBodyMeasurementExists(date, authenticatedUser)) {
             throw new BodyMeasurementAlreadyExistsException();
