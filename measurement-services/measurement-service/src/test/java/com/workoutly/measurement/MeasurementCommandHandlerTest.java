@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class BodyMeasurementCommandHandlerTest {
+public class MeasurementCommandHandlerTest {
 
     @Mock
     private MeasurementDataMapper mapper;
@@ -40,7 +40,7 @@ public class BodyMeasurementCommandHandlerTest {
     @Mock
     private AuthenticationProvider provider;
     @InjectMocks
-    private BodyMeasurementCommandHandler handler;
+    private MeasurementCommandHandler handler;
 
     @Test
     public void testCreateBodyMeasurement() {
