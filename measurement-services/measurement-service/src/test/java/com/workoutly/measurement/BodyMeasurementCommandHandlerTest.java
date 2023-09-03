@@ -188,6 +188,15 @@ public class BodyMeasurementCommandHandlerTest {
         assertEquals(bodyMeasurementsList, list);
     }
 
+    @Test
+    public void testGetBodyMeasurementsPage() {
+        //given
+
+        //when
+
+        //then
+    }
+
     private BodyMeasurementUpdatedEvent createBodyMeasurementUpdatedFrom(BodyMeasurementSnapshot snapshotToUpdate, BodyMeasurement measurementFromCommand) {
         BodyMeasurement measurementToUpdate = BodyMeasurement.restore(snapshotToUpdate);
         measurementToUpdate.updateValues(measurementToUpdate.createSnapshot());
