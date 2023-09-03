@@ -16,4 +16,6 @@ public interface MeasurementRepository {
     void deleteBodyMeasurementByDate(Date date, String authenticatedUser);
 
     Optional<List<BodyMeasurementSnapshot>> findSummaryBodyMeasurements(String authenticatedUser);
+
+    Optional<List<BodyMeasurementSnapshot>> findBodyMeasurementsByPage(int page, String authenticatedUser);
 }

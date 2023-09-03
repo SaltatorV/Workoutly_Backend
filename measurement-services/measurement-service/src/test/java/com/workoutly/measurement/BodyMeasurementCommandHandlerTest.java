@@ -5,6 +5,7 @@ import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.auth.AuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
 import com.workoutly.measurement.exception.BodyMeasurementAlreadyExistsException;
@@ -191,10 +192,24 @@ public class BodyMeasurementCommandHandlerTest {
     @Test
     public void testGetBodyMeasurementsPage() {
         //given
+        var query = new BodyMeasurementsPageQuery(1);
+        var username = "test";
+        var date = Date.from(Instant.now());
+        var bodyMeasurementsList = List.of(createSampleBodyMeasurementSnapshotFrom(username, date));
+
+        doReturn(username)
+                .when(provider)
+                .getAuthenticatedUser();
+
+        doReturn(Optional.of(bodyMeasurementsList))
+                .when(repository)
+                .findBodyMeasurementsByPage(query.getPage(), username);
 
         //when
+        var list = handler.getBodyMeasurementsPage(query);
 
         //then
+        assertEquals(bodyMeasurementsList, list);
     }
 
     private BodyMeasurementUpdatedEvent createBodyMeasurementUpdatedFrom(BodyMeasurementSnapshot snapshotToUpdate, BodyMeasurement measurementFromCommand) {
