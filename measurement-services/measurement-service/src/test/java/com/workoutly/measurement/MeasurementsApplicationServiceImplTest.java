@@ -5,6 +5,7 @@ import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
+import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
 import com.workoutly.measurement.mapper.MeasurementDataMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +33,7 @@ public class MeasurementsApplicationServiceImplTest {
     public void testCreateBodyMeasurement() {
         //given
         var command = createSampleBodyMeasurementCommand();
-        var event = createBodyMeasurementEvent(command);
+        var event = createBodyMeasurementCreatedEvent(command);
         var message = new MessageResponse("Body measurement created");
 
         doReturn(event)
@@ -46,6 +47,28 @@ public class MeasurementsApplicationServiceImplTest {
 
         //when
         var response = service.createBodyMeasurement(command);
+
+        //then
+        assertEquals(message, response);
+    }
+
+    @Test
+    public void testUpdateBodyMeasurement() {
+        //given
+        var command = createSampleBodyMeasurementCommand();
+        var event = createBodyMeasurementUpdatedEvent(command);
+        var message = new MessageResponse("Body measurement updated");
+
+        doReturn(event)
+                .when(bodyMeasurementCommandHandler)
+                .updateBodyMeasurement(command);
+
+        doReturn(message)
+                .when(mapper)
+                .mapBodyMeasurementUpdatedEventToResponse(event);
+
+        //when
+        var response = service.updateBodyMeasurement(command);
 
         //then
         assertEquals(message, response);
@@ -68,8 +91,18 @@ public class MeasurementsApplicationServiceImplTest {
         );
     }
 
-    private BodyMeasurementCreatedEvent createBodyMeasurementEvent(BodyMeasurementCommand command) {
-        BodyMeasurementSnapshot snapshot = new BodyMeasurementSnapshot(
+    private BodyMeasurementCreatedEvent createBodyMeasurementCreatedEvent(BodyMeasurementCommand command) {
+        BodyMeasurementSnapshot snapshot = createBodyMeasurementSnapshot(command);
+        return new BodyMeasurementCreatedEvent(snapshot);
+    }
+
+    private BodyMeasurementUpdatedEvent createBodyMeasurementUpdatedEvent(BodyMeasurementCommand command) {
+        BodyMeasurementSnapshot snapshot = createBodyMeasurementSnapshot(command);
+        return new BodyMeasurementUpdatedEvent(snapshot);
+    }
+
+    private BodyMeasurementSnapshot createBodyMeasurementSnapshot(BodyMeasurementCommand command) {
+        return new BodyMeasurementSnapshot(
                 new BodyMeasurementId(UUID.randomUUID()),
                 command.getNeck(),
                 command.getChest(),
@@ -85,7 +118,5 @@ public class MeasurementsApplicationServiceImplTest {
                 command.getDate(),
                 "test"
         );
-
-        return new BodyMeasurementCreatedEvent(snapshot);
     }
 }
