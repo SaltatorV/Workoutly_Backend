@@ -29,7 +29,7 @@ public class MeasurementsApplicationServiceImplTest {
     private MeasurementsApplicationServiceImpl service;
 
     @Test
-    private void testCreateBodyMeasurement() {
+    public void testCreateBodyMeasurement() {
         //given
         var command = createSampleBodyMeasurementCommand();
         var event = createBodyMeasurementEvent(command);
