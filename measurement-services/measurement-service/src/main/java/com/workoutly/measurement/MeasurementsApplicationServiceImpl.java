@@ -1,7 +1,9 @@
 package com.workoutly.measurement;
 
+import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.response.BodyMeasurementSummaryResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
@@ -10,6 +12,8 @@ import com.workoutly.measurement.port.input.MeasurementsApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
 
 @Service
 @Validated
@@ -34,5 +38,11 @@ public class MeasurementsApplicationServiceImpl implements MeasurementsApplicati
         bodyMeasurementCommandHandler.deleteBodyMeasurement(command);
 
         return mapper.mapToBodyMeasurementDeletedMessage();
+    }
+
+    public BodyMeasurementSummaryResponse findSummaryBodyMeasurements() {
+        List<BodyMeasurementSnapshot> snapshots = bodyMeasurementCommandHandler.getSummaryBodyMeasurements();
+
+        return mapper.mapBodyMeasurementSnapshotsToResponse(snapshots);
     }
 }

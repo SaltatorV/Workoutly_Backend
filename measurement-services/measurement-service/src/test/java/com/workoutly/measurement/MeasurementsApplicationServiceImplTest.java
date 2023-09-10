@@ -4,6 +4,7 @@ import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.response.BodyMeasurementSummaryResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,6 +98,28 @@ public class MeasurementsApplicationServiceImplTest {
 
     }
 
+    @Test
+    public void testFindSummaryBodyMeasurements() {
+        //given
+        var snapshots = List.of(createSampleBodyMeasurementSnapshot());
+        var message = new BodyMeasurementSummaryResponse(snapshots);
+
+        doReturn(snapshots)
+                .when(bodyMeasurementCommandHandler)
+                .getSummaryBodyMeasurements();
+
+        doReturn(message)
+                .when(mapper)
+                .mapBodyMeasurementSnapshotsToResponse(snapshots);
+
+        //when
+        var response = service.findSummaryBodyMeasurements();
+
+        //then
+        assertEquals(message, response);
+
+    }
+
 
     private BodyMeasurementCommand createSampleBodyMeasurementCommand() {
         return new BodyMeasurementCommand(
@@ -139,6 +163,25 @@ public class MeasurementsApplicationServiceImplTest {
                 command.getLeftCalf(),
                 command.getRightCalf(),
                 command.getDate(),
+                "test"
+        );
+    }
+
+    private BodyMeasurementSnapshot createSampleBodyMeasurementSnapshot() {
+        return new BodyMeasurementSnapshot(
+                new BodyMeasurementId(UUID.randomUUID()),
+                10,
+                11,
+                12,
+                13,
+               14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                Date.from(Instant.now()),
                 "test"
         );
     }
