@@ -4,7 +4,7 @@ import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
-import com.workoutly.measurement.dto.response.BodyMeasurementSummaryResponse;
+import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
@@ -102,7 +102,7 @@ public class MeasurementsApplicationServiceImplTest {
     public void testFindSummaryBodyMeasurements() {
         //given
         var snapshots = List.of(createSampleBodyMeasurementSnapshot());
-        var message = new BodyMeasurementSummaryResponse(snapshots);
+        var message = new BodyMeasurementsResponse(snapshots);
 
         doReturn(snapshots)
                 .when(bodyMeasurementCommandHandler)

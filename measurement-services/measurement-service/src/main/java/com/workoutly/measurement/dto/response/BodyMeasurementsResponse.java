@@ -6,6 +6,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class BodyMeasurementSummaryResponse {
+public class BodyMeasurementsResponse {
     private final List<BodyMeasurementSnapshot> bodyMeasurements;
 }
