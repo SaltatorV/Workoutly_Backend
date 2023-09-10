@@ -18,4 +18,8 @@ public class MeasurementDataMapper {
     public MessageResponse mapBodyMeasurementUpdatedEventToResponse(BodyMeasurementUpdatedEvent event) {
         return null;
     }
+
+    public MessageResponse mapToBodyMeasurementDeletedMessage() {
+        return null;
+    }
 }

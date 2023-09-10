@@ -3,6 +3,7 @@ package com.workoutly.measurement;
 import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
+import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
@@ -18,7 +19,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MeasurementsApplicationServiceImplTest {
@@ -74,6 +75,28 @@ public class MeasurementsApplicationServiceImplTest {
         assertEquals(message, response);
     }
 
+    @Test
+    public void testDeleteBodyMeasurement() {
+        //given
+        var command = createSampleBodyMeasurementDeleteCommand();
+        var message = new MessageResponse("Body measurement deleted");
+
+        doReturn(message)
+                .when(mapper)
+                .mapToBodyMeasurementDeletedMessage();
+
+        //when
+        var response = service.deleteBodyMeasurement(command);
+
+        //then
+        verify(bodyMeasurementCommandHandler, times(1))
+                .deleteBodyMeasurement(command);
+
+        assertEquals(message, response);
+
+    }
+
+
     private BodyMeasurementCommand createSampleBodyMeasurementCommand() {
         return new BodyMeasurementCommand(
                 10,
@@ -118,5 +141,9 @@ public class MeasurementsApplicationServiceImplTest {
                 command.getDate(),
                 "test"
         );
+    }
+
+    private BodyMeasurementDeleteCommand createSampleBodyMeasurementDeleteCommand() {
+        return new BodyMeasurementDeleteCommand(Date.from(Instant.now()));
     }
 }
