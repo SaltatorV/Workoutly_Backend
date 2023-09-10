@@ -4,6 +4,7 @@ import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
@@ -118,6 +119,28 @@ public class MeasurementsApplicationServiceImplTest {
         //then
         assertEquals(message, response);
 
+    }
+
+    @Test
+    public void testFindBodyMeasurementsByPage() {
+        //given
+        var query = new BodyMeasurementsPageQuery(1);
+        var snapshots = List.of(createSampleBodyMeasurementSnapshot());
+        var message = new BodyMeasurementsResponse(snapshots);
+
+        doReturn(snapshots)
+                .when(bodyMeasurementCommandHandler)
+                .getBodyMeasurementsPage(query);
+
+        doReturn(message)
+                .when(mapper)
+                .mapBodyMeasurementSnapshotsToResponse(snapshots);
+
+        //when
+        var response = service.findBodyMeasurementsByPage(query);
+
+        //then
+        assertEquals(message, response);
     }
 
 

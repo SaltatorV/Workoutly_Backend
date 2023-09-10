@@ -3,6 +3,7 @@ package com.workoutly.measurement;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
@@ -42,6 +43,12 @@ public class MeasurementsApplicationServiceImpl implements MeasurementsApplicati
 
     public BodyMeasurementsResponse findSummaryBodyMeasurements() {
         List<BodyMeasurementSnapshot> snapshots = bodyMeasurementCommandHandler.getSummaryBodyMeasurements();
+
+        return mapper.mapBodyMeasurementSnapshotsToResponse(snapshots);
+    }
+
+    public BodyMeasurementsResponse findBodyMeasurementsByPage(BodyMeasurementsPageQuery query) {
+        List<BodyMeasurementSnapshot> snapshots = bodyMeasurementCommandHandler.getBodyMeasurementsPage(query);
 
         return mapper.mapBodyMeasurementSnapshotsToResponse(snapshots);
     }
