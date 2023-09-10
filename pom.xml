@@ -183,6 +183,11 @@
                 <artifactId>measurement-service</artifactId>
                 <version>${measurement-services-version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.workoutly</groupId>
+                <artifactId>measurement-application</artifactId>
+                <version>${measurement-services-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

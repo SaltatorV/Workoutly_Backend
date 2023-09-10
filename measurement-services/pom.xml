@@ -15,6 +15,7 @@
 
         <module>measurement-domain</module>
         <module>measurement-service</module>
+        <module>measurement-application</module>
     </modules>
 
 </project>
