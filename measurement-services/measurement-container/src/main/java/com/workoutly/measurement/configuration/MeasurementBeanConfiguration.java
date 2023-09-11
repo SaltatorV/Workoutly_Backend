@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class BeanConfiguration {
+public class MeasurementBeanConfiguration {
 
     @Bean
-    public MeasurementDomainService userDomainService() {
+    public MeasurementDomainService measurementDomainService() {
         return new MeasurementDomainServiceImpl();
     }
 }
