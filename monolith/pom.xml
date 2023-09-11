@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>com.workoutly</groupId>
+            <artifactId>measurement-container</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.workoutly</groupId>
             <artifactId>liquibase</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
