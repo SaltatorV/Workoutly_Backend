@@ -7,7 +7,7 @@ import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 
 public interface MeasurementsApplicationService {
-    MessageResponse createBodyMeasurement(BodyMeasurementCommand command;
+    MessageResponse createBodyMeasurement(BodyMeasurementCommand command);
 
     MessageResponse updateBodyMeasurement(BodyMeasurementCommand command);
 
