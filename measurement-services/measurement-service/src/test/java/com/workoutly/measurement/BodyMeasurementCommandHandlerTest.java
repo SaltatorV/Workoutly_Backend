@@ -178,7 +178,7 @@ public class BodyMeasurementCommandHandlerTest {
                 .when(provider)
                 .getAuthenticatedUser();
 
-        doReturn(Optional.of(bodyMeasurementsList))
+        doReturn(bodyMeasurementsList)
                 .when(repository)
                 .findSummaryBodyMeasurements(username);
 
@@ -201,7 +201,7 @@ public class BodyMeasurementCommandHandlerTest {
                 .when(provider)
                 .getAuthenticatedUser();
 
-        doReturn(Optional.of(bodyMeasurementsList))
+        doReturn(bodyMeasurementsList)
                 .when(repository)
                 .findBodyMeasurementsByPage(query.getPage(), username);
 

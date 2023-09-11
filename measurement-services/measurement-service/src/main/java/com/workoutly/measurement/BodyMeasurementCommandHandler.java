@@ -64,26 +64,26 @@ class BodyMeasurementCommandHandler {
 
     @Transactional(readOnly = true)
     public List<BodyMeasurementSnapshot> getSummaryBodyMeasurements() {
-        Optional<List<BodyMeasurementSnapshot>> bodyMeasurements =
+        List<BodyMeasurementSnapshot> bodyMeasurements =
                 repository.findSummaryBodyMeasurements(provider.getAuthenticatedUser());
 
         if(bodyMeasurements.isEmpty()) {
             return List.of();
         }
 
-        return bodyMeasurements.get();
+        return bodyMeasurements;
     }
 
     @Transactional(readOnly = true)
     public List<BodyMeasurementSnapshot> getBodyMeasurementsPage(BodyMeasurementsPageQuery query) {
-        Optional<List<BodyMeasurementSnapshot>> bodyMeasurements =
+        List<BodyMeasurementSnapshot> bodyMeasurements =
                 repository.findBodyMeasurementsByPage(query.getPage(), provider.getAuthenticatedUser());
 
         if(bodyMeasurements.isEmpty()) {
             return List.of();
         }
 
-        return bodyMeasurements.get();
+        return bodyMeasurements;
     }
 
 

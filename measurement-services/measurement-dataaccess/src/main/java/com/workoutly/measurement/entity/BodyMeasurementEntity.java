@@ -17,7 +17,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BodyMeasurementsEntity {
+public class BodyMeasurementEntity {
     @Id
     @Column(name = "body_measurement_id")
     private String bodyMeasurementId;
