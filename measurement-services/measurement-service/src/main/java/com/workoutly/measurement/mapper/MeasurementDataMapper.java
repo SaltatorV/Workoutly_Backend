@@ -14,22 +14,37 @@ import java.util.List;
 @Component
 public class MeasurementDataMapper {
     public BodyMeasurement mapBodyMeasurementCommandToBodyMeasurement(BodyMeasurementCommand command) {
-        return null;
+        return BodyMeasurement.create()
+                .neck(command.getNeck())
+                .chest(command.getChest())
+                .leftBiceps(command.getLeftBiceps())
+                .rightBiceps(command.getRightBiceps())
+                .leftForearm(command.getLeftForearm())
+                .rightForearm(command.getRightForearm())
+                .waist(command.getWaist())
+                .leftThigh(command.getLeftThigh())
+                .rightThigh(command.getRightThigh())
+                .leftCalf(command.getLeftCalf())
+                .rightCalf(command.getRightCalf())
+                .date(command.getDate())
+                .build();
     }
 
     public MessageResponse mapBodyMeasurementCreatedEventToResponse(BodyMeasurementCreatedEvent event) {
-        return null;
+        String template = String.format("Body measurement for date %s has been created.", event.getSnapshot().getDate());
+        return new MessageResponse(template);
     }
 
     public MessageResponse mapBodyMeasurementUpdatedEventToResponse(BodyMeasurementUpdatedEvent event) {
-        return null;
+        String template = String.format("Body measurement for date %s has been updated.", event.getSnapshot().getDate());
+        return new MessageResponse(template);
     }
 
     public MessageResponse mapToBodyMeasurementDeletedMessage() {
-        return null;
+        return new MessageResponse("Body measurement has been deleted.");
     }
 
     public BodyMeasurementsResponse mapBodyMeasurementSnapshotsToResponse(List<BodyMeasurementSnapshot> snapshots) {
-        return null;
+        return new BodyMeasurementsResponse(snapshots);
     }
 }
