@@ -1,4 +1,4 @@
-package com.workoutly.entity;
+package com.workoutly.measurement.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
