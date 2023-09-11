@@ -15,5 +15,5 @@ public interface MeasurementsApplicationService {
 
     BodyMeasurementsResponse findSummaryBodyMeasurements();
 
-    BodyMeasurementsResponse findBodyMeasurementsByPage(BodyMeasurementsPageQuery query);
+    BodyMeasurementsResponse findBodyMeasurements(BodyMeasurementsPageQuery query);
 }

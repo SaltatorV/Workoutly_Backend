@@ -137,7 +137,7 @@ public class MeasurementsApplicationServiceImplTest {
                 .mapBodyMeasurementSnapshotsToResponse(snapshots);
 
         //when
-        var response = service.findBodyMeasurementsByPage(query);
+        var response = service.findBodyMeasurements(query);
 
         //then
         assertEquals(message, response);

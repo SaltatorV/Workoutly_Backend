@@ -47,7 +47,7 @@ public class MeasurementsApplicationServiceImpl implements MeasurementsApplicati
         return mapper.mapBodyMeasurementSnapshotsToResponse(snapshots);
     }
 
-    public BodyMeasurementsResponse findBodyMeasurementsByPage(BodyMeasurementsPageQuery query) {
+    public BodyMeasurementsResponse findBodyMeasurements(BodyMeasurementsPageQuery query) {
         List<BodyMeasurementSnapshot> snapshots = bodyMeasurementCommandHandler.getBodyMeasurementsPage(query);
 
         return mapper.mapBodyMeasurementSnapshotsToResponse(snapshots);
