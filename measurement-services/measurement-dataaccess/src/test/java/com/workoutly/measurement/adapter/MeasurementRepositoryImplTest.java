@@ -4,7 +4,7 @@ import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.entity.BodyMeasurementEntity;
 import com.workoutly.measurement.mapper.MeasurementDatabaseMapper;
-import com.workoutly.measurement.repository.BodyMeasurementRepository;
+import com.workoutly.measurement.repository.BodyMeasurementJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 public class MeasurementRepositoryImplTest {
 
     @Mock
-    private BodyMeasurementRepository bodyMeasurementRepository;
+    private BodyMeasurementJpaRepository bodyMeasurementJpaRepository;
     @Mock
     private MeasurementDatabaseMapper mapper;
     @InjectMocks
@@ -41,7 +41,7 @@ public class MeasurementRepositoryImplTest {
         repository.saveBodyMeasurement(bodyMeasurementSnapshot);
 
         //then
-        verify(bodyMeasurementRepository, times(1))
+        verify(bodyMeasurementJpaRepository, times(1))
                 .save(entity);
     }
 
@@ -52,7 +52,7 @@ public class MeasurementRepositoryImplTest {
         var username = "test";
 
         doReturn(true)
-                .when(bodyMeasurementRepository)
+                .when(bodyMeasurementJpaRepository)
                 .existsByDateAndUsername(date, username);
 
         //when
@@ -69,7 +69,7 @@ public class MeasurementRepositoryImplTest {
         var username = "test";
 
         doReturn(false)
-                .when(bodyMeasurementRepository)
+                .when(bodyMeasurementJpaRepository)
                 .existsByDateAndUsername(date, username);
 
         //when
@@ -85,13 +85,13 @@ public class MeasurementRepositoryImplTest {
         var date = Date.from(Instant.now());
         var username = "test";
         var bodyMeasurementSnapshot = createSampleBodyMeasurementSnapshot();
-        var entity = Optional.of(mapSnapshotToEntity(bodyMeasurementSnapshot));
+        var entity = mapSnapshotToEntity(bodyMeasurementSnapshot);
 
-        doReturn(entity)
-                .when(bodyMeasurementRepository)
+        doReturn(Optional.of(entity))
+                .when(bodyMeasurementJpaRepository)
                 .findByDateAndUsername(date, username);
 
-        doReturn(Optional.of(bodyMeasurementSnapshot))
+        doReturn(bodyMeasurementSnapshot)
                 .when(mapper)
                 .mapBodyMeasurementEntityToSnapshot(entity);
 
@@ -113,7 +113,7 @@ public class MeasurementRepositoryImplTest {
         repository.deleteBodyMeasurementByDate(date, username);
 
         //then
-        verify(bodyMeasurementRepository, times(1))
+        verify(bodyMeasurementJpaRepository, times(1))
                 .deleteByDateAndUsername(date, username);
     }
 
@@ -125,7 +125,7 @@ public class MeasurementRepositoryImplTest {
         var entityList = mapSnapshotToEntity(snapshotList);
 
         doReturn(entityList)
-                .when(bodyMeasurementRepository)
+                .when(bodyMeasurementJpaRepository)
                 .findFirst10ByUsernameOrderByDateDesc(username);
 
         doReturn(snapshotList)
@@ -146,7 +146,7 @@ public class MeasurementRepositoryImplTest {
         var entityList = mapSnapshotToEntity(snapshotList);
 
         doReturn(entityList)
-                .when(bodyMeasurementRepository)
+                .when(bodyMeasurementJpaRepository)
                 .findByUsername(eq(username), any());
 
         doReturn(snapshotList)

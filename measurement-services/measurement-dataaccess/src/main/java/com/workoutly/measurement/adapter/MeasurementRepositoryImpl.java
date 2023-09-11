@@ -1,9 +1,10 @@
 package com.workoutly.measurement.adapter;
 
+import com.workoutly.measurement.entity.BodyMeasurementEntity;
 import com.workoutly.measurement.mapper.MeasurementDatabaseMapper;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.port.output.MeasurementRepository;
-import com.workoutly.measurement.repository.BodyMeasurementRepository;
+import com.workoutly.measurement.repository.BodyMeasurementJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
 
     private final static int PAGE_SIZE = 10;
 
-    private final BodyMeasurementRepository repository;
+    private final BodyMeasurementJpaRepository repository;
     private final MeasurementDatabaseMapper mapper;
 
     @Override
@@ -35,7 +36,9 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
 
     @Override
     public Optional<BodyMeasurementSnapshot> findBodyMeasurementSnapshot(Date date, String authenticatedUser) {
-        return mapper.mapBodyMeasurementEntityToSnapshot(repository.findByDateAndUsername(date, authenticatedUser));
+        Optional<BodyMeasurementEntity> entity = repository.findByDateAndUsername(date, authenticatedUser);
+
+        return entity.map(mapper::mapBodyMeasurementEntityToSnapshot);
     }
 
     @Override

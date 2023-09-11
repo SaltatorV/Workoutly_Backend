@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface BodyMeasurementRepository  extends JpaRepository<BodyMeasurementEntity, String> {
+public interface BodyMeasurementJpaRepository extends JpaRepository<BodyMeasurementEntity, String> {
     boolean existsByDateAndUsername(Date date, String username);
     Optional<BodyMeasurementEntity> findByDateAndUsername(Date date, String username);
     void deleteByDateAndUsername(Date date, String username);
