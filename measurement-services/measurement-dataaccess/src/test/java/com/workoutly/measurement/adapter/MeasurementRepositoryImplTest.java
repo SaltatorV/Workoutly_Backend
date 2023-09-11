@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -189,12 +190,9 @@ public class MeasurementRepositoryImplTest {
     }
 
     private List<BodyMeasurementEntity> mapSnapshotToEntity(List<BodyMeasurementSnapshot> snapshots) {
-        List<BodyMeasurementEntity> entityList = new ArrayList();
-
-        for(BodyMeasurementSnapshot snapshot: snapshots) {
-            entityList.add(mapSnapshotToEntity(snapshot));
-        }
-
-        return entityList;
+        return snapshots
+                .stream()
+                .map(this::mapSnapshotToEntity)
+                .collect(Collectors.toList());
     }
 }
