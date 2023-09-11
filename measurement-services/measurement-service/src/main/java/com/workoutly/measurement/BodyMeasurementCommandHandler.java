@@ -1,7 +1,7 @@
 package com.workoutly.measurement;
 
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
-import com.workoutly.measurement.auth.AuthenticationProvider;
+import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
@@ -25,7 +25,7 @@ class BodyMeasurementCommandHandler {
     private final MeasurementDataMapper mapper;
     private final MeasurementDomainService domainService;
     private final MeasurementRepository repository;
-    private final AuthenticationProvider provider;
+    private final MeasurementAuthenticationProvider provider;
 
 
     @Transactional

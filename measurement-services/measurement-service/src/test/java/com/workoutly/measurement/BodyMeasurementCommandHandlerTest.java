@@ -2,7 +2,7 @@ package com.workoutly.measurement;
 
 import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
-import com.workoutly.measurement.auth.AuthenticationProvider;
+import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
@@ -39,7 +39,7 @@ public class BodyMeasurementCommandHandlerTest {
     @Mock
     private MeasurementRepository repository;
     @Mock
-    private AuthenticationProvider provider;
+    private MeasurementAuthenticationProvider provider;
     @InjectMocks
     private BodyMeasurementCommandHandler handler;
 
