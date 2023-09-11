@@ -2,11 +2,15 @@ package com.workoutly.adapter;
 
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.port.output.MeasurementRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Component
+@RequiredArgsConstructor
 public class MeasurementRepositoryImpl implements MeasurementRepository {
     @Override
     public void saveBodyMeasurement(BodyMeasurementSnapshot snapshot) {

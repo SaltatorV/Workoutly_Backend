@@ -7,9 +7,11 @@ import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class MeasurementDataMapper {
     public BodyMeasurement mapBodyMeasurementCommandToBodyMeasurement(BodyMeasurementCommand command) {
         return null;
