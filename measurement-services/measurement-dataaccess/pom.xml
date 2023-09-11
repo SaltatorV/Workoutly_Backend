@@ -7,17 +7,9 @@
         <groupId>com.workoutly</groupId>
         <artifactId>Workoutly_Backend</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>measurement-services</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-
-        <module>measurement-domain</module>
-        <module>measurement-service</module>
-        <module>measurement-application</module>
-        <module>measurement-container</module>
-        <module>measurement-dataaccess</module>
-    </modules>
+    <artifactId>measurement-dataaccess</artifactId>
 
 </project>
