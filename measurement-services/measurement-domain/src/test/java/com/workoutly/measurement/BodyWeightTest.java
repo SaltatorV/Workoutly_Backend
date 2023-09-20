@@ -52,6 +52,30 @@ public class BodyWeightTest {
         assertEquals(bodyWeight, restored);
     }
 
+    @Test
+    public void testUpdateValues() {
+        //given
+        var snapshot = createSnapshot();
+        var bodyWeightToUpdate = BodyWeight
+                .create()
+                .weight(-100)
+                .bodyFat(-100)
+                .build();
+
+        //when
+        bodyWeightToUpdate.updateValues(snapshot);
+
+        //then
+        assertIsBodyWeightUpdated(bodyWeightToUpdate, snapshot);
+    }
+
+    private void assertIsBodyWeightUpdated(BodyWeight bodyWeight, BodyWeightSnapshot snapshot) {
+        BodyWeightSnapshot snapshotToCompare = bodyWeight.createSnapshot();
+
+        assertEquals(snapshot.getWeight(), snapshotToCompare.getWeight());
+        assertEquals(snapshot.getBodyFat(), snapshotToCompare.getBodyFat());
+    }
+
     private BodyWeight createNotInitializedBodyWeight() {
         return BodyWeight.create()
                 .date(Date.from(Instant.now()))
@@ -59,6 +83,7 @@ public class BodyWeightTest {
                 .bodyFat(15)
                 .build();
     }
+
 
     private BodyWeight createBodyWeightFromSnapshot(BodyWeightSnapshot snapshot) {
         return BodyWeight.create()

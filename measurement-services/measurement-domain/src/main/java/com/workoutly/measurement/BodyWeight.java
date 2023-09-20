@@ -44,6 +44,11 @@ public class BodyWeight extends AggregateRoot<BodyWeightId> {
         return new BodyWeightSnapshot(getId(), weight, bodyFat, date, username);
     }
 
+    public void updateValues(BodyWeightSnapshot snapshot) {
+        this.weight = snapshot.getWeight();
+        this.bodyFat = snapshot.getBodyFat();
+    }
+
     public static final class Builder {
         private BodyWeightId id;
         private double weight;
