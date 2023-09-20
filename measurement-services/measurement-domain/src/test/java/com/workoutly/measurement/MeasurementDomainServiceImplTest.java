@@ -48,10 +48,23 @@ public class MeasurementDomainServiceImplTest {
     public void testUpdateBodyMeasurement() {
         //given
         var bodyMeasurement = createInitialziedBodyMeasurement();
-        var snapshot = createBodyMeasurementSnapshot(bodyMeasurement.createSnapshot());
+        var snapshot = createFlatBodyMeasurementSnapshot(bodyMeasurement.createSnapshot());
 
         //when
         var event = domainService.updateBodyMeasurement(bodyMeasurement, snapshot);
+
+        //then
+        assertEquals(snapshot, event.getSnapshot());
+    }
+
+    @Test
+    public void testUpdateBodyWeight() {
+        //given
+        var bodyWeight = createInitializedBodyWeight();
+        var snapshot = createFlatBodyWeightSnapshot(bodyWeight.createSnapshot());
+
+        //when
+        var event = domainService.updateBodyWeight(bodyWeight, snapshot);
 
         //then
         assertEquals(snapshot, event.getSnapshot());
@@ -101,9 +114,18 @@ public class MeasurementDomainServiceImplTest {
                 .build();
     }
 
-    private BodyMeasurementSnapshot createBodyMeasurementSnapshot(BodyMeasurementSnapshot snapshot) {
+    private BodyWeight createInitializedBodyWeight() {
+        return BodyWeight.create()
+                .date(Date.from(Instant.now()))
+                .weight(80)
+                .bodyFat(15)
+                .username("test")
+                .build();
+    }
+
+    private BodyMeasurementSnapshot createFlatBodyMeasurementSnapshot(BodyMeasurementSnapshot bodyMeasurementSnapshot) {
         return new BodyMeasurementSnapshot(
-                snapshot.getBodyMeasurementsId(),
+                bodyMeasurementSnapshot.getBodyMeasurementsId(),
                 20,
                 21,
                 22,
@@ -115,6 +137,16 @@ public class MeasurementDomainServiceImplTest {
                 28,
                 29,
                 30,
+                bodyMeasurementSnapshot.getDate(),
+                bodyMeasurementSnapshot.getUsername()
+        );
+    }
+
+    private BodyWeightSnapshot createFlatBodyWeightSnapshot(BodyWeightSnapshot snapshot) {
+        return new BodyWeightSnapshot(
+                snapshot.getBodyWeightId(),
+                300,
+                300,
                 snapshot.getDate(),
                 snapshot.getUsername()
         );
