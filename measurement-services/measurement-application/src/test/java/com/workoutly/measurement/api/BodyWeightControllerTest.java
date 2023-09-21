@@ -1,12 +1,14 @@
 package com.workoutly.measurement.api;
 
 import com.workoutly.common.exception.ErrorResponse;
-import com.workoutly.measurement.VO.BodyMeasurementId;
-import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
+import com.workoutly.measurement.VO.BodyWeightId;
+import com.workoutly.measurement.VO.BodyWeightSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
+import com.workoutly.measurement.dto.command.BodyWeightCommand;
 import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.dto.query.MeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
+import com.workoutly.measurement.dto.response.BodyWeightsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.mock.MockExceptionHandler;
 import com.workoutly.measurement.port.input.MeasurementsApplicationService;
@@ -31,18 +33,19 @@ import java.util.UUID;
 
 import static com.workoutly.measurement.mock.MockExceptionHandler.createErrorResponse;
 import static com.workoutly.measurement.utils.ResponseValidator.*;
+import static com.workoutly.measurement.utils.ResponseValidator.responseContentIs;
 import static com.workoutly.measurement.utils.TestUtils.mapToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
-public class BodyMeasurementControllerTest {
-    private final static String CREATE_MEASUREMENT_URL = "/api/measurements/body/create";
-    private final static String UPDATE_MEASUREMENT_URL = "/api/measurements/body/update";
-    private final static String DELETE_MEASUREMENT_URL = "/api/measurements/body/delete";
-    private final static String SUMMARY_MEASUREMENT_URL = "/api/measurements/body/summary";
-    private final static String PAGE_MEASUREMENT_URL = "/api/measurements/body";
+public class BodyWeightControllerTest {
+    private final static String CREATE_MEASUREMENT_URL = "/api/measurements/weight/create";
+    private final static String UPDATE_MEASUREMENT_URL = "/api/measurements/weight/update";
+    private final static String DELETE_MEASUREMENT_URL = "/api/measurements/weight/delete";
+    private final static String SUMMARY_MEASUREMENT_URL = "/api/measurements/weight/summary";
+    private final static String PAGE_MEASUREMENT_URL = "/api/measurements/weight";
 
     private MockMvc mockMvc;
 
@@ -50,7 +53,7 @@ public class BodyMeasurementControllerTest {
     private MeasurementsApplicationService service;
 
     @InjectMocks
-    private BodyMeasurementController controller;
+    private BodyWeightController controller;
 
     @BeforeEach
     public void setup() {
@@ -64,15 +67,15 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testCreateBodyMeasurement() {
         //given
-        var command = createSampleBodyMeasurementCommand();
-        var response = new MessageResponse("Body measurement has been created");
+        var command = createSampleBodyWeightCommand();
+        var response = new MessageResponse("Body weight has been created");
 
         doReturn(response)
                 .when(service)
-                .createBodyMeasurement(command);
+                .createBodyWeight(command);
 
         //when
-        performCreateBodyMeasurementCommand(command);
+        performCreateBodyWeightCommand(command);
 
         //then
         assertResponseStatusIs(isOk());
@@ -82,14 +85,14 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testCreateBodyMeasurementFailure() {
         //given
-        var command = createSampleBodyMeasurementCommand();
+        var command = createSampleBodyWeightCommand();
 
         doThrow(new ValidationException())
                 .when(service)
-                .createBodyMeasurement(command);
+                .createBodyWeight(command);
 
         //when
-        performCreateBodyMeasurementCommand(command);
+        performCreateBodyWeightCommand(command);
 
         //then
         assertResponseStatusIs(isBadRequest());
@@ -99,15 +102,15 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testUpdateBodyMeasurement() {
         //given
-        var command = createSampleBodyMeasurementCommand();
-        var response = new MessageResponse("Body measurement has been updated");
+        var command = createSampleBodyWeightCommand();
+        var response = new MessageResponse("Body weight has been updated");
 
         doReturn(response)
                 .when(service)
-                .updateBodyMeasurement(command);
+                .updateBodyWeight(command);
 
         //when
-        performUpdateBodyMeasurementCommand(command);
+        performUpdateBodyWeightCommand(command);
 
         //then
         assertResponseStatusIs(isOk());
@@ -117,14 +120,14 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testUpdateBodyMeasurementFailure() {
         //given
-        var command = createSampleBodyMeasurementCommand();
+        var command = createSampleBodyWeightCommand();
 
         doThrow(new ValidationException())
                 .when(service)
-                .updateBodyMeasurement(command);
+                .updateBodyWeight(command);
 
         //when
-        performUpdateBodyMeasurementCommand(command);
+        performUpdateBodyWeightCommand(command);
 
         //then
         assertResponseStatusIs(isBadRequest());
@@ -135,14 +138,14 @@ public class BodyMeasurementControllerTest {
     public void testDeleteBodyMeasurement() {
         //given
         var command = new DeleteMeasurementCommand(Date.from(Instant.now()));
-        var response = new MessageResponse("Body measurement has been deleted");
+        var response = new MessageResponse("Body weight has been deleted");
 
         doReturn(response)
                 .when(service)
-                .deleteBodyMeasurement(command);
+                .deleteBodyWeight(command);
 
         //when
-        performDeleteBodyMeasurementCommand(command);
+        performDeleteBodyWeightCommand(command);
 
         //then
         assertResponseStatusIs(isOk());
@@ -156,10 +159,10 @@ public class BodyMeasurementControllerTest {
 
         doThrow(new ValidationException())
                 .when(service)
-                .deleteBodyMeasurement(command);
+                .deleteBodyWeight(command);
 
         //when
-        performDeleteBodyMeasurementCommand(command);
+        performDeleteBodyWeightCommand(command);
 
         //then
         assertResponseStatusIs(isBadRequest());
@@ -169,15 +172,15 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testFindSummaryBodyMeasurements() {
         //given
-        var snapshots = List.of(createSampleBodyMeasurementSnapshot());
-        var response = new BodyMeasurementsResponse(snapshots);
+        var snapshots = List.of(createSampleBodyWeightSnapshot());
+        var response = new BodyWeightsResponse(snapshots);
 
         doReturn(response)
                 .when(service)
-                .findSummaryBodyMeasurements();
+                .findSummaryBodyWeights();
 
         //when
-        performFindSummaryBodyMeasurements();
+        performFindSummaryBodyWeights();
 
         //then
         assertResponseStatusIs(isOk());
@@ -188,15 +191,15 @@ public class BodyMeasurementControllerTest {
     public void testFindBodyMeasurements() {
         //given
         var query = new MeasurementsPageQuery(1);
-        var snapshots = List.of(createSampleBodyMeasurementSnapshot());
-        var response = new BodyMeasurementsResponse(snapshots);
+        var snapshots = List.of(createSampleBodyWeightSnapshot());
+        var response = new BodyWeightsResponse(snapshots);
 
         doReturn(response)
                 .when(service)
-                .findBodyMeasurements(query);
+                .findBodyWeights(query);
 
         //when
-        performFindBodyMeasurements(query);
+        performFindBodyWeights(query);
 
         //then
         assertResponseStatusIs(isOk());
@@ -210,33 +213,33 @@ public class BodyMeasurementControllerTest {
 
         doThrow(new ValidationException())
                 .when(service)
-                .findBodyMeasurements(query);
+                .findBodyWeights(query);
 
         //when
-        performFindBodyMeasurements(query);
+        performFindBodyWeights(query);
 
         //then
         assertResponseStatusIs(isBadRequest());
         assertResponseContentIs(errorResponse());
     }
 
-    private BodyMeasurementCommand createSampleBodyMeasurementCommand() {
-        return new BodyMeasurementCommand(
-                10,11,12,13,14,15,16,17,18,19,20,
+    private BodyWeightCommand createSampleBodyWeightCommand() {
+        return new BodyWeightCommand(
+                100,21,
                 Date.from(Instant.now())
         );
     }
 
-    private BodyMeasurementSnapshot createSampleBodyMeasurementSnapshot() {
-        return new BodyMeasurementSnapshot(
-                new BodyMeasurementId(UUID.randomUUID()),
-                10,11,12,13,14,15,16,17,18,19,20,
+    private BodyWeightSnapshot createSampleBodyWeightSnapshot() {
+        return new BodyWeightSnapshot(
+                new BodyWeightId(UUID.randomUUID()),
+                100,21,
                 Date.from(Instant.now()), "test"
         );
     }
 
     @SneakyThrows
-    private void performCreateBodyMeasurementCommand(BodyMeasurementCommand request) {
+    private void performCreateBodyWeightCommand(BodyWeightCommand request) {
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .post(CREATE_MEASUREMENT_URL)
@@ -250,7 +253,7 @@ public class BodyMeasurementControllerTest {
     }
 
     @SneakyThrows
-    private void performUpdateBodyMeasurementCommand(BodyMeasurementCommand request) {
+    private void performUpdateBodyWeightCommand(BodyWeightCommand request) {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .put(UPDATE_MEASUREMENT_URL)
                         .content(mapToString(request))
@@ -264,7 +267,7 @@ public class BodyMeasurementControllerTest {
 
 
     @SneakyThrows
-    private void performDeleteBodyMeasurementCommand(DeleteMeasurementCommand request) {
+    private void performDeleteBodyWeightCommand(DeleteMeasurementCommand request) {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .delete(DELETE_MEASUREMENT_URL)
                         .content(mapToString(request))
@@ -277,7 +280,7 @@ public class BodyMeasurementControllerTest {
     }
 
     @SneakyThrows
-    private void performFindSummaryBodyMeasurements() {
+    private void performFindSummaryBodyWeights() {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .get(SUMMARY_MEASUREMENT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -289,7 +292,7 @@ public class BodyMeasurementControllerTest {
     }
 
     @SneakyThrows
-    private void performFindBodyMeasurements(MeasurementsPageQuery request) {
+    private void performFindBodyWeights(MeasurementsPageQuery request) {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .get(PAGE_MEASUREMENT_URL)
                         .content(mapToString(request))
