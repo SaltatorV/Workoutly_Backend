@@ -4,6 +4,7 @@ import com.workoutly.measurement.VO.BodyWeightId;
 import com.workoutly.measurement.VO.BodyWeightSnapshot;
 import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyWeightCommand;
+import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.event.BodyWeightCreatedEvent;
 import com.workoutly.measurement.event.BodyWeightUpdatedEvent;
 import com.workoutly.measurement.exception.MeasurementAlreadyExistsException;
@@ -150,6 +151,24 @@ public class BodyWeightCommandHandlerTest {
 
         //then
         assertEquals(new MeasurementNotExistsException().getMessage(), exception.getMessage());
+    }
+
+    @Test
+    public void testDeleteBodyWeight() {
+        //given
+        var command = new DeleteMeasurementCommand(Date.from(Instant.now()));
+        var username = "test";
+
+        doReturn(username)
+                .when(provider)
+                .getAuthenticatedUser();
+
+        //when
+        handler.deleteBodyWeight(command);
+
+        //then
+        verify(repository, times(1))
+                .deleteBodyWeightByDate(command.getDate(), username);
     }
 
     private BodyWeightUpdatedEvent createBodyWeightUpdatedEvent(BodyWeightSnapshot snapshotFromDb, BodyWeightSnapshot bodyWeightFromCommand) {

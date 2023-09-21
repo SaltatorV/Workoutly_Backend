@@ -25,4 +25,6 @@ public interface MeasurementRepository {
     void saveBodyWeight(BodyWeightSnapshot snapshot);
 
     Optional<BodyWeightSnapshot> findBodyWeightSnapshot(Date date, String authenticatedUser);
+
+    void deleteBodyWeightByDate(Date date, String authenticatedUser);
 }
