@@ -4,7 +4,7 @@ import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
-import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
+import com.workoutly.measurement.dto.query.MeasurementsPageQuery;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
 import com.workoutly.measurement.exception.MeasurementAlreadyExistsException;
@@ -75,7 +75,7 @@ class BodyMeasurementCommandHandler {
     }
 
     @Transactional(readOnly = true)
-    public List<BodyMeasurementSnapshot> getBodyMeasurementsPage(BodyMeasurementsPageQuery query) {
+    public List<BodyMeasurementSnapshot> getBodyMeasurementsPage(MeasurementsPageQuery query) {
         List<BodyMeasurementSnapshot> bodyMeasurements =
                 repository.findBodyMeasurementsByPage(query.getPage(), provider.getAuthenticatedUser());
 

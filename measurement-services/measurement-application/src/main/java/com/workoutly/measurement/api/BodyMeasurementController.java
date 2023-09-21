@@ -2,7 +2,7 @@ package com.workoutly.measurement.api;
 
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
-import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
+import com.workoutly.measurement.dto.query.MeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.port.input.MeasurementsApplicationService;
@@ -37,7 +37,7 @@ public class BodyMeasurementController {
     }
 
     @GetMapping
-    public BodyMeasurementsResponse findBodyMeasurements(@RequestBody BodyMeasurementsPageQuery query) {
+    public BodyMeasurementsResponse findBodyMeasurements(@RequestBody MeasurementsPageQuery query) {
         return service.findBodyMeasurements(query);
     }
 

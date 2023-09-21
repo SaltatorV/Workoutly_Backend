@@ -5,7 +5,7 @@ import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
 import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
-import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
+import com.workoutly.measurement.dto.query.MeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.mock.MockExceptionHandler;
@@ -187,7 +187,7 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testFindBodyMeasurements() {
         //given
-        var command = new BodyMeasurementsPageQuery(1);
+        var command = new MeasurementsPageQuery(1);
         var snapshots = List.of(createSampleBodyMeasurementSnapshot());
         var response = new BodyMeasurementsResponse(snapshots);
 
@@ -206,7 +206,7 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testFindBodyMeasurementsFailure() {
         //given
-        var command = new BodyMeasurementsPageQuery(1);
+        var command = new MeasurementsPageQuery(1);
 
         doThrow(new ValidationException())
                 .when(service)
@@ -289,7 +289,7 @@ public class BodyMeasurementControllerTest {
     }
 
     @SneakyThrows
-    private void performFindBodyMeasurements(BodyMeasurementsPageQuery request) {
+    private void performFindBodyMeasurements(MeasurementsPageQuery request) {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .get(PAGE_MEASUREMENT_URL)
                         .content(mapToString(request))
