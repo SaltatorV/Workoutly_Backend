@@ -1,8 +1,10 @@
 package com.workoutly.measurement.mapper;
 
 import com.workoutly.measurement.BodyMeasurement;
+import com.workoutly.measurement.BodyWeight;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
+import com.workoutly.measurement.dto.command.BodyWeightCommand;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
@@ -46,5 +48,9 @@ public class MeasurementDataMapper {
 
     public BodyMeasurementsResponse mapBodyMeasurementSnapshotsToResponse(List<BodyMeasurementSnapshot> snapshots) {
         return new BodyMeasurementsResponse(snapshots);
+    }
+
+    public BodyWeight mapBodyWeightCommandToBodyWeight(BodyWeightCommand command) {
+        return null;
     }
 }

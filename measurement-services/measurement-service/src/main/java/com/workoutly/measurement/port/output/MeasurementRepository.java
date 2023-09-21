@@ -1,6 +1,7 @@
 package com.workoutly.measurement.port.output;
 
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
+import com.workoutly.measurement.VO.BodyWeightSnapshot;
 
 import java.util.Date;
 import java.util.List;
@@ -18,4 +19,8 @@ public interface MeasurementRepository {
     List<BodyMeasurementSnapshot> findSummaryBodyMeasurements(String authenticatedUser);
 
     List<BodyMeasurementSnapshot> findBodyMeasurementsByPage(int page, String authenticatedUser);
+
+    boolean checkBodyWeightExists(Date date, String username);
+
+    void saveBodyWeight(BodyWeightSnapshot snapshot);
 }
