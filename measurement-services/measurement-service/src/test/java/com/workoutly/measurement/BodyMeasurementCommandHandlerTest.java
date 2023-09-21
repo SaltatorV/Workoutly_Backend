@@ -8,8 +8,8 @@ import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
-import com.workoutly.measurement.exception.BodyMeasurementAlreadyExistsException;
-import com.workoutly.measurement.exception.BodyMeasurementNotExistsException;
+import com.workoutly.measurement.exception.MeasurementAlreadyExistsException;
+import com.workoutly.measurement.exception.MeasurementNotExistsException;
 import com.workoutly.measurement.exception.MeasurementDomainException;
 import com.workoutly.measurement.mapper.MeasurementDataMapper;
 import com.workoutly.measurement.port.output.MeasurementRepository;
@@ -279,19 +279,19 @@ public class BodyMeasurementCommandHandlerTest {
     }
 
     private MeasurementDomainException throwExceptionWhenBodyMeasurementAlreadyExists(BodyMeasurementCommand command) {
-        return assertThrows(BodyMeasurementAlreadyExistsException.class, () -> handler.createBodyMeasurement(command));
+        return assertThrows(MeasurementAlreadyExistsException.class, () -> handler.createBodyMeasurement(command));
     }
 
     private MeasurementDomainException throwExceptionWhenBodyMeasurementNotExists(BodyMeasurementCommand command) {
-        return assertThrows(BodyMeasurementNotExistsException.class, () -> handler.updateBodyMeasurement(command));
+        return assertThrows(MeasurementNotExistsException.class, () -> handler.updateBodyMeasurement(command));
     }
 
     private void assertExceptionIsBodyMeasurementAlreadyExists(MeasurementDomainException exception) {
-        assertExceptionsMessagesEqual(new BodyMeasurementAlreadyExistsException(), exception);
+        assertExceptionsMessagesEqual(new MeasurementAlreadyExistsException(), exception);
     }
 
     private void assertExceptionIsBodyMeasurementNotExists(MeasurementDomainException exception) {
-        assertExceptionsMessagesEqual(new BodyMeasurementNotExistsException(), exception);
+        assertExceptionsMessagesEqual(new MeasurementNotExistsException(), exception);
     }
 
     private void assertExceptionsMessagesEqual(MeasurementDomainException expected, MeasurementDomainException actual) {
