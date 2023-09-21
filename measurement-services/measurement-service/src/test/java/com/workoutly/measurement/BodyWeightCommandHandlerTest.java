@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -102,7 +103,7 @@ public class BodyWeightCommandHandlerTest {
         var date = Date.from(Instant.now());
         var command = createBodyWeightCommand(date);
         var bodyWeightFromCommand = createBodyWeightFrom(command);
-        var snapshotFromDb = createBodyWeight(date, username);
+        var snapshotFromDb = createBodyWeightSnapshot(date, username);
         var createdEvent = createBodyWeightUpdatedEvent(snapshotFromDb, bodyWeightFromCommand.createSnapshot());
 
         doReturn(username)
@@ -171,6 +172,27 @@ public class BodyWeightCommandHandlerTest {
                 .deleteBodyWeightByDate(command.getDate(), username);
     }
 
+    @Test
+    public void testGetSummaryBodyWeights() {
+        //given
+        var username = "test";
+        var bodyWeightSnapshots = createBodyWeightSnapshots(username);
+
+        doReturn(username)
+                .when(provider)
+                .getAuthenticatedUser();
+
+        doReturn(bodyWeightSnapshots)
+                .when(repository)
+                .findSummaryBodyWeights(username);
+
+        //when
+        var result = handler.getSummaryBodyWeights();
+
+        //then
+        assertEquals(bodyWeightSnapshots, result);
+    }
+
     private BodyWeightUpdatedEvent createBodyWeightUpdatedEvent(BodyWeightSnapshot snapshotFromDb, BodyWeightSnapshot bodyWeightFromCommand) {
         BodyWeight bodyWeight = BodyWeight.restore(snapshotFromDb);
         bodyWeight.updateValues(bodyWeightFromCommand);
@@ -195,7 +217,7 @@ public class BodyWeightCommandHandlerTest {
                 .build();
     }
 
-    private BodyWeightSnapshot createBodyWeight(Date date, String username) {
+    private BodyWeightSnapshot createBodyWeightSnapshot(Date date, String username) {
         return BodyWeight
                 .create()
                 .id(new BodyWeightId(UUID.randomUUID()))
@@ -210,5 +232,9 @@ public class BodyWeightCommandHandlerTest {
     private BodyWeightCreatedEvent createInitializedEvent(BodyWeight bodyWeight, String username) {
         bodyWeight.initialize(username);
         return new BodyWeightCreatedEvent(bodyWeight.createSnapshot());
+    }
+
+    private List<BodyWeightSnapshot> createBodyWeightSnapshots(String username) {
+        return List.of(createBodyWeightSnapshot(Date.from(Instant.now()), username));
     }
 }

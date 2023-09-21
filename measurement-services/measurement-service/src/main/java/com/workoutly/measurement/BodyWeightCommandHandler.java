@@ -1,5 +1,6 @@
 package com.workoutly.measurement;
 
+import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.VO.BodyWeightSnapshot;
 import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyWeightCommand;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -59,6 +61,14 @@ public class BodyWeightCommandHandler {
     @Transactional
     public void deleteBodyWeight(DeleteMeasurementCommand command) {
         repository.deleteBodyWeightByDate(command.getDate(), provider.getAuthenticatedUser());
+    }
+
+    @Transactional(readOnly = true)
+    public List<BodyWeightSnapshot> getSummaryBodyWeights() {
+        List<BodyWeightSnapshot> bodyWeights =
+                repository.findSummaryBodyWeights(provider.getAuthenticatedUser());
+
+        return bodyWeights;
     }
 
     private void checkMeasurementAlreadyExists(Date date, String authenticatedUser) {
