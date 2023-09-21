@@ -23,4 +23,6 @@ public interface MeasurementRepository {
     boolean checkBodyWeightExists(Date date, String username);
 
     void saveBodyWeight(BodyWeightSnapshot snapshot);
+
+    Optional<BodyWeightSnapshot> findBodyWeightSnapshot(Date date, String authenticatedUser);
 }
