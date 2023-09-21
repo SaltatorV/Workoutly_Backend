@@ -5,6 +5,7 @@ import com.workoutly.measurement.VO.BodyWeightSnapshot;
 import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyWeightCommand;
 import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
+import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.event.BodyWeightCreatedEvent;
 import com.workoutly.measurement.event.BodyWeightUpdatedEvent;
 import com.workoutly.measurement.exception.MeasurementAlreadyExistsException;
@@ -188,6 +189,28 @@ public class BodyWeightCommandHandlerTest {
 
         //when
         var result = handler.getSummaryBodyWeights();
+
+        //then
+        assertEquals(bodyWeightSnapshots, result);
+    }
+
+    @Test
+    public void testGetBodyWeightsByPage() {
+        //given
+        var username = "test";
+        var query = new BodyMeasurementsPageQuery(1);
+        var bodyWeightSnapshots = createBodyWeightSnapshots(username);
+
+        doReturn(username)
+                .when(provider)
+                .getAuthenticatedUser();
+
+        doReturn(bodyWeightSnapshots)
+                .when(repository)
+                .findBodyWeightsByPage(query.getPage(), username);
+
+        //when
+        var result = handler.getBodyWeightsPage(query);
 
         //then
         assertEquals(bodyWeightSnapshots, result);

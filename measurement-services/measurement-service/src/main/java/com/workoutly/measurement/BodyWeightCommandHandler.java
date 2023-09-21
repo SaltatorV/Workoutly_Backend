@@ -5,6 +5,7 @@ import com.workoutly.measurement.VO.BodyWeightSnapshot;
 import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyWeightCommand;
 import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
+import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.event.BodyWeightCreatedEvent;
 import com.workoutly.measurement.event.BodyWeightUpdatedEvent;
 import com.workoutly.measurement.exception.MeasurementAlreadyExistsException;
@@ -67,6 +68,14 @@ public class BodyWeightCommandHandler {
     public List<BodyWeightSnapshot> getSummaryBodyWeights() {
         List<BodyWeightSnapshot> bodyWeights =
                 repository.findSummaryBodyWeights(provider.getAuthenticatedUser());
+
+        return bodyWeights;
+    }
+
+    @Transactional(readOnly = true)
+    public List<BodyWeightSnapshot> getBodyWeightsPage(BodyMeasurementsPageQuery query) {
+        List<BodyWeightSnapshot> bodyWeights =
+                repository.findBodyWeightsByPage(query.getPage(), provider.getAuthenticatedUser());
 
         return bodyWeights;
     }
