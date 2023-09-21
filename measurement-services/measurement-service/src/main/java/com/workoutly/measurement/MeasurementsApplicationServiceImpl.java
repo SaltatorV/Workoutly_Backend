@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @Validated
 @RequiredArgsConstructor
-public class BodyMeasurementsApplicationServiceImpl implements MeasurementsApplicationService {
+public class MeasurementsApplicationServiceImpl implements MeasurementsApplicationService {
     private final BodyMeasurementCommandHandler bodyMeasurementCommandHandler;
     private final MeasurementDataMapper mapper;
 
