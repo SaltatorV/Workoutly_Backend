@@ -2,13 +2,19 @@ package com.workoutly.measurement;
 
 import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
+import com.workoutly.measurement.VO.BodyWeightId;
+import com.workoutly.measurement.VO.BodyWeightSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
+import com.workoutly.measurement.dto.command.BodyWeightCommand;
 import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.dto.query.MeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
+import com.workoutly.measurement.dto.response.BodyWeightsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
+import com.workoutly.measurement.event.BodyWeightCreatedEvent;
+import com.workoutly.measurement.event.BodyWeightUpdatedEvent;
 import com.workoutly.measurement.mapper.MeasurementDataMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +34,8 @@ import static org.mockito.Mockito.*;
 public class MeasurementsApplicationServiceImplTest {
     @Mock
     private BodyMeasurementCommandHandler bodyMeasurementCommandHandler;
+    @Mock
+    private BodyWeightCommandHandler bodyWeightCommandHandler;
     @Mock
     private MeasurementDataMapper mapper;
     @InjectMocks
@@ -81,7 +89,7 @@ public class MeasurementsApplicationServiceImplTest {
     @Test
     public void testDeleteBodyMeasurement() {
         //given
-        var command = createSampleBodyMeasurementDeleteCommand();
+        var command = createSampleMeasurementDeleteCommand();
         var message = new MessageResponse("Body measurement deleted");
 
         doReturn(message)
@@ -143,6 +151,113 @@ public class MeasurementsApplicationServiceImplTest {
         assertEquals(message, response);
     }
 
+    @Test
+    public void testCreateBodyWeight() {
+        //given
+        var command = createSampleBodyWeightCommand();
+        var event = createBodyWeightCreatedEvent(command);
+        var message = new MessageResponse("Body weight created");
+
+        doReturn(event)
+                .when(bodyWeightCommandHandler)
+                .createBodyWeight(command);
+
+        doReturn(message)
+                .when(mapper)
+                .mapBodyWeightCreatedEventToResponse(event);
+
+
+        //when
+        var response = service.createBodyWeight(command);
+
+        //then
+        assertEquals(message, response);
+    }
+
+    @Test
+    public void testUpdateBodyWeight() {
+        //given
+        var command = createSampleBodyWeightCommand();
+        var event = createBodyWeightUpdatedEvent(command);
+        var message = new MessageResponse("Body weight updated");
+
+        doReturn(event)
+                .when(bodyWeightCommandHandler)
+                .updateBodyWeight(command);
+
+        doReturn(message)
+                .when(mapper)
+                .mapBodyWeightUpdatedEventToResponse(event);
+
+        //when
+        var response = service.updateBodyWeight(command);
+
+        //then
+        assertEquals(message, response);
+    }
+
+    @Test
+    public void testDeleteBodyWeight() {
+        //given
+        var command = createSampleMeasurementDeleteCommand();
+        var message = new MessageResponse("Body weight deleted");
+
+        doReturn(message)
+                .when(mapper)
+                .mapToBodyWeightDeletedMessage();
+
+        //when
+        var response = service.deleteBodyWeight(command);
+
+        //then
+        verify(bodyWeightCommandHandler, times(1))
+                .deleteBodyWeight(command);
+
+        assertEquals(message, response);
+    }
+
+    @Test
+    public void testFindSummaryBodyWeights() {
+        //given
+        var snapshots = List.of(createSampleBodyWeightSnapshot());
+        var message = new BodyWeightsResponse(snapshots);
+
+        doReturn(snapshots)
+                .when(bodyWeightCommandHandler)
+                .getSummaryBodyWeights();
+
+        doReturn(message)
+                .when(mapper)
+                .mapBodyWeightSnapshotsToResponse(snapshots);
+
+        //when
+        var response = service.findSummaryBodyWeights();
+
+        //then
+        assertEquals(message, response);
+    }
+
+    @Test
+    public void testFindBodyWeightsByPage() {
+        //given
+        var query = new MeasurementsPageQuery(1);
+        var snapshots = List.of(createSampleBodyWeightSnapshot());
+        var message = new BodyWeightsResponse(snapshots);
+
+        doReturn(snapshots)
+                .when(bodyWeightCommandHandler)
+                .getBodyWeightsPage(query);
+
+        doReturn(message)
+                .when(mapper)
+                .mapBodyWeightSnapshotsToResponse(snapshots);
+
+        //when
+        var response = service.findBodyWeights(query);
+
+        //then
+        assertEquals(message, response);
+    }
 
     private BodyMeasurementCommand createSampleBodyMeasurementCommand() {
         return new BodyMeasurementCommand(
@@ -209,7 +324,42 @@ public class MeasurementsApplicationServiceImplTest {
         );
     }
 
-    private DeleteMeasurementCommand createSampleBodyMeasurementDeleteCommand() {
+    private DeleteMeasurementCommand createSampleMeasurementDeleteCommand() {
         return new DeleteMeasurementCommand(Date.from(Instant.now()));
+    }
+
+
+    private BodyWeightCommand createSampleBodyWeightCommand() {
+        return new BodyWeightCommand(100,20, Date.from(Instant.now()));
+    }
+
+    private BodyWeightCreatedEvent createBodyWeightCreatedEvent(BodyWeightCommand command) {
+        BodyWeightSnapshot snapshot = createBodyWeightSnapshot(command);
+        return new BodyWeightCreatedEvent(snapshot);
+    }
+
+    private BodyWeightUpdatedEvent createBodyWeightUpdatedEvent(BodyWeightCommand command) {
+        BodyWeightSnapshot snapshot = createBodyWeightSnapshot(command);
+        return new BodyWeightUpdatedEvent(snapshot);
+    }
+
+    private BodyWeightSnapshot createBodyWeightSnapshot(BodyWeightCommand command) {
+        return new BodyWeightSnapshot(
+                new BodyWeightId(UUID.randomUUID()),
+                command.getWeight(),
+                command.getBodyFat(),
+                command.getDate(),
+                "test"
+        );
+    }
+
+    private BodyWeightSnapshot createSampleBodyWeightSnapshot() {
+        return new BodyWeightSnapshot(
+                new BodyWeightId(UUID.randomUUID()),
+                100,
+                20,
+                Date.from(Instant.now()),
+                "test"
+        );
     }
 }
