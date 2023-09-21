@@ -1,7 +1,7 @@
 package com.workoutly.measurement.exception;
 
-public class BodyMeasurementNotExistsException extends MeasurementDomainException{
-    public BodyMeasurementNotExistsException() {
+public class MeasurementNotExistsException extends MeasurementDomainException{
+    public MeasurementNotExistsException() {
         super("Measurement data from that day does not exist or has been deleted.");
     }
 }
