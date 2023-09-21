@@ -25,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MeasurementsApplicationServiceImplTest {
+public class BodyMeasurementsApplicationServiceImplTest {
     @Mock
     private BodyMeasurementCommandHandler bodyMeasurementCommandHandler;
     @Mock
     private MeasurementDataMapper mapper;
     @InjectMocks
-    private MeasurementsApplicationServiceImpl service;
+    private BodyMeasurementsApplicationServiceImpl service;
 
     @Test
     public void testCreateBodyMeasurement() {
