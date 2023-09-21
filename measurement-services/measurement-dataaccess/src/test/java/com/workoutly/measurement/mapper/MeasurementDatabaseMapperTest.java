@@ -2,7 +2,10 @@ package com.workoutly.measurement.mapper;
 
 import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
+import com.workoutly.measurement.VO.BodyWeightId;
+import com.workoutly.measurement.VO.BodyWeightSnapshot;
 import com.workoutly.measurement.entity.BodyMeasurementEntity;
+import com.workoutly.measurement.entity.BodyWeightEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -50,7 +53,44 @@ public class MeasurementDatabaseMapperTest {
         var snapshotList = mapper.mapBodyMeasurementListToSnapshots(entityList);
 
         //then
-        assertEquals(mapEntityListToSnapshots(entityList), snapshotList);
+        assertEquals(mapMeasurementEntityListToSnapshots(entityList), snapshotList);
+    }
+
+
+    @Test
+    public void testMapBodyWeightSnapshotToEntity() {
+        //given
+        var snapshot = createSampleBodyWeightSnapshot();
+
+        //when
+        var entity = mapper.mapBodyWeightSnapshotToEntity(snapshot);
+
+        //then
+        assertEquals(mapBodyWeightSnapshotToEntity(snapshot), entity);
+    }
+
+    @Test
+    public void testMapBodyWeightEntityToSnapshot() {
+        //given
+        var entity = createSampleBodyWeightEntity();
+
+        //when
+        var snapshot = mapper.mapBodyWeightEntityToSnapshot(entity);
+
+        //then
+        assertEquals(mapBodyWeightEntityToSnapshot(entity), snapshot);
+    }
+
+    @Test
+    public void testMapBodyWeightListToSnapshots() {
+        //given
+        var entityList = List.of(createSampleBodyWeightEntity());
+
+        //when
+        var snapshotList = mapper.mapBodyWeightListToSnapshots(entityList);
+
+        //then
+        assertEquals(mapWeightEntityListToSnapshots(entityList), snapshotList);
     }
 
 
@@ -119,10 +159,56 @@ public class MeasurementDatabaseMapperTest {
         );
     }
 
-    private List<BodyMeasurementSnapshot> mapEntityListToSnapshots(List<BodyMeasurementEntity> entityList) {
+    private List<BodyMeasurementSnapshot> mapMeasurementEntityListToSnapshots(List<BodyMeasurementEntity> entityList) {
         return entityList
                 .stream()
                 .map(this::mapBodyMeasurementEntityToSnapshot)
+                .collect(Collectors.toList());
+    }
+
+
+    private BodyWeightSnapshot createSampleBodyWeightSnapshot() {
+        return new BodyWeightSnapshot(
+                new BodyWeightId(UUID.randomUUID()),
+                100,21,
+                Date.from(Instant.now()), "test"
+        );
+    }
+
+
+    private BodyWeightEntity createSampleBodyWeightEntity() {
+        return BodyWeightEntity.builder()
+                .bodyWeightId(UUID.randomUUID().toString())
+                .weight(100)
+                .bodyFat(21)
+                .username("test")
+                .build();
+    }
+
+    private BodyWeightEntity mapBodyWeightSnapshotToEntity(BodyWeightSnapshot snapshot) {
+        return BodyWeightEntity.builder()
+                .bodyWeightId(snapshot.getBodyWeightId().getId())
+                .weight(snapshot.getWeight())
+                .bodyFat(snapshot.getBodyFat())
+                .date(snapshot.getDate())
+                .username(snapshot.getUsername())
+                .build();
+    }
+
+    private BodyWeightSnapshot mapBodyWeightEntityToSnapshot(BodyWeightEntity entity) {
+        return new BodyWeightSnapshot(
+                new BodyWeightId(UUID.fromString(entity.getBodyWeightId())),
+                entity.getWeight(),
+                entity.getBodyFat(),
+                entity.getDate(),
+                entity.getUsername()
+        );
+    }
+
+    private List<BodyWeightSnapshot> mapWeightEntityListToSnapshots(List<BodyWeightEntity> entityList) {
+        return entityList
+                .stream()
+                .map(this::mapBodyWeightEntityToSnapshot)
                 .collect(Collectors.toList());
     }
 }
