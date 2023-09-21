@@ -3,7 +3,7 @@ package com.workoutly.measurement;
 import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
-import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
@@ -209,7 +209,7 @@ public class MeasurementsApplicationServiceImplTest {
         );
     }
 
-    private BodyMeasurementDeleteCommand createSampleBodyMeasurementDeleteCommand() {
-        return new BodyMeasurementDeleteCommand(Date.from(Instant.now()));
+    private DeleteMeasurementCommand createSampleBodyMeasurementDeleteCommand() {
+        return new DeleteMeasurementCommand(Date.from(Instant.now()));
     }
 }

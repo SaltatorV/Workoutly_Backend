@@ -1,7 +1,7 @@
 package com.workoutly.measurement.api;
 
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
-import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
@@ -27,7 +27,7 @@ public class BodyMeasurementController {
     }
 
     @DeleteMapping("/delete")
-    public MessageResponse deleteBodyMeasurement(@RequestBody BodyMeasurementDeleteCommand command) {
+    public MessageResponse deleteBodyMeasurement(@RequestBody DeleteMeasurementCommand command) {
         return service.deleteBodyMeasurement(command);
     }
 

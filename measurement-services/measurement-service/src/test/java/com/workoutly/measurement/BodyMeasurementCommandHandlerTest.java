@@ -4,7 +4,7 @@ import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
-import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
@@ -153,7 +153,7 @@ public class BodyMeasurementCommandHandlerTest {
     @Test
     public void testDeleteBodyMeasurement() {
         //given
-        var command = new BodyMeasurementDeleteCommand(Date.from(Instant.now()));
+        var command = new DeleteMeasurementCommand(Date.from(Instant.now()));
         var username = "test";
 
         doReturn(username)

@@ -1,7 +1,7 @@
 package com.workoutly.measurement.port.input;
 
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
-import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
@@ -11,7 +11,7 @@ public interface MeasurementsApplicationService {
 
     MessageResponse updateBodyMeasurement(BodyMeasurementCommand command);
 
-    MessageResponse deleteBodyMeasurement(BodyMeasurementDeleteCommand command);
+    MessageResponse deleteBodyMeasurement(DeleteMeasurementCommand command);
 
     BodyMeasurementsResponse findSummaryBodyMeasurements();
 

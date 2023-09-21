@@ -4,7 +4,7 @@ import com.workoutly.common.exception.ErrorResponse;
 import com.workoutly.measurement.VO.BodyMeasurementId;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
-import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.dto.response.BodyMeasurementsResponse;
 import com.workoutly.measurement.dto.response.MessageResponse;
@@ -134,7 +134,7 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testDeleteBodyMeasurement() {
         //given
-        var command = new BodyMeasurementDeleteCommand(Date.from(Instant.now()));
+        var command = new DeleteMeasurementCommand(Date.from(Instant.now()));
         var response = new MessageResponse("Body measurement has been deleted");
 
         doReturn(response)
@@ -152,7 +152,7 @@ public class BodyMeasurementControllerTest {
     @Test
     public void testDeleteBodyMeasurementFailure() {
         //given
-        var command = new BodyMeasurementDeleteCommand(Date.from(Instant.now()));
+        var command = new DeleteMeasurementCommand(Date.from(Instant.now()));
 
         doThrow(new ValidationException())
                 .when(service)
@@ -264,7 +264,7 @@ public class BodyMeasurementControllerTest {
 
 
     @SneakyThrows
-    private void performDeleteBodyMeasurementCommand(BodyMeasurementDeleteCommand request) {
+    private void performDeleteBodyMeasurementCommand(DeleteMeasurementCommand request) {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .delete(DELETE_MEASUREMENT_URL)
                         .content(mapToString(request))

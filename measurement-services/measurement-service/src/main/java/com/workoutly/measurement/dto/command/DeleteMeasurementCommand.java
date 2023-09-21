@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BodyMeasurementDeleteCommand {
+public class DeleteMeasurementCommand {
     @NotNull
     private Date date;
 }

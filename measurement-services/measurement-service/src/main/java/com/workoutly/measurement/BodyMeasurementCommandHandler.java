@@ -3,7 +3,7 @@ package com.workoutly.measurement;
 import com.workoutly.measurement.VO.BodyMeasurementSnapshot;
 import com.workoutly.measurement.auth.MeasurementAuthenticationProvider;
 import com.workoutly.measurement.dto.command.BodyMeasurementCommand;
-import com.workoutly.measurement.dto.command.BodyMeasurementDeleteCommand;
+import com.workoutly.measurement.dto.command.DeleteMeasurementCommand;
 import com.workoutly.measurement.dto.query.BodyMeasurementsPageQuery;
 import com.workoutly.measurement.event.BodyMeasurementCreatedEvent;
 import com.workoutly.measurement.event.BodyMeasurementUpdatedEvent;
@@ -58,7 +58,7 @@ class BodyMeasurementCommandHandler {
     }
 
     @Transactional
-    public void deleteBodyMeasurement(BodyMeasurementDeleteCommand command) {
+    public void deleteBodyMeasurement(DeleteMeasurementCommand command) {
         repository.deleteBodyMeasurementByDate(command.getDate(), provider.getAuthenticatedUser());
     }
 
